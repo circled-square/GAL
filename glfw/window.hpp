@@ -11,10 +11,6 @@ callable from other threads.
 #include <GLFW/glfw3.h>
 #include <scluk/functional.hpp>
 
-#ifdef USE_OPENGL
-extern void glViewport(std::int32_t x, std::int32_t y, std::uint32_t w, std::uint32_t h);
-#endif
-
 namespace glfw {
     using window_t = GLFWwindow*;
     class window {

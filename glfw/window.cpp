@@ -1,6 +1,10 @@
 #include "window.hpp"
 #include <stdexcept>
 
+#ifdef USE_OPENGL
+extern void glViewport(std::int32_t x, std::int32_t y, std::uint32_t w, std::uint32_t h);
+#endif
+
 namespace glfw {
     std::int64_t window::window_count = 0;
     void window::create(std::pair<int,int> res, std::string title) {
