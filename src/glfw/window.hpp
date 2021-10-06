@@ -1,7 +1,7 @@
 #ifndef GLFW_WRAPPER_HPP
 #define GLFW_WRAPPER_HPP
 /*
-window, a RAII and OO wrapper for glfw windows, thread unsafe because glfw is(unfortunately).
+glfw::window, a RAII and OO wrapper for glfw windows, thread unsafe because glfw is (unfortunately).
 Construction and destruction may only be invoked in the main thread but some other functions *might* be 
 callable from other threads. 
 */
@@ -15,7 +15,7 @@ namespace glfw {
     using window_t = GLFWwindow*;
     class window {
         static std::int64_t window_count;
-        window_t m_window_ptr = nullptr;
+        window_t m_window_ptr;
     public:
         void create(std::pair<int,int> res, std::string title);
         void destroy();
@@ -50,16 +50,16 @@ namespace glfw {
         static void  poll_events () { glfwPollEvents(); }
         
         //constructors/destructors that just resort to calling the previous functions + default constructor
-        window () = default;
-        window (std::pair<int,int> res, const std::string& title) { this->create(res,title); }
-        window (int w, int h, const std::string& title) { this->create(std::make_pair(w,h), title); }
+        window () : m_window_ptr(nullptr) {}
+        window (std::pair<int,int> res, std::string title) :window() { this->create(res,std::move(title)); }
+        window (int w, int h, std::string title) : window({ w, h }, std::move(title) ) {}
         ~window () { this->destroy(); }
         
         //access and conversion of the internal GLFWwindow*
         operator void*    () { return  m_window_ptr; }
         operator window_t () { return  m_window_ptr; }
         operator bool     () { return  m_window_ptr; }
-        bool operator !        () { return !m_window_ptr; }
+        bool operator!    () { return !m_window_ptr; }
     };
 }
 #endif //GLFW_WRAPPER_HPP
