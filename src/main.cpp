@@ -35,7 +35,7 @@ int main() try {
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(vec2), (const void *)0);
 
-    uint shader = create_shader(scluk::read_file("vert.glsl"), scluk::read_file("frag.glsl"));
+    uint shader = create_shader(scluk::read_file("shader/vert.glsl"), scluk::read_file("shader/frag.glsl"));
     glUseProgram(shader);
 
     bool keep_going = true;
