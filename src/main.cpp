@@ -2,6 +2,7 @@
 #include <scluk/language_extension.hpp>
 #include <scluk/exception.hpp>
 #include <scluk/array.hpp>
+#include <scluk/read_file.hpp>
 #include <glm/glm.hpp>
 #include "glfw/window.hpp"
 
@@ -47,7 +48,7 @@ int main() try {
         "color = vec4(1.0, 0.0, 0.0, 1.0);"
     "}";
 
-    uint shader = create_shader(vs, fs);
+    uint shader = create_shader(scluk::read_file("vert.glsl"), scluk::read_file("frag.glsl"));
     glUseProgram(shader);
 
     bool keep_going = true;
