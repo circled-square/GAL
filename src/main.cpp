@@ -35,19 +35,6 @@ int main() try {
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(vec2), (const void *)0);
 
-    const char vs[] =
-    "#version 330 core\n"
-    "layout(location = 0) in vec4 position;"
-    "void main() {"
-        "gl_Position = position;"
-    "}", 
-    fs[]=
-    "#version 330 core\n"
-    "layout(location = 0) out vec4 color;"
-    "void main() {"
-        "color = vec4(1.0, 0.0, 0.0, 1.0);"
-    "}";
-
     uint shader = create_shader(scluk::read_file("vert.glsl"), scluk::read_file("frag.glsl"));
     glUseProgram(shader);
 
