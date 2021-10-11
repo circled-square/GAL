@@ -44,7 +44,7 @@ namespace glfw {
         void set_resize_cb (GLFWwindowsizefun f) { glfwSetWindowSizeCallback(m_window_ptr, f); }
         void set_key_cb (GLFWkeyfun f) { glfwSetKeyCallback(m_window_ptr, f); }
         void set_key_cb (auto f) {
-            set_key_cb(scluk::lambda_to_fnptr<void(window_t,int,int,int,int)>(f));
+            set_key_cb(scluk::lambda_to_fnptr<void(window_t,int,int,int,int)>(std::move(f)));
         }
         
         static void  poll_events () { glfwPollEvents(); }
