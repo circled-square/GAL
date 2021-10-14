@@ -5,6 +5,7 @@
 #include <scluk/read_file.hpp>
 #include <glm/glm.hpp>
 #include "glfw/window.hpp"
+#include <chrono>
 
 int create_shader(std::string vertexSh, std::string fragmentSh);
 uint compile_shader(uint type, std::string source);
@@ -21,12 +22,8 @@ int main() try {
 
     out("%", glGetString(GL_VERSION));
 
-    const array<vec2,3> positions = {
-        vec2
-        {-0.5f, -0.5f},
-        {+0.0f, +0.5f},
-        {+0.5f, -0.5f}
-    };
+    array<vec2,3> positions; 
+
     uint buffer;
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -42,10 +39,29 @@ int main() try {
     window.set_key_cb([&](glfw::window_t, int k, int, int, int) { 
         keep_going = keep_going && k != GLFW_KEY_ESCAPE;
     });
+    
+
+    auto start = std::chrono::high_resolution_clock::now();
 
     while (!window.should_close() && keep_going) {
+        const f32 seconds = std::chrono::duration<f32, std::ratio<1>>(std::chrono::high_resolution_clock::now()- start).count();
+
+        for(int i : index(positions)) {
+            const f32 theta = 2.f * seconds + 3.1415f /1.5f * i;
+    
+            const f32 mod = .8f;
+            auto& p = positions[i];
+
+            p.x = mod * std::sin(theta);
+            p.y = mod * std::cos(theta);
+        }
+
+        glBindBuffer(GL_ARRAY_BUFFER, buffer);                                                   
+        glBufferData(GL_ARRAY_BUFFER, sizeof(positions), &positions, GL_DYNAMIC_DRAW);
+
+
         glClear(GL_COLOR_BUFFER_BIT);
-        glDrawArrays(GL_TRIANGLES, 0,3);
+        glDrawArrays(GL_TRIANGLES, 0, positions.size());
 
         window.swap_buffers();
         window.poll_events();
