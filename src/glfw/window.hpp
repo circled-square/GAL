@@ -8,8 +8,10 @@ callable from other threads.
 #include <string>
 #include <array>
 #include <cstdint>
+#include <tuple>
 #include <GLFW/glfw3.h>
 #include <scluk/functional.hpp>
+#include <glm/glm.hpp>
 
 namespace glfw {
     using window_t = GLFWwindow*;
@@ -17,17 +19,14 @@ namespace glfw {
         static std::int64_t window_count;
         window_t m_window_ptr;
     public:
-        void create(std::pair<int,int> res, std::string title);
+        void create(glm::ivec2 res, const std::string& title);
         void destroy();
         bool should_close     () { return glfwWindowShouldClose(m_window_ptr); }
         void swap_buffers     () { glfwSwapBuffers(m_window_ptr); }
         void make_ctx_current () { glfwMakeContextCurrent(m_window_ptr); }
         bool get_key          (int key) { return glfwGetKey        (m_window_ptr, key) != GLFW_RELEASE; }
         bool get_mouse_btn    (int btn) { return glfwGetMouseButton(m_window_ptr, btn) != GLFW_RELEASE; }
-        void get_cursor_xy    (double *x, double *y) { glfwGetCursorPos(m_window_ptr, x, y); }
-        void get_framebuf_sz  (int *w, int *h) { glfwGetFramebufferSize(m_window_ptr, w, h); }
 
-        #ifdef GLM_VERSION
         glm::dvec2 get_cursor_pos() {
             glm::dvec2 ret;
             glfwGetCursorPos(m_window_ptr, &ret.x, &ret.y);
@@ -39,7 +38,6 @@ namespace glfw {
             glfwGetFramebufferSize(m_window_ptr, &ret.x, &ret.y);
             return ret;
         }
-        #endif
 
         void set_resize_cb (GLFWwindowsizefun f) { glfwSetWindowSizeCallback(m_window_ptr, f); }
         void set_key_cb (GLFWkeyfun f) { glfwSetKeyCallback(m_window_ptr, f); }
@@ -51,8 +49,8 @@ namespace glfw {
         
         //constructors/destructors that just resort to calling the previous functions + default constructor
         window () : m_window_ptr(nullptr) {}
-        window (std::pair<int,int> res, std::string title) :window() { this->create(res,std::move(title)); }
-        window (int w, int h, std::string title) : window({ w, h }, std::move(title) ) {}
+        window (glm::ivec2 res, const std::string& title) : window() { this->create(res, title); }
+        window (int w, int h, const std::string& title) : window({ w, h }, title) {}
         ~window () { this->destroy(); }
         
         //access and conversion of the internal GLFWwindow*

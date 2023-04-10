@@ -7,16 +7,14 @@ extern void glViewport(std::int32_t x, std::int32_t y, std::uint32_t w, std::uin
 #endif
 
 namespace glfw {
-#ifndef __clang__
     inline auto throw_on_error(auto res, const char* what, std::source_location l = std::source_location::current()) {
         if(!res) throw scluk::runtime_error("%:%, %\n\t%", l.file_name(), l.line(), l.function_name(), what);
         return res;
     }
-#else
-    #define throw_on_error(res, what) ([&]{ auto r = res; if(!r) throw scluk::runtime_error("%:%, %\n\t%", __FILE__, __LINE__, __func__, what); return r; }())
-#endif
+
     std::int64_t window::window_count = 0;
-    void window::create(std::pair<int,int> res, std::string title) {
+    
+    void window::create(glm::ivec2 res, const std::string& title) {
         if(m_window_ptr)
             this->destroy();
         //Initialize the library 
@@ -32,14 +30,18 @@ namespace glfw {
         glfwWindowHint(GLFW_BLUE_BITS,    mode->blueBits);
         glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
-        if(res.first < 0 || res.second < 0)
+        if(res.x < 0 || res.y < 0)
             m_window_ptr = glfwCreateWindow(mode->width, mode->height, title.c_str(), monitor, nullptr);
         else
-            m_window_ptr = glfwCreateWindow(res.first, res.second, title.c_str(), nullptr, nullptr);
+            m_window_ptr = glfwCreateWindow(res.x, res.y, title.c_str(), nullptr, nullptr);
 
         throw_on_error(m_window_ptr, "Unable to create GLFW3 window\n");
+
         #ifdef USE_OPENGL
-        glfwSetFramebufferSizeCallback(m_window_ptr, [](window_t, int W, int H) { glViewport(0, 0, W, H); } );
+        glfwSetFramebufferSizeCallback(m_window_ptr, [](window_t window, int W, int H) {
+            glfwMakeContextCurrent(window);
+            glViewport(0, 0, W, H); 
+        });
         #endif
         glfwMakeContextCurrent(m_window_ptr);
 
@@ -48,9 +50,12 @@ namespace glfw {
 
     void window::destroy() {
         glfwDestroyWindow(m_window_ptr);
+        window::window_count--;
+
         //if no windows are left terminate glfw
-        if(!--window::window_count)
+        if(!window::window_count)
             glfwTerminate();
+        
         m_window_ptr = nullptr;
     }
 }
