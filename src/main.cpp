@@ -25,12 +25,14 @@ int main() try {
     array<vec2,3> positions; 
 
     uint buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(positions), &positions, GL_DYNAMIC_DRAW);
+    //init the buffer in VRAM
+    glGenBuffers(1, &buffer); //generate {1} buffer; put the id in {2}
+    glBindBuffer(GL_ARRAY_BUFFER, buffer); //"select" {2} and treat it as an array ({1})
+    glBufferData(GL_ARRAY_BUFFER, sizeof(positions), &positions, GL_DYNAMIC_DRAW); // bind a {2} bytes memory area to the currently bound array({1}) buffer; write {2} bytes reading from {3}; usage hints are passed in {4}
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(vec2), (const void *)0);
+    //the vertex array contains vertices with the following attribs:
+    glEnableVertexAttribArray(0); //enable the attrib 0({1}) (can be done after call to glVertexAttribPointer i think)
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(vec2), (const void *)0); //at index 0({1}), 2({2}) floats({3}); they do not({4}) need normalization; {5} is the size of each vertex, {6} is the offset of this attrib from the start of the vertex
 
     uint shader = create_shader(scluk::read_file("shader/vert.glsl"), scluk::read_file("shader/frag.glsl"));
     glUseProgram(shader);
@@ -61,7 +63,7 @@ int main() try {
 
 
         glClear(GL_COLOR_BUFFER_BIT);
-        glDrawArrays(GL_TRIANGLES, 0, positions.size());
+        glDrawArrays(GL_TRIANGLES, 0, positions.size()); // render triangle primitives ({1}) from the bound array buffer, from index {2} read {3} elements
 
         window.swap_buffers();
         window.poll_events();
