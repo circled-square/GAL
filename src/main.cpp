@@ -13,7 +13,7 @@ using namespace scluk;
 using namespace glm;
 using std::numbers::pi;
 int main() try {
-    glfw::window window({640, 640}, "Hello World");
+    glfw::window window({640, 640}, "Hello OpenGL");
 
     if(glewInit() != GLEW_OK)
         throw scluk::runtime_error("GLEW failed to initialize!");
@@ -36,15 +36,17 @@ int main() try {
     glNamedBufferData(vbo, sizeof(positions), &positions, GL_DYNAMIC_DRAW); // bind a {2} bytes memory area to the currently bound array({1}) buffer; write {2} bytes reading from {3}; usage hints are passed in {4}
 
     //the vertex array contains vertices with the following attribs:
-    glBindVertexArray(vao);
-    glBindVertexBuffer(0, vbo, 0, sizeof(vec2)); //bind {2} as the {1}th vbo to the active vao, starting from {3} within the buffer. the stride between vertices is {4}
-    glEnableVertexAttribArray(0); //enable the attrib 0({1}) (can be done after call to glVertexAttribPointer I think)
-    glVertexAttribFormat(0, 2, GL_FLOAT, GL_FALSE, 0); //the attrib 0({1}) is 2({2}) floats({3}); they do not({4}) need normalization; {5} is the offset of this attrib from the start of the vertex. This data references the bound vbo and is stored in the bound vao
-    glVertexAttribBinding(0, 0); // bind the attrib {1} to the {2}th vbo of the active vao
+    int vao_vbo_bind_index = 0;
+    int attrib_index = 0;
+    glVertexArrayVertexBuffer(vao, vao_vbo_bind_index, vbo, attrib_index, sizeof(vec2)); //bind {3} as the {2}th vbo to the vao {1}, starting from {4} within the buffer. the stride between vertices is {5}
+    glEnableVertexArrayAttrib(vao, attrib_index); //enable the attrib {2} for the vao {1} (can be done after call to glVertexAttribPointer I think)
+    glVertexArrayAttribFormat(vao, attrib_index, 2, GL_FLOAT, GL_FALSE, 0); //the {1} vao's attrib 0({2}) is 2({3}) floats({4}); they do not({5}) need normalization; {6} is the offset of the attrib from the start of the vertex.
+    glVertexArrayAttribBinding(vao, attrib_index, vao_vbo_bind_index); // bind the attrib {2} to the {3}th vbo of the vao {1}
 
     uint ibo; //index buffer object
     glCreateBuffers(1, &ibo); //create {1} ibo; put the id in {2}
     glNamedBufferData(ibo, sizeof(indices), &indices, GL_STATIC_DRAW); // bind a {2} bytes memory area to the currently bound ibo ({1}); write {2} bytes reading from {3}; usage hints are passed in {4}
+    glVertexArrayElementBuffer(vao, ibo); // bind the ibo {2} to the vao {1}
 
     gl::shader_program shader(read_file("shader/vert.glsl"), read_file("shader/frag.glsl"));
     shader.set_uniform("u_color", vec4(.8, .4, .4, 1.0));
@@ -64,7 +66,7 @@ int main() try {
         for (int i: index(positions)) {
             const f32 theta = seconds + pi / 2.0f * i;
 
-            const f32 mod = .8f;
+            const f32 mod = 1.0f/sqrt(2.0f);
             auto &p = positions[i];
 
             p.x = mod * std::sin(theta);
@@ -72,17 +74,13 @@ int main() try {
         }
 
         glNamedBufferData(vbo, sizeof(positions), &positions, GL_DYNAMIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0); //vbo needn't be bound for the draw, unlike vba
-
 
         glClear(GL_COLOR_BUFFER_BIT);
 
         shader.use();
         glBindVertexArray(vao);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo); //"select" {2} and treat it as an ibo ({1})
-        glDrawElements(GL_TRIANGLES, 2*3, GL_UNSIGNED_INT, nullptr); //draw triangles({1}), read {2} elements of type {3} either from {4} or, if {4} is null from the bound GL_ELEMENT_ARRAY_BUFFER
+        glDrawElements(GL_TRIANGLES, 2*3, GL_UNSIGNED_INT, 0); //draw triangles({1}), read {2} elements of type {3} starting from the {4}th from the bound GL_ELEMENT_ARRAY_BUFFER
         glBindVertexArray(0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
         window.swap_buffers();
         window.poll_events();
