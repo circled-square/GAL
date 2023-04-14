@@ -28,24 +28,26 @@ int main() try {
         {2, 3, 0}
     });
 
-    uint buffer;
-    //init the buffer in VRAM
-    glGenBuffers(1, &buffer); //generate {1} buffer; put the id in {2}
-    glBindBuffer(GL_ARRAY_BUFFER, buffer); //"select" {2} and treat it as an array ({1})
-    glBufferData(GL_ARRAY_BUFFER, sizeof(positions), &positions, GL_DYNAMIC_DRAW); // bind a {2} bytes memory area to the currently bound array({1}) buffer; write {2} bytes reading from {3}; usage hints are passed in {4}
+    uint vao; //vertex array object: associates a vertex buffer with the layout of its vertices
+    glCreateVertexArrays(1, &vao);
+
+    uint vbo;
+    glCreateBuffers(1, &vbo); //create {1} vbo; put the id in {2}
+    glNamedBufferData(vbo, sizeof(positions), &positions, GL_DYNAMIC_DRAW); // bind a {2} bytes memory area to the currently bound array({1}) buffer; write {2} bytes reading from {3}; usage hints are passed in {4}
 
     //the vertex array contains vertices with the following attribs:
+    glBindVertexArray(vao);
+    glBindVertexBuffer(0, vbo, 0, sizeof(vec2)); //bind {2} as the {1}th vbo to the active vao, starting from {3} within the buffer. the stride between vertices is {4}
     glEnableVertexAttribArray(0); //enable the attrib 0({1}) (can be done after call to glVertexAttribPointer I think)
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(vec2), (const void *)0); //at index 0({1}), 2({2}) floats({3}); they do not({4}) need normalization; {5} is the size of each vertex, {6} is the offset of this attrib from the start of the vertex
+    glVertexAttribFormat(0, 2, GL_FLOAT, GL_FALSE, 0); //the attrib 0({1}) is 2({2}) floats({3}); they do not({4}) need normalization; {5} is the offset of this attrib from the start of the vertex. This data references the bound vbo and is stored in the bound vao
+    glVertexAttribBinding(0, 0); // bind the attrib {1} to the {2}th vbo of the active vao
 
     uint ibo; //index buffer object
-    //init the ibo in VRAM
-    glGenBuffers(1, &ibo); //generate {1} ibo; put the id in {2}
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo); //"select" {2} and treat it as an array ({1})
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_STATIC_DRAW); // bind a {2} bytes memory area to the currently bound ibo ({1}); write {2} bytes reading from {3}; usage hints are passed in {4}
+    glCreateBuffers(1, &ibo); //create {1} ibo; put the id in {2}
+    glNamedBufferData(ibo, sizeof(indices), &indices, GL_STATIC_DRAW); // bind a {2} bytes memory area to the currently bound ibo ({1}); write {2} bytes reading from {3}; usage hints are passed in {4}
 
     gl::shader_program shader(read_file("shader/vert.glsl"), read_file("shader/frag.glsl"));
-    shader.use();
+    shader.set_uniform("u_color", vec4(.8, .4, .4, 1.0));
 
     bool keep_going = true;
     window.set_key_cb([&](glfw::window_t, int k, int, int, int) { 
@@ -58,7 +60,7 @@ int main() try {
     while (!window.should_close() && keep_going) {
         const f32 seconds = std::chrono::duration<f32, std::ratio<1>>(std::chrono::high_resolution_clock::now()- start).count();
 
-
+        //rotate the vertices
         for (int i: index(positions)) {
             const f32 theta = seconds + pi / 2.0f * i;
 
@@ -69,13 +71,18 @@ int main() try {
             p.y = mod * std::cos(theta);
         }
 
-        glBindBuffer(GL_ARRAY_BUFFER, buffer);                                                   
-        glBufferData(GL_ARRAY_BUFFER, sizeof(positions), &positions, GL_DYNAMIC_DRAW);
+        glNamedBufferData(vbo, sizeof(positions), &positions, GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0); //vbo needn't be bound for the draw, unlike vba
 
 
         glClear(GL_COLOR_BUFFER_BIT);
-        //glDrawArrays(GL_TRIANGLES, 0, positions.size() * 3); // render triangle primitives ({1}) from the bound array ibo, from index {2} read {3} elements
-        glDrawElements(GL_TRIANGLES, 2*3, GL_UNSIGNED_INT, nullptr); //{1} like above, read {2} elements of type {3} either from {4} or if it is null from the bound GL_ELEMENT_ARRAY_BUFFER
+
+        shader.use();
+        glBindVertexArray(vao);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo); //"select" {2} and treat it as an ibo ({1})
+        glDrawElements(GL_TRIANGLES, 2*3, GL_UNSIGNED_INT, nullptr); //draw triangles({1}), read {2} elements of type {3} either from {4} or, if {4} is null from the bound GL_ELEMENT_ARRAY_BUFFER
+        glBindVertexArray(0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
         window.swap_buffers();
         window.poll_events();
