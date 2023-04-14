@@ -1,5 +1,0 @@
-/home/billy/Code/GLstuff/src/cmake-build-debug/CMakeFiles/glfw_wrapper.dir
-/home/billy/Code/GLstuff/src/cmake-build-debug/CMakeFiles/shader_manager.dir
-/home/billy/Code/GLstuff/src/cmake-build-debug/CMakeFiles/main.dir
-/home/billy/Code/GLstuff/src/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/billy/Code/GLstuff/src/cmake-build-debug/CMakeFiles/rebuild_cache.dir
