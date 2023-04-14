@@ -1,0 +1,56 @@
+//
+// Created by billy on 4/14/23.
+//
+
+#include "error_handling.hpp"
+#include <GL/glew.h>
+#include <scluk/format.hpp>
+
+namespace gl {
+    void handle_errors(GLenum source, GLenum type, GLuint msg_id, GLenum severity, int len, const char *msg, const void *user_param);
+
+    void initialize_error_handling() {
+        glDebugMessageCallback(handle_errors, nullptr); // define a debug message (errors, warnings) callback
+        glEnable(GL_DEBUG_OUTPUT); // openGL will send debug info to the callback we gave it
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS); // it will do so synchronously (should make it easier to find the problem with a debugger)
+        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr,true); // it will match any type ({2}) of msg of any severity ({3}) from any ({1}) source. ({6}=false would make those errors be ignored; {4} and {5} can be used to define specific error ids to ignore/listen to)
+
+        struct ignored_error_t { GLenum src, type; GLuint id; };
+        ignored_error_t ignored_errors[] = {
+                {GL_DEBUG_SOURCE_API, GL_DEBUG_TYPE_OTHER, 131185 }// "Buffer object will use VIDEO memory as the source for buffer object operations"
+        };
+
+        for(auto& err : ignored_errors)
+            glDebugMessageControl(err.src, err.type, GL_DONT_CARE, 1, &err.id, false);
+    }
+
+    void handle_errors(GLenum source, GLenum type, GLuint msg_id, GLenum severity, int len, const char *msg, const void *user_param) {
+        const char *source_str =
+                source == GL_DEBUG_SOURCE_API ? "API" :
+                source == GL_DEBUG_SOURCE_WINDOW_SYSTEM ? "window system" :
+                source == GL_DEBUG_SOURCE_SHADER_COMPILER ? "shader compiler" :
+                source == GL_DEBUG_SOURCE_THIRD_PARTY ? "third party" :
+                source == GL_DEBUG_SOURCE_APPLICATION ? "source application" :
+                source == GL_DEBUG_SOURCE_OTHER ? "other" : "?";
+
+
+        const char *type_str =
+                type == GL_DEBUG_TYPE_ERROR ? "error" :
+                type == GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR ? "deprecated behavior warning" :
+                type == GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR ? "undefined behavior warning" :
+                type == GL_DEBUG_TYPE_PORTABILITY ? "portability issue warning" :
+                type == GL_DEBUG_TYPE_PERFORMANCE ? "performance warning" :
+                type == GL_DEBUG_TYPE_MARKER ? "marker type error" :
+                type == GL_DEBUG_TYPE_PUSH_GROUP ? "push group type error" :
+                type == GL_DEBUG_TYPE_POP_GROUP ? "pop group type error" :
+                type == GL_DEBUG_TYPE_OTHER ? "other type error" : "unknown type error";
+
+        const char *severity_str =
+                severity == GL_DEBUG_SEVERITY_LOW ? "low severity" :
+                severity == GL_DEBUG_SEVERITY_MEDIUM ? "medium severity" :
+                severity == GL_DEBUG_SEVERITY_HIGH ? "high severity" :
+                severity == GL_DEBUG_SEVERITY_NOTIFICATION ? "notification" : "?";
+
+        scluk::out("[% %] source: %, id: %, msg: \"%\"", severity_str, type_str, source_str, msg_id, msg);
+    }
+}

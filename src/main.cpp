@@ -6,17 +6,19 @@
 #include <glm/glm.hpp>
 #include "glfw/window.hpp"
 #include "gl/shader.hpp"
+#include "gl/error_handling.hpp"
 #include <chrono>
 
 using namespace scluk;
 using namespace glm;
 using std::numbers::pi;
-
 int main() try {
     glfw::window window({640, 640}, "Hello World");
 
     if(glewInit() != GLEW_OK)
         throw scluk::runtime_error("GLEW failed to initialize!");
+
+    gl::initialize_error_handling();
 
     out("%", glGetString(GL_VERSION));
 
@@ -27,10 +29,10 @@ int main() try {
     });
 
     uint buffer;
-    //init the ibo in VRAM
-    glGenBuffers(1, &buffer); //generate {1} ibo; put the id in {2}
+    //init the buffer in VRAM
+    glGenBuffers(1, &buffer); //generate {1} buffer; put the id in {2}
     glBindBuffer(GL_ARRAY_BUFFER, buffer); //"select" {2} and treat it as an array ({1})
-    glBufferData(GL_ARRAY_BUFFER, sizeof(positions), &positions, GL_DYNAMIC_DRAW); // bind a {2} bytes memory area to the currently bound array({1}) ibo; write {2} bytes reading from {3}; usage hints are passed in {4}
+    glBufferData(GL_ARRAY_BUFFER, sizeof(positions), &positions, GL_DYNAMIC_DRAW); // bind a {2} bytes memory area to the currently bound array({1}) buffer; write {2} bytes reading from {3}; usage hints are passed in {4}
 
     //the vertex array contains vertices with the following attribs:
     glEnableVertexAttribArray(0); //enable the attrib 0({1}) (can be done after call to glVertexAttribPointer I think)
@@ -40,7 +42,7 @@ int main() try {
     //init the ibo in VRAM
     glGenBuffers(1, &ibo); //generate {1} ibo; put the id in {2}
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo); //"select" {2} and treat it as an array ({1})
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_STATIC_DRAW); // bind a {2} bytes memory area to the currently bound ibo ({1}); write {2} bytes reading from {3}; usage hints are passed in {4}
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_STATIC_DRAW); // bind a {2} bytes memory area to the currently bound ibo ({1}); write {2} bytes reading from {3}; usage hints are passed in {4}
 
     gl::shader_program shader(read_file("shader/vert.glsl"), read_file("shader/frag.glsl"));
     shader.use();
@@ -59,7 +61,6 @@ int main() try {
 
         for (int i: index(positions)) {
             const f32 theta = seconds + pi / 2.0f * i;
-            out("%", theta);
 
             const f32 mod = .8f;
             auto &p = positions[i];
