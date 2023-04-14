@@ -1,7 +1,7 @@
 #include "shader.hpp"
 #include <scluk/language_extension.hpp>
+#include <scluk/exception.hpp>
 #include <GL/glew.h>
-#include <stdexcept>
 #include <vector>
 
 using namespace scluk;
@@ -47,11 +47,24 @@ namespace gl {
         glDeleteShader(vs);
         glDeleteShader(fs);
     }
+    shader_program::~shader_program() {
+        glDeleteProgram(m_gl_program);
+    }
 
     void shader_program::use() {
         glUseProgram(m_gl_program);
     }
-    shader_program::~shader_program() {
-        glDeleteProgram(m_gl_program);
+    int shader_program::get_uniform_location(const char* name) {
+        int ret = glGetUniformLocation(m_gl_program, name);
+        if(ret == -1) throw scluk::runtime_error("could not retrieve uniform with name ", name);
+        return ret;
+    }
+    //overload this as needed
+    void shader_program::set_uniform(int uniform_location, glm::vec4 v) {
+        glProgramUniform4f(m_gl_program, uniform_location, v.x, v.y, v.z, v.w);
+    }
+
+    void shader_program::set_uniform(const char* name, glm::vec4 v) {
+        set_uniform(get_uniform_location(name), v);
     }
 }
