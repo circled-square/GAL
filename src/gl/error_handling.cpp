@@ -1,7 +1,3 @@
-//
-// Created by billy on 4/14/23.
-//
-
 #include "error_handling.hpp"
 #include <GL/glew.h>
 #include <scluk/format.hpp>
