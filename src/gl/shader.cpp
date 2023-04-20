@@ -1,7 +1,9 @@
 #include "shader.hpp"
+#include "types.hpp"
 #include <scluk/exception.hpp>
 #include <GL/glew.h>
 #include <vector>
+#include <scluk/functional.hpp>
 
 using namespace scluk;
 
@@ -53,17 +55,17 @@ namespace gl {
     void shader_program::use() {
         glUseProgram(m_gl_program);
     }
-    int shader_program::get_uniform_location(const char* name) {
-        int ret = glGetUniformLocation(m_gl_program, name);
-        if(ret == -1) throw scluk::runtime_error("could not retrieve uniform with name ", name);
-        return ret;
-    }
-    //overload this as needed
-    void shader_program::set_uniform(int uniform_location, glm::vec4 v) {
-        glProgramUniform4f(m_gl_program, uniform_location, v.x, v.y, v.z, v.w);
-    }
+    int shader_program::get_uniform_location(const std::string& name) {
+        if(auto it = uniform_location_cache.find(name); it != uniform_location_cache.end()) {
+            return it->second;
+        }
 
-    void shader_program::set_uniform(const char* name, glm::vec4 v) {
-        set_uniform(get_uniform_location(name), v);
+        //cache miss
+        int location = glGetUniformLocation(m_gl_program, name.c_str());
+        if(location == -1) throw scluk::runtime_error("could not retrieve uniform with name ", name);
+
+        uniform_location_cache.insert({name, location });
+
+        return location;
     }
 }

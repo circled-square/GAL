@@ -32,7 +32,7 @@ namespace gl {
     template<> struct gl_type_id<types::fixed_point> { static constexpr uint v = GL_FIXED; };
 
 
-    //vec_t<T> wraps any scalar type into its vec<1, T> form, but doesn't wrap T if it is a glm vector
+    //scalar_to_vector<T> wraps any scalar type into its vec<1, T> form, but doesn't wrap T if it is a glm vector
     namespace internal {
         template<typename T> concept glm_vector = requires {
             { T::length() } -> std::convertible_to<size_t>;
@@ -50,6 +50,10 @@ namespace gl {
     
     template<typename T>
     using scalar_to_vector = internal::scalar_to_vector_helper<T>::type;
+
+    //vector_to_scalar<T> transforms any vec<n, T> into T, and returns T if it is a scalar
+    template<typename T>
+    using vector_to_scalar = scalar_to_vector<T>::value_type;
 }
 
 #endif //GLSTUFF_TYPES_HPP

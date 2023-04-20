@@ -5,6 +5,7 @@
 #include "types.hpp"
 #include "vertex_buffer.hpp"
 #include "index_buffer.hpp"
+#include <scluk/format.hpp>
 
 namespace gl {
 
@@ -29,7 +30,7 @@ namespace gl {
             uint type_id = gl::gl_type_id<typename vec::value_type>::v;
             uint size = vec::length();
 
-            //scluk::out("specify single_attrib(attr_index=%, offset=%, type_id=%, size=%)", attrib_index, offset, type_id, size);
+            scluk::out("specify single_attrib(attr_index=%, offset=%, type_id=%, size=%)", attrib_index, offset, type_id, size);
             specify_single_attrib(attrib_index, offset, type_id, size);
 
             attrib_index++;

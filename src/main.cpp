@@ -23,16 +23,25 @@ int main() try {
 
     out("%", glGetString(GL_VERSION));
 
-    array<vec2, 4> positions;
+    struct vertex_t {
+        vec2 pos;
+        float angle = 0.f; // this is not a uniform only for debug purposes
+    };
+    array<vertex_t, 4> vertex_data {
+            vertex_t { { .5, .5} },
+            { { .5, -.5} },
+            { {-.5, -.5} },
+            { {-.5,  .5} }
+    };
     array<uint, 3, 2> indices({
         array<uint, 3>{0, 1, 2},
         {2, 3, 0}
     });
 
-    gl::vertex_array vao{gl::vertex_buffer(positions), gl::index_buffer(indices)};
+    gl::vertex_array vao{gl::vertex_buffer(vertex_data), gl::index_buffer(indices)};
 
 
-    vao.specify_attribs<vec2>();
+    vao.specify_attribs<vec2, float>();
 
     gl::shader_program shader(read_file("shader/vert.glsl"), read_file("shader/frag.glsl"));
     shader.set_uniform("u_color", vec4(.8, .4, .4, 1.0));
@@ -48,25 +57,19 @@ int main() try {
     while (!window.should_close() && keep_going) {
         const f32 seconds = std::chrono::duration<f32, std::ratio<1>>(std::chrono::high_resolution_clock::now()- start).count();
 
-        //rotate the vertices
-        for (int i: index(positions)) {
-            const f32 theta = seconds + pi / 2.0f * i;
-
-            const f32 mod = 1.0f/sqrt(2.0f);
-            auto &p = positions[i];
-
-            p.x = mod * std::sin(theta);
-            p.y = mod * std::cos(theta);
+        //rotate the vertex_data
+        for (auto& v: vertex_data) {
+            v.angle = seconds / 4.0;
         }
 
-        vao.vbo.update(positions);
+        vao.vbo.update(vertex_data);
 
         glClear(GL_COLOR_BUFFER_BIT);
 
         shader.use();
         vao.bind();
         shader.set_uniform("u_color", vec4(.4, .4, .8, 1.0));
-        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (const void*)(3*sizeof(unsigned int))); //draw triangles({1}), read {2} elements of type {3} starting from the {4}th byte from the bound GL_ELEMENT_ARRAY_BUFFER
+        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (const void*)(sizeof(uint) * 3)); //draw triangles({1}), read {2} elements of type {3} starting from the {4}th byte from the bound GL_ELEMENT_ARRAY_BUFFER
         shader.set_uniform("u_color", vec4(.8, .4, .4, 1.0));
         glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (const void*)0); //draw triangles({1}), read {2} elements of type {3} starting from the {4}th byte from the bound GL_ELEMENT_ARRAY_BUFFER
         vao.unbind();
