@@ -9,6 +9,7 @@
 
 namespace gl {
     using scluk::uint;
+    static_assert(sizeof(uint) == sizeof(GLuint), "unsigned int and GLuint do not have the same size");
 
     //make a struct for each of the types that opengl defines as aliases of other types,
     //so they can be treated as distinct types and passed to templates

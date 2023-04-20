@@ -29,11 +29,10 @@ int main() try {
         {2, 3, 0}
     });
 
-    gl::vertex_array vao;
+    gl::vertex_array vao{gl::vertex_buffer(positions), gl::index_buffer(indices)};
 
-    vao.init_vbo(positions);
+
     vao.specify_attribs<vec2>();
-    vao.init_ibo(indices);
 
     gl::shader_program shader(read_file("shader/vert.glsl"), read_file("shader/frag.glsl"));
     shader.set_uniform("u_color", vec4(.8, .4, .4, 1.0));
@@ -60,17 +59,17 @@ int main() try {
             p.y = mod * std::cos(theta);
         }
 
-        vao.init_vbo(positions);
-        //glNamedBufferData(vbo, sizeof(positions), &positions, GL_DYNAMIC_DRAW);
+        vao.vbo.update(positions);
 
         glClear(GL_COLOR_BUFFER_BIT);
 
         shader.use();
         vao.bind();
-        //glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, 2*3, GL_UNSIGNED_INT, 0); //draw triangles({1}), read {2} elements of type {3} starting from the {4}th from the bound GL_ELEMENT_ARRAY_BUFFER
+        shader.set_uniform("u_color", vec4(.4, .4, .8, 1.0));
+        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (const void*)(3*sizeof(unsigned int))); //draw triangles({1}), read {2} elements of type {3} starting from the {4}th byte from the bound GL_ELEMENT_ARRAY_BUFFER
+        shader.set_uniform("u_color", vec4(.8, .4, .4, 1.0));
+        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (const void*)0); //draw triangles({1}), read {2} elements of type {3} starting from the {4}th byte from the bound GL_ELEMENT_ARRAY_BUFFER
         vao.unbind();
-        //glBindVertexArray(0);
 
         window.swap_buffers();
         window.poll_events();

@@ -1,5 +1,4 @@
 #include "shader.hpp"
-#include <scluk/language_extension.hpp>
 #include <scluk/exception.hpp>
 #include <GL/glew.h>
 #include <vector>

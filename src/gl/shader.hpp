@@ -5,6 +5,7 @@
 #include <scluk/language_extension.hpp>
 #include <glm/glm.hpp>
 
+#include <GL/glew.h>
 namespace gl {
     using scluk::uint;
 
@@ -20,6 +21,8 @@ namespace gl {
         //overload this as needed
         void set_uniform(int uniform_location, glm::vec4 v);
         void set_uniform(const char* name, glm::vec4 v);
+
+        int get_id() { return m_gl_program; }
     };
 }
 
