@@ -18,8 +18,8 @@ namespace gl {
         vertex_array(vertex_buffer vbo, index_buffer ibo);
         ~vertex_array();
 
-        void bind(); // bind the vao
-        void unbind(); // unbind the vao
+        void bind() const; // bind the vao
+        void unbind() const; // unbind the vao
 
     private:
         void specify_single_attrib(uint attrib_index, uint offset, uint type, uint size);

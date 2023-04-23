@@ -24,11 +24,13 @@ namespace gl {
         glVertexArrayAttribBinding(m_vao, attrib_index, vao_vbo_bind_index); // bind the attrib {2} to the {3}th vbo of the vao {1}
     }
 
-    void vertex_array::bind() {
+    void vertex_array::bind() const {
         glBindVertexArray(m_vao);
     }
 
-    void vertex_array::unbind() {
+    void vertex_array::unbind() const {
+#ifdef DEBUG_BUILD
         glBindVertexArray(0);
+#endif
     }
 }
