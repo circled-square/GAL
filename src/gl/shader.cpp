@@ -52,11 +52,17 @@ namespace gl {
         glDeleteProgram(m_gl_program);
     }
 
-    void shader_program::use() {
+    void shader_program::bind() const {
         glUseProgram(m_gl_program);
     }
+
+    void shader_program::unbind() const {
+#ifdef DEBUG_BUILD
+        glUseProgram(0);
+#endif
+    }
     int shader_program::get_uniform_location(const std::string& name) {
-        if(auto it = uniform_location_cache.find(name); it != uniform_location_cache.end()) {
+        if(auto it = m_uniform_location_cache.find(name); it != m_uniform_location_cache.end()) {
             return it->second;
         }
 
@@ -64,7 +70,7 @@ namespace gl {
         int location = glGetUniformLocation(m_gl_program, name.c_str());
         if(location == -1) throw scluk::runtime_error("could not retrieve uniform with name ", name);
 
-        uniform_location_cache.insert({name, location });
+        m_uniform_location_cache.insert({name, location });
 
         return location;
     }

@@ -16,12 +16,13 @@ namespace gl {
     //wrapper for a shader program. none of the functions need the shader to be bound
     class shader_program {
         uint m_gl_program;
-        std::unordered_map<std::string, int> uniform_location_cache;
+        std::unordered_map<std::string, int> m_uniform_location_cache;
         static uint compile_shader(uint type, const std::string& source);
     public:
         shader_program(const std::string& vert_shader, const std::string& frag_shader);
         ~shader_program();
-        void use(); //sets the program as active
+        void bind() const; //sets the program as active
+        void unbind() const;
         int get_uniform_location(const std::string& name);
         //overload this as needed
         void set_uniform(const char* name, auto v) {
