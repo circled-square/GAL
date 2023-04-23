@@ -15,7 +15,7 @@ namespace gl {
 
     //wrapper for a shader program. none of the functions need the shader to be bound
     class shader_program {
-        uint m_gl_program;
+        uint m_program_id;
         std::unordered_map<std::string, int> m_uniform_location_cache;
         static uint compile_shader(uint type, const std::string& source);
     public:
@@ -29,13 +29,17 @@ namespace gl {
             set_uniform(get_uniform_location(name), v);
         }
 
-        int get_id() { return m_gl_program; }
+        int get_id() { return m_program_id; }
 
         template<typename T>
         void set_uniform(int uniform_location, T v) {
             //void glProgramUniform4fv(GLuint program, GLint location, GLsizei count, const GLfloat *value);
-            (type_to_uniform_func<T>())(m_gl_program, uniform_location, 1, &v[0]);
+            (type_to_uniform_func<T>())(m_program_id, uniform_location, 1, &v);
         }
+
+#ifdef DEBUG_BUILD
+        uint get_gl_program_id() { return m_program_id; }
+#endif
     private:
         template<typename T>
         static constexpr scluk::fnptr_t<void(uint, int, int, void*)> type_to_uniform_func() {

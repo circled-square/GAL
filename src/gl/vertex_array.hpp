@@ -30,7 +30,9 @@ namespace gl {
             uint type_id = gl::gl_type_id<typename vec::value_type>::v;
             uint size = vec::length();
 
-            scluk::out("specify single_attrib(attr_index=%, offset=%, type_id=%, size=%)", attrib_index, offset, type_id, size);
+#ifdef DEBUG_BUILD
+            scluk::out("specify_single_attrib(attr_index=%, offset=%, type_id=%, size=%)", attrib_index, offset, type_id, size);
+#endif
             specify_single_attrib(attrib_index, offset, type_id, size);
 
             attrib_index++;

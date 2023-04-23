@@ -9,19 +9,22 @@ set(
         CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG_BUILD"
 )
 
+add_library(stb_image_wrapper STATIC stb/image.cpp stb/image.hpp)
 add_library(glfw_wrapper STATIC glfw/window.cpp)
 add_library(gl_error_handling STATIC gl/error_handling.cpp)
 add_library(gl_shader STATIC gl/shader.cpp)
 add_library(gl_buffer STATIC gl/buffer.cpp)
 add_library(gl_renderer STATIC gl/renderer.cpp)
 add_library(gl_vertex_array STATIC gl/vertex_array.cpp)
+add_library(gl_texture STATIC gl/texture.cpp)
 
 add_executable(main main.cpp)
 
 target_include_directories(main PRIVATE ~/.local/include) #scluk is included from here
-target_link_libraries(main ${GLFW3_LIBRARIES})
-target_link_libraries(main ${GLEW_LIBRARIES})
 target_link_libraries(main glfw_wrapper)
+target_link_libraries(main ${GLEW_LIBRARIES})
+target_link_libraries(main stb_image_wrapper)
+target_link_libraries(glfw_wrapper ${GLFW3_LIBRARIES})
 target_link_libraries(main gl_error_handling)
 target_link_libraries(main gl_renderer)
 target_link_libraries(gl_renderer gl_shader)

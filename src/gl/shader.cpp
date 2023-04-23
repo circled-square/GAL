@@ -35,25 +35,25 @@ namespace gl {
     }
 
     shader_program::shader_program(const std::string &vert_shader, const std::string &frag_shader) {
-        this->m_gl_program = glCreateProgram();
+        this->m_program_id = glCreateProgram();
         uint vs = compile_shader(GL_VERTEX_SHADER, vert_shader);
         uint fs = compile_shader(GL_FRAGMENT_SHADER, frag_shader);
 
-        glAttachShader(m_gl_program, vs);
-        glAttachShader(m_gl_program, fs);
+        glAttachShader(m_program_id, vs);
+        glAttachShader(m_program_id, fs);
 
-        glLinkProgram(m_gl_program);
-        glValidateProgram(m_gl_program);
+        glLinkProgram(m_program_id);
+        glValidateProgram(m_program_id);
 
         glDeleteShader(vs);
         glDeleteShader(fs);
     }
     shader_program::~shader_program() {
-        glDeleteProgram(m_gl_program);
+        glDeleteProgram(m_program_id);
     }
 
     void shader_program::bind() const {
-        glUseProgram(m_gl_program);
+        glUseProgram(m_program_id);
     }
 
     void shader_program::unbind() const {
@@ -67,8 +67,8 @@ namespace gl {
         }
 
         //cache miss
-        int location = glGetUniformLocation(m_gl_program, name.c_str());
-        if(location == -1) throw scluk::runtime_error("could not retrieve uniform with name ", name);
+        int location = glGetUniformLocation(m_program_id, name.c_str());
+        if(location == -1) throw scluk::runtime_error("could not retrieve uniform with name %", name);
 
         m_uniform_location_cache.insert({name, location });
 

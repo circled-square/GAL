@@ -2,6 +2,9 @@
 
 layout(location = 0) in vec2 pos;
 layout(location = 1) in float angle;
+layout(location = 2) in vec2 tex_coord;
+
+out vec2 v_tex_coord;
 
 #define PI 3.14159265358979323846264
 
@@ -18,6 +21,7 @@ void main() {
    );
 
    gl_Position = outpos;
+   v_tex_coord = tex_coord;
 }
 
 
