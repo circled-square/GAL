@@ -8,6 +8,7 @@
 #include "gl/error_handling.hpp"
 #include "gl/vertex_array.hpp"
 #include "gl/shader.hpp"
+#include "gl/renderer.hpp"
 #include <chrono>
 
 using namespace scluk;
@@ -44,7 +45,8 @@ int main() try {
     vao.specify_attribs<vec2, float>();
 
     gl::shader_program shader(read_file("shader/vert.glsl"), read_file("shader/frag.glsl"));
-    shader.set_uniform("u_color", vec4(.8, .4, .4, 1.0));
+
+    gl::renderer renderer;
 
     bool keep_going = true;
     window.set_key_cb([&](glfw::window_t, int k, int, int, int) { 
@@ -57,22 +59,19 @@ int main() try {
     while (!window.should_close() && keep_going) {
         const f32 seconds = std::chrono::duration<f32, std::ratio<1>>(std::chrono::high_resolution_clock::now()- start).count();
 
-        //rotate the vertex_data
-        for (auto& v: vertex_data) {
-            v.angle = seconds / 4.0;
-        }
+        //rotate the vertex_data (this of course could just be a uniform but i wanted to experiment with vao.specify_attribs<...>()
+        for (auto& v: vertex_data)
+            v.angle = pi * sin(seconds / 2.0f);
 
         vao.vbo.update(vertex_data);
 
-        glClear(GL_COLOR_BUFFER_BIT);
+        renderer.clear();
 
-        shader.use();
-        vao.bind();
-        shader.set_uniform("u_color", vec4(.4, .4, .8, 1.0));
-        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (const void*)(sizeof(uint) * 3)); //draw triangles({1}), read {2} elements of type {3} starting from the {4}th byte from the bound GL_ELEMENT_ARRAY_BUFFER
         shader.set_uniform("u_color", vec4(.8, .4, .4, 1.0));
-        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (const void*)0); //draw triangles({1}), read {2} elements of type {3} starting from the {4}th byte from the bound GL_ELEMENT_ARRAY_BUFFER
-        vao.unbind();
+        renderer.draw(vao, shader, 0, 1);
+
+        shader.set_uniform("u_color", vec4(.4, .4, .8, 1.0));
+        renderer.draw(vao, shader, 1, 1);
 
         window.swap_buffers();
         window.poll_events();
