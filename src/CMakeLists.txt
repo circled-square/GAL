@@ -5,6 +5,10 @@ pkg_check_modules(GLFW3 REQUIRED glfw3)
 pkg_check_modules(GLEW REQUIRED glew)
 set(CMAKE_CXX_STANDARD 23)
 
+set(
+        CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG_BUILD"
+)
+
 add_library(glfw_wrapper STATIC glfw/window.cpp)
 add_library(gl_error_handling STATIC gl/error_handling.cpp)
 add_library(gl_shader STATIC gl/shader.cpp)
