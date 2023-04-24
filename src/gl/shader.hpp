@@ -4,6 +4,7 @@
 #include "types.hpp"
 
 #include <string>
+#include <array>
 #include <unordered_map>
 #include <scluk/language_extension.hpp>
 #include <scluk/functional.hpp>
@@ -11,6 +12,58 @@
 
 #include <GL/glew.h>
 namespace gl {
+    namespace internal {
+        using uniform_func_t = scluk::fnptr_t<void(uint, int, int, void*)>;
+        using uniform_mat_func_t = scluk::fnptr_t<void(uint, int, int, GLboolean, void*)>;
+
+        template<typename... Ts>
+        using first_of_pack = decltype(std::get<0>(std::declval<std::tuple<Ts...>>()));
+        //a sort of make_array, only working with pointers and returning an array of uniform_func_t
+        template<typename... Ts>
+        static constexpr std::array<void*, sizeof...(Ts)> make_array(Ts... args){
+            return { (void*)args... };
+        };
+        //specialization for scalars and vectors
+        template<typename T>
+        struct type_to_uniform_func__struct {
+            using vec_t = scalar_to_vector<T>;
+            using val_t = vec_t::value_type;
+            static constexpr uint id = gl_type_id<val_t>::v;
+            static constexpr uint vec_size = vec_t::length();
+            static uniform_func_t get() {
+                return (uniform_func_t)(
+                        id == GL_FLOAT ? make_array(glProgramUniform1fv, glProgramUniform2fv, glProgramUniform3fv, glProgramUniform4fv) :
+                        id == GL_DOUBLE ? make_array(glProgramUniform1dv, glProgramUniform2dv, glProgramUniform3dv, glProgramUniform4dv) :
+                        id == GL_INT || id == GL_BOOL ? make_array(glProgramUniform1iv, glProgramUniform2iv, glProgramUniform3iv, glProgramUniform4iv) :
+                        id == GL_UNSIGNED_INT ? make_array(glProgramUniform1uiv, glProgramUniform2uiv, glProgramUniform3uiv, glProgramUniform4uiv) :
+                        make_array(nullptr, nullptr, nullptr, nullptr)
+                )[vec_size - 1];
+            }
+        };
+        template<typename T>
+        uniform_func_t type_to_uniform_func() { return type_to_uniform_func__struct<T>::get(); }
+
+        //specialization for matrices
+        template<typename T>
+        struct type_to_uniform_mat_func__struct {  };
+        template<typename T, int x, int y>
+        struct type_to_uniform_mat_func__struct<glm::mat<x,y,T,glm::defaultp>> {
+            static uniform_mat_func_t get() {
+                return (uniform_mat_func_t)
+                make_array(
+                        nullptr,
+                        make_array(nullptr, glProgramUniformMatrix2fv, glProgramUniformMatrix2x3fv, glProgramUniformMatrix2x4fv)[y - 1],
+                        make_array(nullptr, glProgramUniformMatrix3x2fv, glProgramUniformMatrix3fv, glProgramUniformMatrix3x4fv)[y - 1],
+                        make_array(nullptr, glProgramUniformMatrix4x2fv, glProgramUniformMatrix4x3fv, glProgramUniformMatrix4fv)[y - 1]
+                )[x - 1];
+            }
+        };
+        template<typename T>
+        uniform_mat_func_t type_to_uniform_mat_func() { return type_to_uniform_mat_func__struct<T>::get(); }
+
+
+    }
+
     using scluk::uint;
 
     //wrapper for a shader program. none of the functions need the shader to be bound
@@ -34,34 +87,17 @@ namespace gl {
         template<typename T>
         void set_uniform(int uniform_location, T v) {
             //void glProgramUniform4fv(GLuint program, GLint location, GLsizei count, const GLfloat *value);
-            (type_to_uniform_func<T>())(m_program_id, uniform_location, 1, &v);
+            (internal::type_to_uniform_func<T>())(m_program_id, uniform_location, 1, &v);
+        }
+        template<glm_matrix T>
+        void set_uniform(int uniform_location, T v) {
+            (internal::type_to_uniform_mat_func<T>())(m_program_id, uniform_location, 1, GL_FALSE, &v);
         }
 
 #ifdef DEBUG_BUILD
         uint get_gl_program_id() { return m_program_id; }
 #endif
     private:
-        template<typename T>
-        static constexpr scluk::fnptr_t<void(uint, int, int, void*)> type_to_uniform_func() {
-            using ret_t = scluk::fnptr_t<void(uint, int, int, void*)>;
-            using arr_t = std::array<ret_t, 4>;
-            using vec_t = scalar_to_vector<T>;
-            using val_t = vec_t::value_type;
-            static constexpr uint id = gl_type_id<val_t>::v;
-            static constexpr uint vec_size = vec_t::length();
-
-            const auto array = [](auto a, auto b, auto c, auto d) {
-                return arr_t{ ret_t(a), ret_t(b), ret_t(c), ret_t(d) };
-            };
-            return
-                (
-                    id == GL_FLOAT ? array(glProgramUniform1fv, glProgramUniform2fv, glProgramUniform3fv, glProgramUniform4fv) :
-                    id == GL_DOUBLE ? array(glProgramUniform1dv, glProgramUniform2dv, glProgramUniform3dv, glProgramUniform4dv) :
-                    id == GL_INT || id == GL_BOOL ? array(glProgramUniform1iv, glProgramUniform2iv, glProgramUniform3iv, glProgramUniform4iv) :
-                    id == GL_UNSIGNED_INT ? array(glProgramUniform1uiv, glProgramUniform2uiv, glProgramUniform3uiv, glProgramUniform4uiv) :
-                    array(nullptr, nullptr, nullptr, nullptr)
-                ) [vec_size - 1];
-        }
     };
 }
 

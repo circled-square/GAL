@@ -1,6 +1,6 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>:
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <chrono>
 #include "stb/image.hpp"
@@ -21,7 +21,7 @@ using namespace scluk;
 using namespace glm;
 
 int main() try {
-    glfw::window window({640, 640}, "Hello OpenGL");
+    glfw::window window({800, 600}, "Hello OpenGL");
 
     if(glewInit() != GLEW_OK)
         throw scluk::runtime_error("GLEW failed to initialize!");
@@ -33,6 +33,13 @@ int main() try {
     glEnable(GL_BLEND);
 
     out("%", glGetString(GL_VERSION));
+
+    vec3 model_position = vec3(0,1,0);
+    mat4 model_mat = glm::translate(mat4(1.0f), model_position); //translation, rotation, scale of the model?
+    vec3 cam_position = vec3(-1,0,0);
+    mat4 view_mat = glm::translate(mat4(1.0f), -cam_position); // translation, rotation, scale of the camera
+    mat4 proj_mat = glm::ortho(-2.f, 2.f, -1.5f, 1.5f, -1.f, 1.f); // aspect ratio dependant coordinates -> normalized device coordinates
+    mat4 mvp_mat = proj_mat * view_mat * model_mat;
 
     struct vertex_t {
         vec2 pos;
@@ -58,20 +65,18 @@ int main() try {
 
     gl::renderer renderer;
 
-    bool keep_going = true;
-    window.set_key_cb([&](glfw::window_t, int k, int, int, int) { 
-        keep_going = keep_going && k != GLFW_KEY_ESCAPE;
-    });
-
-
     stb::image img("src/resources/example.png");
     gl::texture tex(img.buffer, img.w, img.h, 4);
     tex.bind();
 
-    int loc = shader.get_uniform_location("u_texture_slot");
-    shader.set_uniform<int>(loc, 0);
+    shader.set_uniform<int>("u_texture_slot", 0);
+    shader.set_uniform("u_mvp", mvp_mat);
 
 
+    bool keep_going = true;
+    window.set_key_cb([&](glfw::window_t, int k, int, int, int) {
+        keep_going = keep_going && k != GLFW_KEY_ESCAPE;
+    });
     auto start = std::chrono::high_resolution_clock::now();
 
     while (!window.should_close() && keep_going) {

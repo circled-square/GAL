@@ -18,7 +18,7 @@ namespace gl {
     }
 
     void vertex_array::specify_single_attrib(uint attrib_index, uint offset, uint type, uint size) {
-        //the vertex array contains vertices with the following attribs:
+        //the vertex make_array contains vertices with the following attribs:
         glEnableVertexArrayAttrib(m_vao, attrib_index); //enable the attrib {2} for the vao {1} (can be done after call to glVertexAttribPointer I think)
         glVertexArrayAttribFormat(m_vao, attrib_index, size, type, GL_FALSE, offset); //the {1} vao's attrib 0({2}) is 2({3}) floats({4}); they do not({5}) need normalization; {6} is the offset of the attrib from the start of the vertex.
         glVertexArrayAttribBinding(m_vao, attrib_index, vao_vbo_bind_index); // bind the attrib {2} to the {3}th vbo of the vao {1}

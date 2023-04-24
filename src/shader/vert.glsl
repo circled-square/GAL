@@ -6,6 +6,8 @@ layout(location = 2) in vec2 tex_coord;
 
 out vec2 v_tex_coord;
 
+uniform mat4 u_mvp; //model view projection matrix
+
 #define PI 3.14159265358979323846264
 
 void main() {
@@ -20,7 +22,8 @@ void main() {
       0, 1
    );
 
-   gl_Position = outpos;
+   gl_Position = u_mvp * outpos;
+   //gl_Position = outpos;
    v_tex_coord = tex_coord;
 }
 
