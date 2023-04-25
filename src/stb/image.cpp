@@ -1,9 +1,5 @@
-//
-// Created by billy on 4/23/23.
-//
-
-#define STB_IMAGE_IMPLEMENTATION
 #include "image.hpp"
+#include <stb/stb_image.h>
 
 namespace stb {
     image::image(const char *filename) {
@@ -14,4 +10,4 @@ namespace stb {
     image::~image() {
         stbi_image_free(buffer);
     }
-} // stb
+}

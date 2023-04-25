@@ -5,7 +5,6 @@
 #ifndef GLSTUFF_IMAGE_HPP
 #define GLSTUFF_IMAGE_HPP
 
-#include <stb/stb_image.h>
 
 namespace stb {
     struct image {
@@ -17,6 +16,6 @@ namespace stb {
         ~image();
     };
 
-} // stb
+} // image
 
 #endif //GLSTUFF_IMAGE_HPP

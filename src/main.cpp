@@ -3,7 +3,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <chrono>
-#include "stb/image.hpp"
 #include <scluk/language_extension.hpp>
 #include <scluk/exception.hpp>
 #include <scluk/array.hpp>
