@@ -10,7 +10,8 @@ pkg_check_modules(GLEW REQUIRED glew)
 add_library(imgui STATIC third_party/imgui/imgui.cpp)
 set(SCLUK_DIR third_party/SCLUK/include/scluk/definition)
 add_library(scluk STATIC ${SCLUK_DIR}/exception.cpp ${SCLUK_DIR}/logging.cpp ${SCLUK_DIR}/math.cpp ${SCLUK_DIR}/range.cpp ${SCLUK_DIR}/string.cpp)
-add_library(stb_image STATIC third_party/stb_image/stb_image.cpp)
+unset(SCLUK_DIR)
+add_library(stb_image STATIC third_party/stb_image.cpp)
 
 add_library(stb_image_wrapper STATIC stb/image.cpp)
 add_library(glfw_wrapper STATIC glfw/window.cpp)
@@ -25,6 +26,8 @@ add_executable(main main.cpp)
 
 target_include_directories(main PRIVATE third_party)
 target_include_directories(main PRIVATE third_party/SCLUK/include)
+target_include_directories(stb_image_wrapper PRIVATE third_party)
+target_include_directories(stb_image PRIVATE third_party)
 
 target_link_libraries(main glfw_wrapper)
 target_link_libraries(glfw_wrapper ${GLFW3_LIBRARIES})
