@@ -7,6 +7,29 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG_BUILD")
 
 pkg_check_modules(GLFW3 REQUIRED glfw3)
 pkg_check_modules(GLEW REQUIRED glew)
+
+##### print stuff #####
+function(print_all_variables)
+    get_cmake_property(_variableNames VARIABLES)
+    list (SORT _variableNames)
+    foreach (_variableName ${_variableNames})
+        if (_variableName MATCHES "glfw" OR _variableName MATCHES "GLFW")
+            message(STATUS "${_variableName}=${${_variableName}}")
+        endif()
+    endforeach()
+    # Get all propreties that cmake supports
+    if(NOT CMAKE_PROPERTY_LIST)
+        execute_process(COMMAND cmake --help-property-list OUTPUT_VARIABLE CMAKE_PROPERTY_LIST)
+
+        # Convert command output into a CMake list
+        string(REGEX REPLACE ";" "\\\\;" CMAKE_PROPERTY_LIST "${CMAKE_PROPERTY_LIST}")
+        string(REGEX REPLACE "\n" ";" CMAKE_PROPERTY_LIST "${CMAKE_PROPERTY_LIST}")
+    endif()
+endfunction()
+
+#print_all_variables()
+##### end print stuff
+
 add_library(imgui STATIC third_party/imgui/imgui.cpp)
 set(SCLUK_DIR third_party/SCLUK/include/scluk/definition)
 add_library(scluk STATIC ${SCLUK_DIR}/exception.cpp ${SCLUK_DIR}/logging.cpp ${SCLUK_DIR}/math.cpp ${SCLUK_DIR}/range.cpp ${SCLUK_DIR}/string.cpp)
