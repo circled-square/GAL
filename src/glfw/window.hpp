@@ -14,6 +14,7 @@ callable from other threads.
 #include <glm/glm.hpp>
 
 namespace glfw {
+    typedef struct GLFWwindow GLFWwindow;
     using window_t = GLFWwindow*;
     class window {
         static std::int64_t window_count;
@@ -21,31 +22,23 @@ namespace glfw {
     public:
         void create(glm::ivec2 res, const std::string& title);
         void destroy();
-        bool should_close     () { return glfwWindowShouldClose(m_window_ptr); }
-        void swap_buffers     () { glfwSwapBuffers(m_window_ptr); }
-        void make_ctx_current () { glfwMakeContextCurrent(m_window_ptr); }
-        bool get_key          (int key) { return glfwGetKey        (m_window_ptr, key) != GLFW_RELEASE; }
-        bool get_mouse_btn    (int btn) { return glfwGetMouseButton(m_window_ptr, btn) != GLFW_RELEASE; }
+        bool should_close();
+        void swap_buffers();
+        void make_ctx_current();
+        bool get_key(int key);
+        bool get_mouse_btn(int btn);
 
-        glm::dvec2 get_cursor_pos() {
-            glm::dvec2 ret;
-            glfwGetCursorPos(m_window_ptr, &ret.x, &ret.y);
-            return ret;
-        }
+        glm::dvec2 get_cursor_pos();
         
-        glm::ivec2 get_framebuf_sz() {
-            glm::ivec2 ret;
-            glfwGetFramebufferSize(m_window_ptr, &ret.x, &ret.y);
-            return ret;
-        }
+        glm::ivec2 get_framebuf_sz();
 
-        void set_resize_cb (GLFWwindowsizefun f) { glfwSetWindowSizeCallback(m_window_ptr, f); }
-        void set_key_cb (GLFWkeyfun f) { glfwSetKeyCallback(m_window_ptr, f); }
+        void set_resize_cb (void (*f)(window_t, int, int));
+        void set_key_cb (void (*f)(window_t, int, int, int, int));
         void set_key_cb (auto f) {
             set_key_cb(scluk::lambda_to_fnptr<void(window_t,int,int,int,int)>(std::move(f)));
         }
         
-        static void  poll_events () { glfwPollEvents(); }
+        static void  poll_events ();
         
         //constructors/destructors that just resort to calling the previous functions + default constructor
         window () : m_window_ptr(nullptr) {}

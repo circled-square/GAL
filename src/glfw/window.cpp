@@ -1,10 +1,7 @@
 #include "window.hpp"
 #include <scluk/exception.hpp>
 #include <source_location>
-
-#ifdef USE_OPENGL
-extern void glViewport(std::int32_t x, std::int32_t y, std::uint32_t w, std::uint32_t h);
-#endif
+#include <GLFW/glfw3.h>
 
 namespace glfw {
     inline auto throw_on_error(auto res, const char* what, std::source_location l = std::source_location::current()) {
@@ -62,6 +59,34 @@ namespace glfw {
             glfwTerminate();
         
         m_window_ptr = nullptr;
+    }
+
+    bool window::should_close() { return glfwWindowShouldClose(m_window_ptr); }
+
+    void window::swap_buffers() { glfwSwapBuffers(m_window_ptr); }
+
+    void window::make_ctx_current() { glfwMakeContextCurrent(m_window_ptr); }
+
+    bool window::get_key(int key) { return glfwGetKey(m_window_ptr, key) != GLFW_RELEASE; }
+
+    bool window::get_mouse_btn(int btn) { return glfwGetMouseButton(m_window_ptr, btn) != GLFW_RELEASE; }
+
+    void window::set_resize_cb(GLFWwindowsizefun f) { glfwSetWindowSizeCallback(m_window_ptr, f); }
+
+    void window::set_key_cb(GLFWkeyfun f) { glfwSetKeyCallback(m_window_ptr, f); }
+
+    void window::poll_events() { glfwPollEvents(); }
+
+    glm::dvec2 window::get_cursor_pos() {
+        glm::dvec2 ret;
+        glfwGetCursorPos(m_window_ptr, &ret.x, &ret.y);
+        return ret;
+    }
+
+    glm::ivec2 window::get_framebuf_sz() {
+        glm::ivec2 ret;
+        glfwGetFramebufferSize(m_window_ptr, &ret.x, &ret.y);
+        return ret;
     }
 }
 
