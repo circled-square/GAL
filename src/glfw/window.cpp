@@ -46,6 +46,7 @@ namespace glfw {
         });
         #endif
         glfwMakeContextCurrent(m_window_ptr);
+        glfwSwapInterval(1); // Enable vsync
 
         window::window_count++;
     }

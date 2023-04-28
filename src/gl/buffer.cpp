@@ -11,10 +11,8 @@ namespace gl {
 
     }
     buffer::buffer(buffer &&o) noexcept {
-        uint old_id = m_buf_id;
         m_buf_id = o.m_buf_id;
-        o.m_buf_id = old_id;
-        o.~buffer();
+        o.m_buf_id = 0;
     }
     buffer::~buffer() {
         if(m_buf_id) {

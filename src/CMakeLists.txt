@@ -26,14 +26,16 @@ function(print_all_variables)
         string(REGEX REPLACE "\n" ";" CMAKE_PROPERTY_LIST "${CMAKE_PROPERTY_LIST}")
     endif()
 endfunction()
-
 #print_all_variables()
 ##### end print stuff
 
-add_library(imgui STATIC third_party/imgui/imgui.cpp)
-set(SCLUK_DIR third_party/SCLUK/include/scluk/definition)
-add_library(scluk STATIC ${SCLUK_DIR}/exception.cpp ${SCLUK_DIR}/logging.cpp ${SCLUK_DIR}/math.cpp ${SCLUK_DIR}/range.cpp ${SCLUK_DIR}/string.cpp)
-unset(SCLUK_DIR)
+#set(IMGUI_FILES "third_party/imgui/imgui.cpp" "third_party/imgui/imgui_demo.cpp" "third_party/imgui/imgui_draw.cpp" "third_party/imgui/imgui_tables.cpp" "third_party/imgui/imgui_widgets.cpp")
+file(GLOB IMGUI_FILES "third_party/imgui/*.cpp")
+set(IMGUI_BACKENDS_FILES "third_party/imgui/backends/imgui_impl_glfw.cpp" "third_party/imgui/backends/imgui_impl_opengl3.cpp")
+add_library(imgui STATIC ${IMGUI_FILES} ${IMGUI_BACKENDS_FILES})
+
+file(GLOB_RECURSE SCLUK_FILES "third_party/SCLUK/include/scluk/definition/*.cpp")
+add_library(scluk STATIC ${SCLUK_FILES})
 add_library(stb_image STATIC third_party/stb_image.cpp)
 
 add_library(stb_image_wrapper STATIC stb/image.cpp)
@@ -48,6 +50,7 @@ add_library(gl_texture STATIC gl/texture.cpp)
 add_executable(main main.cpp)
 
 target_include_directories(main PRIVATE third_party)
+target_include_directories(imgui PUBLIC third_party/imgui) # imgui internally expects this
 target_include_directories(main PRIVATE third_party/SCLUK/include)
 target_include_directories(stb_image_wrapper PRIVATE third_party)
 target_include_directories(stb_image PRIVATE third_party)

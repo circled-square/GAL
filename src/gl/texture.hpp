@@ -11,9 +11,9 @@
 namespace gl {
     class texture {
         uint m_texture_id;
-        int m_width, m_height, m_bits_per_pixel;
+        int m_width, m_height, m_bytes_per_pixel;
     public:
-        texture(const void* buffer, int w, int h, int bits_per_pixel);
+        texture(const void* buffer, int w, int h, int bytes_per_pixel);
         ~texture();
 
         void set_texture_data(const void* buffer);

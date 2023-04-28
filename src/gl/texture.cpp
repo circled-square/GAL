@@ -6,8 +6,8 @@
 
 namespace gl {
 
-    texture::texture(const void *buffer, int w, int h, int bits_per_pixel)
-            : m_texture_id(0), m_width(w), m_height(h), m_bits_per_pixel(bits_per_pixel) {
+    texture::texture(const void *buffer, int w, int h, int bytes_per_pixel)
+            : m_texture_id(0), m_width(w), m_height(h), m_bytes_per_pixel(bytes_per_pixel) {
         glCreateTextures(GL_TEXTURE_2D, 1, &m_texture_id);
 
         //obligatory parameters
