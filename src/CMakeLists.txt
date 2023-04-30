@@ -49,11 +49,8 @@ add_library(gl_texture STATIC gl/texture.cpp)
 
 add_executable(main main.cpp)
 
-target_include_directories(main PRIVATE third_party)
-target_include_directories(imgui PUBLIC third_party/imgui) # imgui internally expects this
-target_include_directories(main PRIVATE third_party/SCLUK/include)
-target_include_directories(stb_image_wrapper PRIVATE third_party)
-target_include_directories(stb_image PRIVATE third_party)
+include_directories(third_party/SCLUK/include third_party)
+target_include_directories(imgui PUBLIC third_party/imgui) # imgui internally expects this; it's public because if any other stuff includes imgui it needs to include this or else it will get errors for all the '#include "imgui.h"' imgui contains
 
 target_link_libraries(main glfw_wrapper)
 target_link_libraries(glfw_wrapper ${GLFW3_LIBRARIES})
