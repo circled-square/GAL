@@ -58,7 +58,11 @@ int main() try {
         vec2 pos;
         f32 angle = 0.f; // this is not a uniform only for debug purposes
         vec2 tex_coord;
+
+        using layout_t = decltype(gl::vertex_layout(pos, angle, tex_coord));
     };
+
+
     array<vertex_t, 4> vertex_data {
             vertex_t
             { { .5,  .5}, 0, {1., 1.} },
@@ -71,8 +75,7 @@ int main() try {
         {2, 3, 0}
     });
 
-    gl::vertex_array vao{gl::vertex_buffer(vertex_data), gl::index_buffer(indices)};
-    vao.specify_attribs<vec2, f32, vec2>();
+    gl::vertex_array vao = gl::vertex_array::make<vertex_t>(gl::vertex_buffer(vertex_data), gl::index_buffer(indices));
 
     gl::shader_program shader(read_file("src/shader/vert.glsl"), read_file("src/shader/frag.glsl"));
 
