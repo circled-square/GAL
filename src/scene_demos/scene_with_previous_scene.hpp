@@ -4,7 +4,7 @@
 #include "../scene_loader/scene_loader.hpp"
 
 
-// scene_with_previous_scene is a thin wrapper over scene which shows an imgui window with a button to go back to the previous scene
+// scene_with_previous_scene is a thin wrapper over scene which shows an imgui window with a button to go back to the previous scene; useful especially to go back to the menu_demo after visualizing a demo
 
 
 namespace scene_demos {

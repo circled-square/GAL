@@ -67,8 +67,11 @@ target_link_libraries(scene_with_previous_scene scene imgui)
 add_library(mul_obj_draw_demo STATIC scene_demos/mul_obj_draw_demo.cpp)
 target_link_libraries(mul_obj_draw_demo scene_with_previous_scene imgui)
 
+add_library(clear_color_demo STATIC scene_demos/clear_color_demo.cpp)
+target_link_libraries(clear_color_demo scene_with_previous_scene imgui)
+
 add_library(menu_demo STATIC scene_demos/menu_demo.cpp)
 target_link_libraries(menu_demo scene scene_with_previous_scene imgui)
 
 add_executable(main main.cpp)
-target_link_libraries(main scluk glfw_wrapper imgui gl_initialize_opengl scene_loader menu_demo mul_obj_draw_demo)
+target_link_libraries(main scluk glfw_wrapper imgui gl_initialize_opengl scene_loader menu_demo mul_obj_draw_demo clear_color_demo)

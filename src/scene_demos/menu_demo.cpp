@@ -5,11 +5,7 @@
 
 namespace scene_demos {
     menu_demo::menu_demo(std::vector<named_scene> scene_vector)
-            : m_scene_vector(std::move(scene_vector)) {
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glBlendEquation(GL_FUNC_ADD);
-        glEnable(GL_BLEND);
-    }
+            : m_scene_vector(std::move(scene_vector)) {}
 
     void menu_demo::update(float delta) {}
 
@@ -17,13 +13,13 @@ namespace scene_demos {
         m_renderer.clear();
 
         {
-            ImGui::Begin("Scene Menu");                          // Create a window called "Hello, world!" and append into it.
+            ImGui::Begin("Scene Menu");
 
             for(named_scene& s : m_scene_vector) {
                 if(ImGui::Button(s.name.c_str())) {
-                    scene_with_previous_scene& new_scene = dynamic_cast<scene_with_previous_scene&>(*s.scene);
-
-                    new_scene.set_prev_scene(this->change_scene(s.scene.get()));
+                    m_current_scene.reset(s.scene_constructor());
+                    this->change_scene(m_current_scene.get());
+                    m_current_scene->set_prev_scene(this);
                 }
             }
 
@@ -32,4 +28,22 @@ namespace scene_demos {
         }
     }
 
+    void menu_demo::reheat() {
+        m_current_scene.reset(); // destroy the current scene as soon as this one is reheated
+
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendEquation(GL_FUNC_ADD);
+        glEnable(GL_BLEND);
+        m_renderer.set_clear_color(glm::vec4(0,0.1,0,1));
+    }
+
+    menu_demo::menu_demo() : menu_demo(std::vector<named_scene>()) {}
+
+    void menu_demo::add_scene(named_scene s) {
+        m_scene_vector.push_back(std::move(s));
+    }
+
+    void menu_demo::add_scene(named_scene::scene_ctor_t scene_ctor, std::string name) {
+        add_scene({scene_ctor, std::move(name)});
+    }
 }

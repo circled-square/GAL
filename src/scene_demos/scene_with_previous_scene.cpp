@@ -6,8 +6,9 @@ namespace scene_demos {
         if(m_previous_scene) {
             ImGui::Begin("Go back to previous scene?");
 
-            if(ImGui::Button("Yes, take me back"))
+            if(ImGui::Button("Yes, take me back")) {
                 change_scene(m_previous_scene);
+            }
 
             ImGui::End();
         }

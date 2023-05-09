@@ -10,6 +10,7 @@ namespace scene_loader {
             : m_window(window),
               m_active_scene(active_scene) {
         m_active_scene->m_scene_loader = this;
+        m_active_scene->reheat();
     }
 
     scene* scene_loader::set_active_scene(scene* new_scene) {
@@ -18,6 +19,9 @@ namespace scene_loader {
 
         m_active_scene->m_scene_loader = this;
         old_active_scene->m_scene_loader = nullptr;
+
+        old_active_scene->freeze();
+        m_active_scene->reheat();
 
         return old_active_scene;
     }

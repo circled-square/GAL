@@ -11,9 +11,12 @@ namespace scene_loader {
         scene_loader* m_scene_loader; // this is private: the only reason it is ever used is to change the active scene, and subclasses should do that through change_scene()
     public:
         scene();
-        virtual ~scene();
-        virtual void update(float delta) = 0;
+        virtual ~scene() = default;
+        virtual void update(float delta) {}
         virtual void render() = 0;
+
+        virtual void freeze() {}
+        virtual void reheat() {}
 
         //this causes this object to be destroyed, unless "someone" takes ownership of it
         scene* change_scene(scene* s);

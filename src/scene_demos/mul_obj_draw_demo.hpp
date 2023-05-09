@@ -28,11 +28,11 @@ namespace scene_demos {
     public:
         mul_obj_draw_demo();
 
-        ~mul_obj_draw_demo() override = default;
-    
         void update(float delta) final;
 
         void render() final;
+
+        void reheat() final;
     };
 };
 

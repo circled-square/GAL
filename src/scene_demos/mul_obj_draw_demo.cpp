@@ -39,15 +39,7 @@ namespace scene_demos {
           proj_mat(make_proj_matrix(vec2(4,3))),
           mvp_mat_1(proj_mat * view_mat * model_mat_1),
           mvp_mat_2(proj_mat * view_mat * model_mat_2)
-    {
-        int texture_slot = 0;
-        tex.bind(texture_slot);
-        shader.set_uniform<int>("u_texture_slot", texture_slot);
-
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glBlendEquation(GL_FUNC_ADD);
-        glEnable(GL_BLEND);
-    }
+    {}
 
     mat4 mul_obj_draw_demo::make_model_matrix(vec3 pos, float rotation, float scale_factor) {
         vec3 z_axis = vec3(0, 0, 1);
@@ -117,6 +109,18 @@ namespace scene_demos {
 
         //render the "take me back" menu window
         scene_with_previous_scene::render();
+    }
+
+    void mul_obj_draw_demo::reheat() {
+
+        renderer.set_clear_color(vec4(0,0,0,1));
+        int texture_slot = 0;
+        tex.bind(texture_slot);
+        shader.set_uniform<int>("u_texture_slot", texture_slot);
+
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendEquation(GL_FUNC_ADD);
+        glEnable(GL_BLEND);
     }
 
 }
