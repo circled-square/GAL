@@ -12,6 +12,7 @@ namespace gl {
 
     class renderer {
     public:
+        void draw(const vertex_array& vao, const shader_program& shader);
         void draw(const vertex_array& vao, const shader_program& shader, size_t ibo_start, size_t ibo_count);
         void clear();
 

@@ -1,11 +1,12 @@
-#include "error_handling.hpp"
+#include "initialize_opengl.hpp"
 #include <GL/glew.h>
 #include <scluk/format.hpp>
+#include <stdexcept>
 
 namespace gl {
     void handle_errors(GLenum source, GLenum type, GLuint msg_id, GLenum severity, int len, const char *msg, const void *user_param);
 
-    void initialize_error_handling() {
+    static void initialize_error_handling() {
         glDebugMessageCallback(handle_errors, nullptr); // define a debug message (errors, warnings) callback
         glEnable(GL_DEBUG_OUTPUT); // openGL will send debug info to the callback we gave it
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS); // it will do so synchronously (should make it easier to find the problem with a debugger)
@@ -18,6 +19,14 @@ namespace gl {
 
         for(auto& err : ignored_errors)
             glDebugMessageControl(err.src, err.type, GL_DONT_CARE, 1, &err.id, false);
+    }
+
+    void initialize_opengl() {
+        if(glewInit() != GLEW_OK)
+            throw std::runtime_error("GLEW failed to initialize!");
+
+
+        initialize_error_handling();
     }
 
     void handle_errors(GLenum source, GLenum type, GLuint msg_id, GLenum severity, int len, const char *msg, const void *user_param) {

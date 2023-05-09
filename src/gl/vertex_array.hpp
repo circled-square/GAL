@@ -3,13 +3,9 @@
 
 #include <tuple>
 
-#include <GL/glew.h>
 #include "types.hpp"
 #include "vertex_buffer.hpp"
 #include "index_buffer.hpp"
-#ifdef DEBUG_BUILD
-#include <scluk/format.hpp>
-#endif
 
 namespace gl {
 
@@ -47,8 +43,6 @@ namespace gl {
             using vec = gl::scalar_to_vector<T>;
             uint type_id = gl::gl_type_id<typename vec::value_type>::v;
             uint size = vec::length();
-
-            //scluk::out("specify_single_attrib(attr_index=%, offset=%, type_id=%, size=%)", attrib_index, offset, type_id, size);
 
             specify_single_attrib(attrib_index, offset, type_id, size);
 

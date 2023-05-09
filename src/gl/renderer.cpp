@@ -5,6 +5,9 @@
 #include "renderer.hpp"
 
 namespace gl {
+    void renderer::draw(const vertex_array& vao, const shader_program& shader) {
+        draw(vao, shader, 0, vao.ibo.get_triangle_count());
+    }
     void renderer::draw(const vertex_array &vao, const shader_program &shader, size_t ibo_start, size_t ibo_count) {
         shader.bind();
         vao.bind();

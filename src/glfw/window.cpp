@@ -27,10 +27,10 @@ namespace glfw {
         glfwWindowHint(GLFW_BLUE_BITS,    mode->blueBits);
         glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
+
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-//        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 
         if(res.x < 0 || res.y < 0)
             m_window_ptr = glfwCreateWindow(mode->width, mode->height, title.c_str(), monitor, nullptr);
@@ -39,14 +39,13 @@ namespace glfw {
 
         throw_on_error(m_window_ptr, "Unable to create GLFW3 window\n");
 
-        #ifdef USE_OPENGL
-        glfwSetFramebufferSizeCallback(m_window_ptr, [](window_t window, int W, int H) {
+        /*glfwSetFramebufferSizeCallback(m_window_ptr, [](window_t window, int W, int H) {
             glfwMakeContextCurrent(window);
             glViewport(0, 0, W, H); 
-        });
-        #endif
+        });*/
+
         glfwMakeContextCurrent(m_window_ptr);
-        glfwSwapInterval(1); // Enable vsync
+        glfwSwapInterval(0); // Disable vsync: not locking fps gives us better perspective on the performance of the application during development
 
         window::window_count++;
     }
