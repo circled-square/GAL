@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.26)
+
 project(GLstuff LANGUAGES CXX C)
 find_package(PkgConfig)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG_BUILD")
+
 
 pkg_check_modules(GLFW3 REQUIRED glfw3)
 pkg_check_modules(GLEW REQUIRED glew)
