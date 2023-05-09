@@ -38,15 +38,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dce193df-18e1-4320-bd1a-2218126f42f9" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/imgui.ini" beforeDir="false" afterPath="$PROJECT_DIR$/imgui.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/.idea/src.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene_demos/mul_obj_draw_demo.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene_demos/mul_obj_draw_demo.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/build/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,6 +85,11 @@
   }
 }</component>
   <component name="RunManager" selected="CMake Application.main">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="gl_buffer" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="GLstuff" TARGET_NAME="gl_buffer" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -207,7 +204,7 @@
       <option name="presentableId" value="Default" />
       <updated>1683658738189</updated>
       <workItem from="1683658739566" duration="742000" />
-      <workItem from="1683659488145" duration="1000" />
+      <workItem from="1683659488145" duration="258000" />
     </task>
     <servers />
   </component>
