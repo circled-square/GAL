@@ -55,6 +55,8 @@ target_link_libraries(gl_renderer gl_vertex_array gl_shader)
 add_library(gl_texture STATIC gl/texture.cpp)
 target_link_libraries(gl_texture ${GLEW_LIBRARIES})
 
+
+#scene loader
 add_library(scene STATIC scene_loader/scene.cpp)
 target_link_libraries(scene gl_texture gl_renderer stb_image_wrapper imgui) # these libs are not actually used by scene itself
 
@@ -64,14 +66,21 @@ target_link_libraries(scene_loader imgui)
 add_library(scene_with_previous_scene STATIC scene_demos/scene_with_previous_scene.cpp)
 target_link_libraries(scene_with_previous_scene scene imgui)
 
+
+#scene demos
+add_library(menu_demo STATIC scene_demos/menu_demo.cpp)
+target_link_libraries(menu_demo scene scene_with_previous_scene imgui)
+
 add_library(mul_obj_draw_demo STATIC scene_demos/mul_obj_draw_demo.cpp)
 target_link_libraries(mul_obj_draw_demo scene_with_previous_scene imgui)
 
 add_library(clear_color_demo STATIC scene_demos/clear_color_demo.cpp)
 target_link_libraries(clear_color_demo scene_with_previous_scene imgui)
 
-add_library(menu_demo STATIC scene_demos/menu_demo.cpp)
-target_link_libraries(menu_demo scene scene_with_previous_scene imgui)
+add_library(texture_demo STATIC scene_demos/texture_demo.cpp)
+target_link_libraries(texture_demo scene_with_previous_scene imgui)
+
+set(SCENE_DEMOS menu_demo mul_obj_draw_demo clear_color_demo texture_demo)
 
 add_executable(main main.cpp)
-target_link_libraries(main scluk glfw_wrapper imgui gl_initialize_opengl scene_loader menu_demo mul_obj_draw_demo clear_color_demo)
+target_link_libraries(main glfw_wrapper imgui gl_initialize_opengl scene_loader ${SCENE_DEMOS})

@@ -18,6 +18,10 @@ namespace scene_demos {
 
     void clear_color_demo::reheat() {
         m_renderer.set_clear_color(m_color);
+
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendEquation(GL_FUNC_ADD);
+        glEnable(GL_BLEND);
     }
 
     clear_color_demo::clear_color_demo() : m_color(0,0,.1, 0) {}

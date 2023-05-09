@@ -27,18 +27,18 @@ namespace scene_demos {
             {2, 3, 0}
     };
     mul_obj_draw_demo::mul_obj_draw_demo()
-        : vao(gl::vertex_array::make<vertex_t>(gl::vertex_buffer(vertex_data), gl::index_buffer(indices))),
-          shader(read_file("src/shader/mul_obj_draw_demo/vert.glsl"), read_file("src/shader/mul_obj_draw_demo/frag.glsl")),
-          renderer(),
-          img("src/resources/example.png"),
-          tex(img.buffer, img.w, img.h, 4),
+        : m_vao(gl::vertex_array::make<vertex_t>(gl::vertex_buffer(vertex_data), gl::index_buffer(indices))),
+          m_shader(read_file("src/shader/mul_obj_draw_demo/vert.glsl"), read_file("src/shader/mul_obj_draw_demo/frag.glsl")),
+          m_renderer(),
+          m_img("src/resources/example.png"),
+          m_tex(m_img.buffer, m_img.w, m_img.h, 4),
           //compute the mvp matrices
-          model_mat_1(make_model_matrix(vec3(0.,.4,0), 1, .5)),
-          model_mat_2(make_model_matrix(vec3(.3,0,0), 3, .5)),
-          view_mat(make_view_matrix(vec3(0,0,0), 0)),
-          proj_mat(make_proj_matrix(vec2(4,3))),
-          mvp_mat_1(proj_mat * view_mat * model_mat_1),
-          mvp_mat_2(proj_mat * view_mat * model_mat_2)
+          m_model_mat_1(make_model_matrix(vec3(0.,.4,0), 1, .5)),
+          m_model_mat_2(make_model_matrix(vec3(.3,0,0), 3, .5)),
+          m_view_mat(make_view_matrix(vec3(0,0,0), 0)),
+          m_proj_mat(make_proj_matrix(vec2(4,3))),
+          m_mvp_mat_1(m_proj_mat * m_view_mat * m_model_mat_1),
+          m_mvp_mat_2(m_proj_mat * m_view_mat * m_model_mat_2)
     {}
 
     mat4 mul_obj_draw_demo::make_model_matrix(vec3 pos, float rotation, float scale_factor) {
@@ -81,28 +81,27 @@ namespace scene_demos {
         // edit the MVPs...
         vec3 z_axis = vec3(0,0,1);
         float pi = glm::pi<f32>();
-        model_mat_1 = rotate(model_mat_1,  delta * pi / 2, z_axis);
-        model_mat_2 = rotate(model_mat_2, -delta * pi / 2, z_axis);
-        view_mat = rotate(view_mat, delta * pi / 6, z_axis);
-        mvp_mat_1 = proj_mat * view_mat * model_mat_1;
-        mvp_mat_2 = proj_mat * view_mat * model_mat_2;
+        m_model_mat_1 = rotate(m_model_mat_1,  delta * pi / 2, z_axis);
+        m_model_mat_2 = rotate(m_model_mat_2, -delta * pi / 2, z_axis);
+        m_view_mat = rotate(m_view_mat, delta * pi / 6, z_axis);
+        m_mvp_mat_1 = m_proj_mat * m_view_mat * m_model_mat_1;
+        m_mvp_mat_2 = m_proj_mat * m_view_mat * m_model_mat_2;
     }
 
     void mul_obj_draw_demo::render() {
-        renderer.clear();
+        m_renderer.clear();
 
-        shader.set_uniform("u_color", vec4(.8, .4, .4, 1.0));
-        shader.set_uniform("u_mvp", mvp_mat_1);
-        renderer.draw(vao, shader);
+        m_shader.set_uniform("u_color", vec4(.8, .4, .4, 1.0));
+        m_shader.set_uniform("u_mvp", m_mvp_mat_1);
+        m_renderer.draw(m_vao, m_shader);
 
-        shader.set_uniform("u_color", vec4(.4, .4, .8, .5));
-        shader.set_uniform("u_mvp", mvp_mat_2);
-        renderer.draw(vao, shader);
+        m_shader.set_uniform("u_color", vec4(.4, .4, .8, .5));
+        m_shader.set_uniform("u_mvp", m_mvp_mat_2);
+        m_renderer.draw(m_vao, m_shader);
 
 
         {
-            ImGui::Begin("Multiple object draw demo");                          // Create a window called "Hello, world!" and append into it.
-
+            ImGui::Begin("Multiple object draw demo");
             ImGui::Text("Application average %.1f FPS", ImGui::GetIO().Framerate);
             ImGui::End();
         }
@@ -113,10 +112,10 @@ namespace scene_demos {
 
     void mul_obj_draw_demo::reheat() {
 
-        renderer.set_clear_color(vec4(0,0,0,1));
+        m_renderer.set_clear_color(vec4(0,0,0,1));
         int texture_slot = 0;
-        tex.bind(texture_slot);
-        shader.set_uniform<int>("u_texture_slot", texture_slot);
+        m_tex.bind(texture_slot);
+        m_shader.set_uniform<int>("u_texture_slot", texture_slot);
 
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glBlendEquation(GL_FUNC_ADD);

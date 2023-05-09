@@ -13,6 +13,7 @@
     <generated>
       <config projectName="GLstuff" targetName="scluk" />
       <config projectName="GLstuff" targetName="gl_renderer" />
+      <config projectName="GLstuff" targetName="texture_demo" />
       <config projectName="GLstuff" targetName="scene_loader" />
       <config projectName="GLstuff" targetName="scene_with_previous_scene" />
       <config projectName="GLstuff" targetName="stb_image" />
@@ -39,23 +40,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dce193df-18e1-4320-bd1a-2218126f42f9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/scene_demos/clear_color_demo.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/imgui.ini" beforeDir="false" afterPath="$PROJECT_DIR$/imgui.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gl/renderer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/gl/renderer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gl/renderer.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/gl/renderer.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gl/shader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/gl/shader.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene_demos/menu_demo.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene_demos/menu_demo.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene_demos/menu_demo.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene_demos/menu_demo.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene_demos/clear_color_demo.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene_demos/clear_color_demo.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scene_demos/mul_obj_draw_demo.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene_demos/mul_obj_draw_demo.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scene_demos/mul_obj_draw_demo.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene_demos/mul_obj_draw_demo.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene_demos/scene_with_previous_scene.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene_demos/scene_with_previous_scene.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene_demos/scene_with_previous_scene.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene_demos/scene_with_previous_scene.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene_loader/scene.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene_loader/scene.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene_loader/scene.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene_loader/scene.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene_loader/scene_loader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene_loader/scene_loader.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +83,7 @@
     "WebServerToolWindowFactoryState": "false",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "last_opened_file_path": "/home/billy/Code/GLstuff/src/scene_demos",
+    "last_opened_file_path": "/home/billy/Code/GLstuff/src/shader",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -103,6 +94,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/shader" />
       <recent name="$PROJECT_DIR$/src/scene_demos" />
     </key>
   </component>
@@ -202,6 +194,11 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="texture_demo" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="GLstuff" TARGET_NAME="texture_demo" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="CMake Application.clear_color_demo" />
       <item itemvalue="CMake Application.gl_buffer" />
@@ -221,6 +218,7 @@
       <item itemvalue="CMake Application.scluk" />
       <item itemvalue="CMake Application.stb_image" />
       <item itemvalue="CMake Application.stb_image_wrapper" />
+      <item itemvalue="CMake Application.texture_demo" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -232,7 +230,7 @@
       <option name="presentableId" value="Default" />
       <updated>1683658738189</updated>
       <workItem from="1683658739566" duration="742000" />
-      <workItem from="1683659488145" duration="6947000" />
+      <workItem from="1683659488145" duration="9584000" />
     </task>
     <servers />
   </component>
