@@ -6,6 +6,7 @@
 #include <scluk/read_file.hpp>
 
 using namespace glm;
+using scluk::read_file;
 
 namespace scene_demos {
     struct vertex_t {
@@ -27,7 +28,7 @@ namespace scene_demos {
     };
     mul_obj_draw_demo::mul_obj_draw_demo()
         : vao(gl::vertex_array::make<vertex_t>(gl::vertex_buffer(vertex_data), gl::index_buffer(indices))),
-          shader(scluk::read_file("src/shader/mul_obj_draw_demo/vert.glsl"), scluk::read_file("src/shader/mul_obj_draw_demo/frag.glsl")),
+          shader(read_file("src/shader/mul_obj_draw_demo/vert.glsl"), read_file("src/shader/mul_obj_draw_demo/frag.glsl")),
           renderer(),
           img("src/resources/example.png"),
           tex(img.buffer, img.w, img.h, 4),
@@ -39,8 +40,6 @@ namespace scene_demos {
           mvp_mat_1(proj_mat * view_mat * model_mat_1),
           mvp_mat_2(proj_mat * view_mat * model_mat_2)
     {
-        using namespace glm;
-
         int texture_slot = 0;
         tex.bind(texture_slot);
         shader.set_uniform<int>("u_texture_slot", texture_slot);
