@@ -25,13 +25,17 @@ file(GLOB_RECURSE SCLUK_FILES "third_party/SCLUK/include/scluk/definition/*.cpp"
 add_library(scluk STATIC ${SCLUK_FILES})
 target_include_directories(scluk PUBLIC third_party/SCLUK/include)
 
-
 #stb
-add_library(stb_image STATIC third_party/stb_image.cpp)
-target_include_directories(stb_image PUBLIC third_party)
+add_library(stb STATIC third_party/stb.cpp)
+target_include_directories(stb PUBLIC third_party)
+
+#tinygltf
+add_library(tinygltf STATIC third_party/tinygltf.cpp)
+target_link_libraries(tinygltf stb)
+target_include_directories(tinygltf PUBLIC third_party)
 
 add_library(stb_image_wrapper STATIC stb/image.cpp)
-target_link_libraries(stb_image_wrapper stb_image)
+target_link_libraries(stb_image_wrapper stb)
 
 
 #glfw
