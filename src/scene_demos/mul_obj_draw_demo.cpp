@@ -1,5 +1,5 @@
 #include "mul_obj_draw_demo.hpp"
-#include <GL/glew.h>
+#include <glad/glad.h>
 #include <imgui.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <array>

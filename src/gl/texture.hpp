@@ -5,7 +5,7 @@
 #ifndef GLSTUFF_TEXTURE_HPP
 #define GLSTUFF_TEXTURE_HPP
 
-#include <GL/glew.h>
+#include <glad/glad.h>
 #include "types.hpp"
 
 namespace gl {

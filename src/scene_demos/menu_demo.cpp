@@ -1,6 +1,6 @@
 #include "menu_demo.hpp"
 #include "scene_with_previous_scene.hpp"
-#include <GL/glew.h>
+#include <glad/glad.h>
 #include <imgui.h>
 
 namespace scene_demos {

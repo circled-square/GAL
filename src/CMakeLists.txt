@@ -1,19 +1,22 @@
-cmake_minimum_required(VERSION 3.26)
+cmake_minimum_required(VERSION 3.25)
 
 project(GLstuff LANGUAGES CXX C)
-find_package(PkgConfig)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG_BUILD")
 
 
-pkg_check_modules(GLFW3 REQUIRED glfw3)
-pkg_check_modules(GLEW REQUIRED glew)
+add_subdirectory(third_party/glfw)
+include_directories(third_party/glm)
+
+add_library(glad STATIC third_party/glad/src/glad.c)
+target_include_directories(glad PUBLIC third_party/glad/include)
 
 #imgui
 file(GLOB IMGUI_FILES "third_party/imgui/*.cpp")
 set(IMGUI_BACKENDS_FILES "third_party/imgui/backends/imgui_impl_glfw.cpp" "third_party/imgui/backends/imgui_impl_opengl3.cpp")
 add_library(imgui STATIC ${IMGUI_FILES} ${IMGUI_BACKENDS_FILES})
+target_link_libraries(imgui glfw) #for imgui_impl_glfw
 target_include_directories(imgui PUBLIC third_party/imgui) # imgui internally expects this; it's public because if any other stuff includes imgui it needs to include this or else it will get errors for all the '#include "imgui.h"' imgui contains
 
 
@@ -33,18 +36,18 @@ target_link_libraries(stb_image_wrapper stb_image)
 
 #glfw
 add_library(glfw_wrapper STATIC glfw/window.cpp)
-target_link_libraries(glfw_wrapper ${GLFW3_LIBRARIES})
+target_link_libraries(glfw_wrapper glfw scluk)
 
 
 #gl
 add_library(gl_initialize_opengl STATIC gl/initialize_opengl.cpp)
-target_link_libraries(gl_initialize_opengl ${GLEW_LIBRARIES} scluk)
+target_link_libraries(gl_initialize_opengl glad glfw scluk)
 
 add_library(gl_shader STATIC gl/shader.cpp)
-target_link_libraries(gl_shader ${GLEW_LIBRARIES} scluk)
+target_link_libraries(gl_shader glad scluk)
 
 add_library(gl_buffer STATIC gl/buffer.cpp gl/vertex_buffer.cpp gl/index_buffer.cpp) # vertex_buffer and index_buffer are just thin wrappers over buffer
-target_link_libraries(gl_buffer ${GLEW_LIBRARIES})
+target_link_libraries(gl_buffer glad scluk)
 
 add_library(gl_vertex_array STATIC gl/vertex_array.cpp)
 target_link_libraries(gl_vertex_array gl_buffer)
@@ -53,7 +56,7 @@ add_library(gl_renderer STATIC gl/renderer.cpp)
 target_link_libraries(gl_renderer gl_vertex_array gl_shader)
 
 add_library(gl_texture STATIC gl/texture.cpp)
-target_link_libraries(gl_texture ${GLEW_LIBRARIES})
+target_link_libraries(gl_texture glad scluk)
 
 
 #scene loader
@@ -61,7 +64,7 @@ add_library(scene STATIC scene_loader/scene.cpp)
 target_link_libraries(scene gl_texture gl_renderer stb_image_wrapper imgui) # these libs are not actually used by scene itself
 
 add_library(scene_loader STATIC scene_loader/scene_loader.cpp)
-target_link_libraries(scene_loader imgui)
+target_link_libraries(scene_loader imgui scluk)
 
 add_library(scene_with_previous_scene STATIC scene_demos/scene_with_previous_scene.cpp)
 target_link_libraries(scene_with_previous_scene scene imgui)

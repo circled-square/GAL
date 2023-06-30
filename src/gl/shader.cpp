@@ -1,7 +1,6 @@
 #include "shader.hpp"
 #include "types.hpp"
 #include <scluk/exception.hpp>
-#include <GL/glew.h>
 #include <vector>
 
 

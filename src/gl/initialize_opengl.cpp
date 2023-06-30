@@ -1,5 +1,6 @@
 #include "initialize_opengl.hpp"
-#include <GL/glew.h>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h> // glad needs glfwGetProcAddress to initialize
 #include <scluk/format.hpp>
 #include <stdexcept>
 
@@ -22,9 +23,8 @@ namespace gl {
     }
 
     void initialize_opengl() {
-        if(glewInit() != GLEW_OK)
+        if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
             throw std::runtime_error("GLEW failed to initialize!");
-
 
         initialize_error_handling();
     }

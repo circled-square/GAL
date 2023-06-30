@@ -10,7 +10,7 @@
 #include <scluk/functional.hpp>
 #include <glm/glm.hpp>
 
-#include <GL/glew.h>
+#include <glad/glad.h>
 namespace gl {
     namespace internal {
         using uniform_func_t = scluk::fnptr_t<void(uint, int, int, void*)>;

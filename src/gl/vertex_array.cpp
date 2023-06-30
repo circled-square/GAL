@@ -1,5 +1,5 @@
 #include "vertex_array.hpp"
-#include <GL/glew.h>
+#include <glad/glad.h>
 
 namespace gl {
 

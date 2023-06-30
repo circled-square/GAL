@@ -1,7 +1,7 @@
 #ifndef GLSTUFF_TYPES_HPP
 #define GLSTUFF_TYPES_HPP
 
-#include <GL/glew.h>
+#include <glad/glad.h>
 #include <scluk/aliases.hpp>
 #include <type_traits>
 #include <cassert>

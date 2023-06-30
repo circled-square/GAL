@@ -7,3 +7,9 @@
 [submodule "src/third_party/stb"]
 	path = src/third_party/stb
 	url = git@github.com:nothings/stb.git
+[submodule "src/third_party/glfw"]
+	path = src/third_party/glfw
+	url = git@github.com:glfw/glfw.git
+[submodule "src/third_party/glm"]
+	path = src/third_party/glm
+	url = git@github.com:g-truc/glm.git

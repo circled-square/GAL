@@ -1,7 +1,7 @@
 #ifndef GLSTUFF_BUFFER_HPP
 #define GLSTUFF_BUFFER_HPP
 
-#include <GL/glew.h>
+#include <glad/glad.h>
 #include "types.hpp"
 #include <scluk/metaprogramming.hpp>
 
