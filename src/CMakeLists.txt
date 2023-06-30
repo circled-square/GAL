@@ -17,7 +17,7 @@ file(GLOB IMGUI_FILES "third_party/imgui/*.cpp")
 set(IMGUI_BACKENDS_FILES "third_party/imgui/backends/imgui_impl_glfw.cpp" "third_party/imgui/backends/imgui_impl_opengl3.cpp")
 add_library(imgui STATIC ${IMGUI_FILES} ${IMGUI_BACKENDS_FILES})
 target_link_libraries(imgui glfw) #for imgui_impl_glfw
-target_include_directories(imgui PUBLIC third_party/imgui) # imgui internally expects this; it's public because if any other stuff includes imgui it needs to include this or else it will get errors for all the '#include "imgui.h"' imgui contains
+target_include_directories(imgui PUBLIC third_party/imgui)
 
 
 #scluk
@@ -87,7 +87,10 @@ target_link_libraries(clear_color_demo scene_with_previous_scene imgui)
 add_library(texture_demo STATIC scene_demos/texture_demo.cpp)
 target_link_libraries(texture_demo scene_with_previous_scene imgui)
 
-set(SCENE_DEMOS menu_demo mul_obj_draw_demo clear_color_demo texture_demo)
+add_library(gltf_demo STATIC scene_demos/gltf_demo.cpp)
+target_link_libraries(gltf_demo scene_with_previous_scene imgui tinygltf)
+
+set(SCENE_DEMOS menu_demo mul_obj_draw_demo clear_color_demo texture_demo gltf_demo)
 
 add_executable(main main.cpp)
 target_link_libraries(main glfw_wrapper imgui gl_initialize_opengl scene_loader ${SCENE_DEMOS})
