@@ -28,7 +28,7 @@ namespace gl {
             m_buf.update(offset, arr.data(), arr.size() * stride);
         }
 
-        uint get_gl_id();
+        uint get_gl_id() const;
         uint get_triangle_count() const;
     };
 } // gl

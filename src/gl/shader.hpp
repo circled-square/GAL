@@ -73,7 +73,9 @@ namespace gl {
         static uint compile_shader(uint type, const std::string& source);
     public:
         shader_program(const std::string& vert_shader, const std::string& frag_shader);
+        shader_program(shader_program&& o);
         ~shader_program();
+
         void bind() const; //sets the program as active
         void unbind() const;
         int get_uniform_location(const std::string& name);

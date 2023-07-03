@@ -2,6 +2,7 @@
 #define GLSTUFF_VERTEX_ARRAY_HPP
 
 #include <tuple>
+#include <vector>
 
 #include "types.hpp"
 #include "vertex_buffer.hpp"
@@ -9,64 +10,83 @@
 
 namespace gl {
 
-    class vertex_array {
-        static constexpr uint vao_vbo_bind_index = 0; // arbitrary; simply 0 since we will only be using one vbo on this vao
-        uint m_vao;
-        vertex_array(vertex_buffer vbo, index_buffer ibo);
-    public:
-        vertex_buffer vbo;
-        index_buffer ibo;
+    struct vertex_layout {
+        struct vertex_array_attrib { 
+            uint index, offset, type_id, size, vao_vbo_bind_index;
+            bool normalized = false;
+        };
 
-        vertex_array(vertex_array&& o) : m_vao(o.m_vao), vbo(std::move(o.vbo)), ibo(std::move(o.ibo)) {
-            o.m_vao = 0;
-        }
+        size_t vertex_size = 0; //only optionally set
+        std::vector<vertex_array_attrib> attribs;
+    };
+
+    class vertex_array {
+        uint m_vao;
+        std::vector<vertex_buffer> m_vbos;
+        std::vector<index_buffer> m_ibos;
+    public:
+
+        vertex_array(vertex_array&& o);
+        vertex_array(vertex_buffer vbo, index_buffer ibo, vertex_layout layout = vertex_layout());
+        vertex_array(std::vector<vertex_buffer> vbos, std::vector<index_buffer> ibos, vertex_layout layout = vertex_layout());
 
         template<typename vertex_t>
         static vertex_array make(vertex_buffer vbo, index_buffer ibo) {
             static_assert(sizeof(vertex_t) == vertex_t::layout_t::vertex_size(), "the vertex_t type passed to vertex_array::make has a size different than the one advertised by vertex_t::layout_t"); // validate the vertex layout
-            vertex_array ret(std::move(vbo), std::move(ibo));
-            vertex_t::layout_t::specify_attribs(ret);
-
-            return ret;
+            return vertex_array(std::move(vbo), std::move(ibo), vertex_t::layout_t::to_vertex_layout());
         }
 
         ~vertex_array();
 
-        void bind() const; // bind the vao
+        void specify_attrib(uint attrib_index, uint offset, uint type, uint size, uint vao_vbo_bind_index);
+        void specify_attribs(const vertex_layout& layout);
+
+        void bind(uint ibo_index = 0) const; // bind the vao (and the specified ibo)
         void unbind() const; // unbind the vao
 
-    private:
-        void specify_single_attrib(uint attrib_index, uint offset, uint type, uint size);
+        size_t get_triangle_count(uint ibo_index = 0) const;
+        size_t get_ibo_count() const;
+    };
 
+
+
+    template <typename... Ts>
+    struct static_vertex_layout {
+        using tuple_t = std::tuple<Ts...>;
+
+        constexpr static size_t vertex_size() { return sizeof(tuple_t); }
+
+        constexpr static_vertex_layout(Ts...) {} // allows syntax like 'using vertex_t = decltype(static_vertex_layout(pos, normal, tex_coord));'
+
+    private:
         template<typename T>
-        inline void specify_attribs_internal_helper(uint& attrib_index, uint& offset) {
+        static void to_vertex_layout_helper(vertex_layout& layout, uint& index, uint& offset) {
             using vec = gl::scalar_to_vector<T>;
             uint type_id = gl::gl_type_id<typename vec::value_type>::v;
             uint size = vec::length();
+            constexpr uint vao_vbo_bind_index = 0;
 
-            specify_single_attrib(attrib_index, offset, type_id, size);
+            layout.attribs.emplace_back(index, offset, type_id, size, vao_vbo_bind_index);
 
-            attrib_index++;
+            index++;
             offset += sizeof(T);
         }
+
     public:
-        template<typename... Ts>
-        inline void specify_attribs(uint starting_index = 0, uint starting_offset = 0) {
-            (specify_attribs_internal_helper<Ts>(starting_index, starting_offset), ...);
-        }
+        static vertex_layout to_vertex_layout() {
+            vertex_layout layout;
+            layout.attribs.reserve(sizeof...(Ts));
 
-    };
+            uint index = 0, offset = 0;
+            (to_vertex_layout_helper<Ts>(layout, index, offset), ...);
+            size_t vertex_layout_vertex_size = offset; //the size of the vertex is equal to the offset where an additional past-the-last attrib would be located
+            assert(vertex_layout_vertex_size == vertex_size() && "logic error at " __FILE__ ": static_vertex_layout::to_vertex_layout()");
 
-    template <typename... Ts>
-    struct vertex_layout {
-        using tuple_t = std::tuple<Ts...>;
+            layout.vertex_size = vertex_size();
 
-        static void specify_attribs(gl::vertex_array& vao, uint starting_index = 0, uint starting_offset = 0) {
-            vao.specify_attribs<Ts...>(starting_index, starting_offset);
-        }
-        constexpr static size_t vertex_size() { return sizeof(std::tuple<Ts...>); }
+            return layout;
 
-        constexpr vertex_layout(Ts...) {}
+        };
     };
 }
 

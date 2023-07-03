@@ -2,16 +2,25 @@
 #define GLSTUFF_GLTF_DEMO_HPP
 
 #include "../gl/renderer.hpp"
+#include "../gl/vertex_array.hpp"
+#include "../gl/texture.hpp"
+#include "../gl/shader.hpp"
 #include "scene_with_previous_scene.hpp"
 #include <tinygltf/tiny_gltf.h>
 
 namespace scene_demos {
 
+    struct model_t { 
+        gl::vertex_array vao;
+        gl::texture texture;
+        gl::shader_program shader;
+    };
     class gltf_demo : public scene_with_previous_scene {
         gl::renderer m_renderer;
-        //gl::vertex_array m_vao;
-        //gl::shader_program m_shader;
-        tinygltf::Model m_model;
+
+        model_t m_model;
+
+        static model_t make_model();
     public:
         gltf_demo();
         void update(float delta) final;

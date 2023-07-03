@@ -9,12 +9,14 @@ using namespace glm;
 using scluk::read_file;
 
 namespace scene_demos {
-    struct vertex_t {
-        vec2 pos;
-        vec2 tex_coord;
+    inline namespace mul_obj_draw_demo_namespace {
+        struct vertex_t {
+            vec2 pos;
+            vec2 tex_coord;
 
-        using layout_t = decltype(gl::vertex_layout(pos, tex_coord));
-    };
+            using layout_t = decltype(gl::static_vertex_layout(pos, tex_coord));
+        };
+    }
 
     static constexpr std::array<vertex_t, 4> vertex_data {
         vertex_t{ { .5,  .5}, {1., 1.} },

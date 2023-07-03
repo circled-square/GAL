@@ -34,7 +34,7 @@ namespace gl {
         bool operator!() const { return is_null(); }
         operator bool() const { return !is_null(); }
 
-        uint get_gl_id() { return m_buf_id; }
+        uint get_gl_id() const { return m_buf_id; }
     };
 } // gl
 

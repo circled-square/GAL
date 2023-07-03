@@ -11,7 +11,7 @@ namespace gl {
 
     index_buffer::index_buffer(size_t size, buffer_creation_params params) : index_buffer(nullptr, size, params) { }
 
-    uint index_buffer::get_gl_id() { return m_buf.get_gl_id(); }
+    uint index_buffer::get_gl_id() const { return m_buf.get_gl_id(); }
 
     uint index_buffer::get_triangle_count() const { return m_triangle_count; }
 }

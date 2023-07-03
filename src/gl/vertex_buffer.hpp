@@ -3,6 +3,8 @@
 
 #include "buffer.hpp"
 
+#include <array>
+
 namespace gl {
     class vertex_buffer {
         buffer m_buf;
@@ -22,7 +24,7 @@ namespace gl {
             assert(sizeof(typename arr_t::value_type) == m_stride);
             m_buf.update(offset, arr.data(), arr.size() * m_stride);
         }
-        uint get_gl_id();
+        uint get_gl_id() const;
         size_t get_stride() const;
     };
 
