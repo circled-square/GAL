@@ -5,6 +5,7 @@
 #include "../gl/renderer.hpp"
 #include "../scene_loader/scene_loader.hpp"
 #include "scene_with_previous_scene.hpp"
+#include <scluk/exception.hpp>
 
 #include <vector>
 #include <string>
@@ -41,6 +42,17 @@ namespace scene_demos {
         template<class T>
         void add_scene(std::string name) {
             add_scene({ [] -> scene_with_previous_scene* { return new T; }, name });
+        }
+        void activate(const char* scene_name) {
+            for(named_scene& s : m_scene_vector) {
+                if(s.name == scene_name) {
+                    m_current_scene.reset(s.scene_constructor());
+                    this->change_scene(m_current_scene.get());
+                    m_current_scene->set_prev_scene(this);
+                    return;
+                }
+            }
+            throw scluk::runtime_error("menu_demo::activate called with string '%'; no such named scene", scene_name);
         }
 
         menu_demo();

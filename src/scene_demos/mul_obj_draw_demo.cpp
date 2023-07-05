@@ -120,6 +120,8 @@ namespace scene_demos {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glBlendEquation(GL_FUNC_ADD);
         glEnable(GL_BLEND);
+
+        glDisable(GL_DEPTH_TEST);
     }
 
 }

@@ -52,6 +52,7 @@ namespace gl {
     public:
         template<typename... Ts>
         inline void specify_attribs(uint starting_index = 0, uint starting_offset = 0) {
+            //static_assert(sizeof(std::get<0>(std::tuple<Ts...>())) != sizeof(std::get<1>(std::tuple<Ts...>())));
             (specify_attribs_internal_helper<Ts>(starting_index, starting_offset), ...);
         }
 
@@ -59,8 +60,6 @@ namespace gl {
 
     template <typename... Ts>
     struct vertex_layout {
-        using tuple_t = std::tuple<Ts...>;
-
         static void specify_attribs(gl::vertex_array& vao, uint starting_index = 0, uint starting_offset = 0) {
             vao.specify_attribs<Ts...>(starting_index, starting_offset);
         }

@@ -1,5 +1,6 @@
 #include "vertex_array.hpp"
 #include <GL/glew.h>
+#include <scluk/format.hpp>
 
 namespace gl {
 
@@ -17,7 +18,10 @@ namespace gl {
         m_vao = 0;
     }
 
+
     void vertex_array::specify_single_attrib(uint attrib_index, uint offset, uint type, uint size) {
+        scluk::out("attrib index % size % offset %", attrib_index, size, offset);
+
         //the vertex make_array contains vertices with the following attribs:
         glEnableVertexArrayAttrib(m_vao, attrib_index); //enable the attrib {2} for the vao {1} (can be done after call to glVertexAttribPointer I think)
         glVertexArrayAttribFormat(m_vao, attrib_index, size, type, GL_FALSE, offset); //the {1} vao's attrib 0({2}) is 2({3}) floats({4}); they do not({5}) need normalization; {6} is the offset of the attrib from the start of the vertex.

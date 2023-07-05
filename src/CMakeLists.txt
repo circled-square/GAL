@@ -80,7 +80,10 @@ target_link_libraries(clear_color_demo scene_with_previous_scene imgui)
 add_library(texture_demo STATIC scene_demos/texture_demo.cpp)
 target_link_libraries(texture_demo scene_with_previous_scene imgui)
 
-set(SCENE_DEMOS menu_demo mul_obj_draw_demo clear_color_demo texture_demo)
+add_library(3d_demo STATIC scene_demos/3d_demo.cpp)
+target_link_libraries(3d_demo scene_with_previous_scene imgui)
+
+set(SCENE_DEMOS menu_demo mul_obj_draw_demo clear_color_demo texture_demo 3d_demo)
 
 add_executable(main main.cpp)
 target_link_libraries(main glfw_wrapper imgui gl_initialize_opengl scene_loader ${SCENE_DEMOS})

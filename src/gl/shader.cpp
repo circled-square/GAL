@@ -67,7 +67,7 @@ namespace gl {
         //cache miss
         int location = glGetUniformLocation(m_program_id, name.c_str());
         if(location == -1)
-            throw scluk::runtime_error("could not retrieve uniform with name %", name);
+            scluk::out("WARNING: could not retrieve uniform with name %", name);
 
         m_uniform_location_cache.insert({name, location });
 
