@@ -1,7 +1,6 @@
 #define THREE_D_DEMO
 
 #include "3d_demo.hpp"
-#include <GL/glew.h>
 #include <imgui.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <array>
@@ -20,45 +19,47 @@ namespace scene_demos {
         vec3 pos;
         vec2 tex_coord; // vec of floats because it will be used as a variant
 
-        using layout_t = decltype(gl::vertex_layout(pos, tex_coord));
+        using layout_t = decltype(gl::static_vertex_layout(pos, tex_coord));
     };
 
     static constexpr std::array<vertex_t, 8> vertex_data {
-            vertex_t{ { .5,  .5,  .5}, {1., 1.} },
-            { { .5, -.5,  .5}, {0., 1.} },
-            { {-.5,  .5,  .5}, {0., 1.} },
-            { {-.5, -.5,  .5}, {1., 1.} },
+        vertex_t
+        { { .5,  .5,  .5}, {1., 1.} },
+        { { .5, -.5,  .5}, {0., 1.} },
+        { {-.5,  .5,  .5}, {0., 1.} },
+        { {-.5, -.5,  .5}, {1., 1.} },
 
-            { { .5,  .5, -.5}, {1., 0.} },
-            { { .5, -.5, -.5}, {0., 0.} },
-            { {-.5,  .5, -.5}, {0., 0.} },
-            { {-.5, -.5, -.5}, {1., 0.} },
+        { { .5,  .5, -.5}, {1., 0.} },
+        { { .5, -.5, -.5}, {0., 0.} },
+        { {-.5,  .5, -.5}, {0., 0.} },
+        { {-.5, -.5, -.5}, {1., 0.} },
     };
     static constexpr std::array<uvec3, 12> indices {
-            uvec3{0, 1, 2},
-            {2, 3, 1},
+        uvec3
+        {0, 1, 2},
+        {2, 3, 1},
 
-            {4, 5, 6},
-            {6, 7, 5},
+        {4, 5, 6},
+        {6, 7, 5},
 
-            {0, 1, 4},
-            {4, 5, 1},
+        {0, 1, 4},
+        {4, 5, 1},
 
-            {1, 3, 5},
-            {5, 7, 3},
+        {1, 3, 5},
+        {5, 7, 3},
 
-            {2, 3, 6},
-            {6, 7, 3},
+        {2, 3, 6},
+        {6, 7, 3},
 
-            {0, 2, 4},
-            {4, 6, 2},
+        {0, 2, 4},
+        {4, 6, 2},
     };
     three_dimensional_demo::three_dimensional_demo()
         : m_vao(gl::vertex_array::make<vertex_t>(gl::vertex_buffer(vertex_data), gl::index_buffer(indices))),
           m_shader(read_file("src/shader/3d_demo/vert.glsl"), read_file("src/shader/3d_demo/frag.glsl")),
-          m_renderer(),
           m_img("src/resources/example.png"),
           m_tex(m_img.buffer, m_img.w, m_img.h, 4),
+          m_renderer(),
           //compute the mvp matrix
           m_model_mat(make_model_matrix(vec3(0,0 ,-1), pi/2, .25)),
           m_view_mat(make_view_matrix(vec3(0,0,0), -pi/2)),

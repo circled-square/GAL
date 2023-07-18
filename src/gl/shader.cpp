@@ -1,9 +1,7 @@
 #include "shader.hpp"
 #include "types.hpp"
 #include <scluk/exception.hpp>
-#include <GL/glew.h>
 #include <vector>
-
 
 namespace gl {
     uint shader_program::compile_shader(uint type, const std::string &source) {
@@ -21,12 +19,12 @@ namespace gl {
             glGetShaderInfoLog(id, length, &length, gl_message.data());
 
             glDeleteShader(id);
-            std::string error_message = scluk::sout(
-                    "Failed to compile % shader\n\t%",
-                    type == GL_VERTEX_SHADER ? "vertex" : "fragment",
-                    gl_message.data()
+            throw scluk::runtime_error(
+                "Failed to compile % shader\n\t%",
+                type == GL_VERTEX_SHADER ? "vertex" : "fragment",
+                gl_message.data()
             );
-            throw std::runtime_error(error_message);
+
         }
 
         return id;
@@ -46,6 +44,13 @@ namespace gl {
         glDeleteShader(vs);
         glDeleteShader(fs);
     }
+
+    shader_program::shader_program(shader_program&& o) {
+        m_program_id = o.m_program_id;
+        o.m_program_id = 0;
+        m_uniform_location_cache = std::move(o.m_uniform_location_cache);
+    }
+
     shader_program::~shader_program() {
         glDeleteProgram(m_program_id);
     }
@@ -69,7 +74,7 @@ namespace gl {
         if(location == -1)
             scluk::out("WARNING: could not retrieve uniform with name %", name);
 
-        m_uniform_location_cache.insert({name, location });
+        m_uniform_location_cache.insert({ name, location });
 
         return location;
     }

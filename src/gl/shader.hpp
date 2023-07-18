@@ -10,7 +10,7 @@
 #include <scluk/functional.hpp>
 #include <glm/glm.hpp>
 
-#include <GL/glew.h>
+#include <glad/glad.h>
 namespace gl {
     namespace internal {
         using uniform_func_t = scluk::fnptr_t<void(uint, int, int, void*)>;
@@ -73,7 +73,9 @@ namespace gl {
         static uint compile_shader(uint type, const std::string& source);
     public:
         shader_program(const std::string& vert_shader, const std::string& frag_shader);
+        shader_program(shader_program&& o);
         ~shader_program();
+
         void bind() const; //sets the program as active
         void unbind() const;
         int get_uniform_location(const std::string& name);

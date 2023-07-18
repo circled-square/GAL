@@ -28,9 +28,12 @@ namespace glfw {
         glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
 
+	/*
+	//taken care of by glad's generator, only causes problems
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	*/
 
         if(res.x < 0 || res.y < 0)
             m_window_ptr = glfwCreateWindow(mode->width, mode->height, title.c_str(), monitor, nullptr);

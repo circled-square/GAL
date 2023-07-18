@@ -1,7 +1,7 @@
 #ifndef GLSTUFF_BUFFER_HPP
 #define GLSTUFF_BUFFER_HPP
 
-#include <GL/glew.h>
+#include <glad/glad.h>
 #include "types.hpp"
 #include <scluk/metaprogramming.hpp>
 
@@ -34,7 +34,7 @@ namespace gl {
         bool operator!() const { return is_null(); }
         operator bool() const { return !is_null(); }
 
-        uint get_gl_id() { return m_buf_id; }
+        uint get_gl_id() const { return m_buf_id; }
     };
 } // gl
 

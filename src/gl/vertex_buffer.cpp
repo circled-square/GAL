@@ -12,7 +12,7 @@ namespace gl {
     vertex_buffer::vertex_buffer(size_t size, size_t stride, buffer_creation_params params) : vertex_buffer(
             nullptr, size, stride, params) {}
 
-    uint vertex_buffer::get_gl_id() { return m_buf.get_gl_id(); }
+    uint vertex_buffer::get_gl_id() const { return m_buf.get_gl_id(); }
 
     size_t vertex_buffer::get_stride() const { return m_stride; }
 }
