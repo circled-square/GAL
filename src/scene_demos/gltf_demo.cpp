@@ -17,18 +17,15 @@ namespace scene_demos {
         tinygltf::Model model;
         std::string err, warn;
 
-        bool success;
-        if(binary) {
-            success = loader.LoadBinaryFromFile(&model, &err, &warn, path); // for .glb
-        } else {
-            success = loader.LoadASCIIFromFile(&model, &err, &warn, path); // for .gltf
-        }
+        bool success =
+            binary ? loader.LoadBinaryFromFile(&model, &err, &warn, path) // for .glb
+            : loader.LoadASCIIFromFile(&model, &err, &warn, path); // for .gltf
 
         if(!warn.empty())
-          out("Warn: %", warn.c_str());
+            out("Warn: %", warn.c_str());
         
         if(!err.empty())
-          out("Err: %", err.c_str());
+            out("Err: %", err.c_str());
         
         if(!success)
             throw std::runtime_error("Fatal error: Failed to parse glTF");
@@ -44,6 +41,7 @@ namespace scene_demos {
         for(size_t i = 0; i < scene.nodes.size(); i++) {
             assert(scene.nodes[i] >= 0 && scene.nodes[i] < model.nodes.size());
             nodes.push_back(&model.nodes[scene.nodes[i]]);
+            //out("nodes.push_back(&model.nodes[%]); (scene.nodes[%])", scene.nodes[i], i);
         }
 
         while(!nodes.empty()) {
@@ -52,28 +50,40 @@ namespace scene_demos {
 
             if((node.mesh >= 0) && (node.mesh < model.meshes.size())) {
                 meshes.push_back(&model.meshes[node.mesh]);
+                out("mesh.push_back(&model.meshes[%]);", node.mesh);
             }
 
             for(size_t i = 0; i < node.children.size(); i++) {
                 assert((node.children[i] >= 0) && (node.children[i] < model.nodes.size()));
                 nodes.push_back(&model.nodes[node.children[i]]);
+                //out("nodes.push_back(&model.nodes[%]); (node.children[%])", node.children[i], i);
             }
         }
 
         return meshes;
     }
-    static std::vector<gl::vertex_buffer> make_vbos(tinygltf::Model& model) {
+
+
+    static std::tuple<std::vector<gl::vertex_buffer>, std::vector<gl::index_buffer>> make_buffers(tinygltf::Model& model) {
         std::vector<gl::vertex_buffer> vbos;
+        std::vector<gl::index_buffer> ibos;
 
-	    for(size_t i = 0; i < model.bufferViews.size(); i++) {
-            const tinygltf::BufferView& bufferView = model.bufferViews[i];
-            const tinygltf::Buffer& buffer = model.buffers[bufferView.buffer];
+        for(size_t i = 0; i < model.bufferViews.size(); i++) {
+            const tinygltf::BufferView &bufView = model.bufferViews[i];
+            const tinygltf::Buffer &buf = model.buffers[bufView.buffer];
+            out("Buffer& buf = model.buffers[%];", bufView.buffer);
 
-            vbos.emplace_back(&buffer.data[bufferView.byteOffset], bufferView.byteLength, bufferView.byteStride);
-            //for now we shall simply ignore bufferView.target
-	    }
+            if (bufView.target == TINYGLTF_TARGET_ARRAY_BUFFER) {
+                vbos.emplace_back(&buf.data[bufView.byteOffset], bufView.byteLength, bufView.byteStride);
+                out("vbos.emplace_back(&buf.data[%], %, %);", bufView.byteOffset, bufView.byteLength, bufView.byteStride);
+            } else {
+                ibos.emplace_back(reinterpret_cast<const uvec3 *>(&buf.data[bufView.byteOffset]),bufView.byteLength);
+                out("vbos.emplace_back(&buf.data[%], %);", bufView.byteOffset, bufView.byteLength);
+                assert(bufView.byteStride == sizeof(uvec3) || bufView.byteStride == 0);
+            }
+        }
 
-        return vbos;
+        return { std::move(vbos), std::move(ibos) };
     }
 
     static gl::vertex_layout get_meshes_vertex_layout(tinygltf::Model& model, std::vector<tinygltf::Mesh*>& meshes) {
@@ -87,23 +97,23 @@ namespace scene_demos {
                 tinygltf::Primitive primitive = mesh.primitives[i];
                 //tinygltf::Accessor indexAccessor = model.accessors[primitive.indices];
 
-                for(auto& attrib : primitive.attributes) {
-                    tinygltf::Accessor accessor = model.accessors[attrib.second];
-                    int byteStride = accessor.ByteStride(model.bufferViews[accessor.bufferView]);
+                for(auto& [attrib_name, attrib_accessor] : primitive.attributes) {
+                    tinygltf::Accessor accessor = model.accessors[attrib_accessor];
+                    //int byteStride = accessor.ByteStride(model.bufferViews[accessor.bufferView]);
 
-                    int size = accessor.type == TINYGLTF_TYPE_SCALAR ? 1 : accessor.type;
+                    int size = accessor.type == TINYGLTF_TYPE_SCALAR ?  1 : accessor.type;
 
                     //vertex array attribute
                     int vaa = 
-                        attrib.first.compare("POSITION") == 0 ? 0 :
-                        attrib.first.compare("NORMAL") == 0 ? 1 :
-                        attrib.first.compare("TEXCOORD_0") == 0 ? 2 : -1;
+                        attrib_name == "POSITION" ? 0 :
+                        attrib_name == "NORMAL" ? 1 :
+                        attrib_name == "TEXCOORD_0" ? 2 : -1;
 
                     if(vaa > -1) {
                         vertex_array_attrib attrib(vaa, accessor.byteOffset, accessor.componentType, size, accessor.bufferView, accessor.normalized);
                         vaas[vaa] = attrib;
                     } else
-                        out("vaa missing: %", attrib.first);
+                        out("vaa missing: %", attrib_name);
                 }
             }
         }
@@ -114,6 +124,7 @@ namespace scene_demos {
 
         return layout;
     }
+
     gl::texture get_model_texture(tinygltf::Model& model) {
         assert(model.textures.size() > 0);
         // fixme: Use material's baseColor
@@ -129,8 +140,7 @@ namespace scene_demos {
     }
 
     gl::vertex_array make_model_vao(tinygltf::Model& model) {
-        std::vector<gl::vertex_buffer> vbos = make_vbos(model);
-        std::vector<gl::index_buffer> ibos; ///TODO
+        auto[vbos, ibos] = make_buffers(model);
 
         std::vector<tinygltf::Mesh*> meshes = get_model_meshes(model);
         assert(meshes.size() == model.meshes.size());
