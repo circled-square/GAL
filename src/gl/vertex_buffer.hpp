@@ -9,9 +9,9 @@ namespace gl {
     class vertex_buffer {
         buffer m_buf;
         const size_t m_stride;
-        vertex_buffer(buffer buf, size_t stride);
     public:
         vertex_buffer(vertex_buffer&& o)  noexcept;
+        vertex_buffer(buffer buf, size_t stride);
 
         vertex_buffer(const void* data, size_t size, size_t stride, buffer_creation_params params = {});
         vertex_buffer(size_t size, size_t stride, buffer_creation_params params = {});

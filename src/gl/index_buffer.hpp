@@ -12,9 +12,9 @@ namespace gl {
         buffer m_buf;
         size_t m_triangle_count; // store the size of the buffer to be passed to opengl for draw calls  (unless only part of the ibo is read)
         static constexpr size_t stride = 3 * sizeof(uint);
-        index_buffer(buffer buf, size_t size);
     public:
         index_buffer(index_buffer&& o)  noexcept;
+        index_buffer(buffer buf, size_t size);
 
         template<array_of_uvec3 arr_t>
         index_buffer(const arr_t& arr, buffer_creation_params params = {}) : index_buffer(buffer(arr, params), arr.size()) { }
