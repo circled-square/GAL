@@ -52,7 +52,7 @@ int main() try {
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-} catch (::exception& e) {
+} catch (std::exception& e) {
     cout << "Caught exception!\n" << e.what() << endl;
 }
 
