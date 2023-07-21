@@ -43,6 +43,7 @@ int main() try {
     menu_demo.add_scene<scene_demos::texture_demo>("texture demo");
     menu_demo.add_scene<scene_demos::three_dimensional_demo>("3d demo");
     menu_demo.add_scene<scene_demos::gltf_demo>("gltf demo");
+    //menu_demo.activate("gltf demo"); //TODO: why does this SIGSEGV?
 
     scene_loader::scene_loader active_scene_demo_manager(window, &menu_demo); // menu_demo must be managed by a scene_loader to set the active scene
 
