@@ -8,6 +8,7 @@
 #include "vertex_buffer.hpp"
 #include "index_buffer.hpp"
 
+
 namespace gl {
 
     struct vertex_layout {
