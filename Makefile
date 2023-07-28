@@ -1,4 +1,4 @@
-
+all: build/debug/main
 compile: build/debug/main
 build/debug/main: src/* src/*/*
 	cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" -S src -B build/debug
