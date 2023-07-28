@@ -6,16 +6,16 @@
 #include <stdexcept>
 #include <imgui.h>
 
+using namespace std;
 using namespace glm;
+using namespace gl;
 using namespace scluk;
-
-//TODO: populate IBOs
 
 namespace scene_demos {
     static tinygltf::Model load_gltf(const char* path, bool binary) {
         tinygltf::TinyGLTF loader;
         tinygltf::Model model;
-        std::string err, warn;
+        string err, warn;
 
         bool success =
             binary ? loader.LoadBinaryFromFile(&model, &err, &warn, path) // for .glb
@@ -28,15 +28,17 @@ namespace scene_demos {
             out("Err: %", err.c_str());
         
         if(!success)
-            throw std::runtime_error("Fatal error: Failed to parse glTF");
+            throw runtime_error("Fatal error: Failed to parse glTF");
         
         return model;
     }
-    static std::vector<tinygltf::Mesh*> get_model_meshes(tinygltf::Model& model) {
-        std::vector<tinygltf::Mesh*> meshes;
+
+
+    static vector<tinygltf::Mesh*> get_model_meshes(tinygltf::Model& model) {
+        vector<tinygltf::Mesh*> meshes;
 
         const tinygltf::Scene &scene = model.scenes[model.defaultScene];
-        std::list<tinygltf::Node*> nodes;
+        list<tinygltf::Node*> nodes;
 
         for(size_t i = 0; i < scene.nodes.size(); i++) {
             assert(scene.nodes[i] >= 0 && scene.nodes[i] < model.nodes.size());
@@ -64,31 +66,32 @@ namespace scene_demos {
     }
 
 
-    static std::tuple<std::vector<gl::vertex_buffer>, std::vector<gl::index_buffer>> make_buffers(tinygltf::Model& model) {
-        std::vector<gl::vertex_buffer> vbos;
-        std::vector<gl::index_buffer> ibos;
+    static tuple<vector<vertex_buffer>, vector<index_buffer>> make_buffers(tinygltf::Model& model) {
+        vector<vertex_buffer> vbos;
+        vector<index_buffer> ibos;
 
         for(size_t i = 0; i < model.bufferViews.size(); i++) {
             const tinygltf::BufferView &bufView = model.bufferViews[i];
             const tinygltf::Buffer &buf = model.buffers[bufView.buffer];
-            out("Buffer& buf = model.buffers[%];", bufView.buffer);
+
+            //out("Buffer& buf = model.buffers[%];", bufView.buffer);
 
             if (bufView.target == TINYGLTF_TARGET_ARRAY_BUFFER) {
                 vbos.emplace_back(&buf.data[bufView.byteOffset], bufView.byteLength, bufView.byteStride);
                 out("vbos.emplace_back(&buf.data[%], %, %);", bufView.byteOffset, bufView.byteLength, bufView.byteStride);
             } else {
-                ibos.emplace_back(reinterpret_cast<const uvec3 *>(&buf.data[bufView.byteOffset]),bufView.byteLength);
-                out("vbos.emplace_back(&buf.data[%], %);", bufView.byteOffset, bufView.byteLength);
+                ibos.emplace_back(reinterpret_cast<const uvec3*>(&buf.data[bufView.byteOffset]),bufView.byteLength);
+                out("ibos.emplace_back(&buf.data[%], %);", bufView.byteOffset, bufView.byteLength);
                 assert(bufView.byteStride == sizeof(uvec3) || bufView.byteStride == 0);
             }
         }
 
-        return { std::move(vbos), std::move(ibos) };
+        return { move(vbos), move(ibos) };
     }
 
-    static gl::vertex_layout get_meshes_vertex_layout(tinygltf::Model& model, std::vector<tinygltf::Mesh*>& meshes) {
-        using vertex_array_attrib = gl::vertex_layout::vertex_array_attrib;
-        std::unordered_map<int, vertex_array_attrib> vaas; // avoid repeating attribs in the layout.attribs vector
+    static vertex_layout get_meshes_vertex_layout(tinygltf::Model& model, vector<tinygltf::Mesh*>& meshes) {
+        using vertex_array_attrib = vertex_layout::vertex_array_attrib;
+        unordered_map<int, vertex_array_attrib> vaas; // avoid repeating attribs in the layout.attribs vector
 
         for(tinygltf::Mesh* mesh_p : meshes) {
             tinygltf::Mesh& mesh = *mesh_p;
@@ -118,14 +121,14 @@ namespace scene_demos {
             }
         }
 
-        gl::vertex_layout layout;
+        vertex_layout layout;
         for(auto&[index, attrib] : vaas)
             layout.attribs.push_back(attrib);
 
         return layout;
     }
 
-    gl::texture get_model_texture(tinygltf::Model& model) {
+    texture get_model_texture(tinygltf::Model& model) {
         assert(model.textures.size() > 0);
         // fixme: Use material's baseColor
         tinygltf::Texture& tex = model.textures[0];
@@ -136,35 +139,34 @@ namespace scene_demos {
 
         assert(image.bits == 8);
 
-        return gl::texture(image.image.data(), image.width, image.height, image.component, 1);
+        return texture(image.image.data(), image.width, image.height, image.component, 1);
     }
 
-    gl::vertex_array make_model_vao(tinygltf::Model& model) {
+    vertex_array make_model_vao(tinygltf::Model& model) {
         auto[vbos, ibos] = make_buffers(model);
 
-        std::vector<tinygltf::Mesh*> meshes = get_model_meshes(model);
+        vector<tinygltf::Mesh*> meshes = get_model_meshes(model);
         assert(meshes.size() == model.meshes.size());
         
-        gl::vertex_layout vertex_layout = get_meshes_vertex_layout(model, meshes);
+        vertex_layout vertex_layout = get_meshes_vertex_layout(model, meshes);
 
-        return gl::vertex_array(std::move(vbos), std::move(ibos), std::move(vertex_layout));
+        return vertex_array(move(vbos), move(ibos), move(vertex_layout));
     }
 
     model_t gltf_demo::make_model() {
         tinygltf::Model model = load_gltf("src/third_party/tinygltf/models/Cube/Cube.gltf", false);
 
-        gl::vertex_array vao = make_model_vao(model);
-        gl::texture tex = get_model_texture(model);
-        using scluk::read_file;
-        gl::shader_program shader(read_file("src/shader/gltf_demo/vert.glsl"), read_file("src/shader/gltf_demo/frag.glsl"));
+        vertex_array vao = make_model_vao(model);
+        texture tex = get_model_texture(model);
+        shader_program shader(read_file("src/shader/gltf_demo/vert.glsl"), read_file("src/shader/gltf_demo/frag.glsl"));
 
-        return model_t { std::move(vao), std::move(tex), std::move(shader) };
+        return model_t { move(vao), move(tex), move(shader) };
     }
 
     gltf_demo::gltf_demo() : m_renderer(), m_model(make_model()) {}
 
     void gltf_demo::update(float delta) {
-        m_model.shader.set_uniform("u_mvp", glm::mat4(1));
+        m_model.shader.set_uniform("u_mvp", mat4(1));
     }
 
     void gltf_demo::render() {
