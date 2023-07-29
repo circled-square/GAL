@@ -9,7 +9,7 @@
 
 namespace gl {
     using scluk::uint;
-    static_assert(sizeof(uint) == sizeof(GLuint), "unsigned int and GLuint do not have the same size");
+    static_assert(sizeof(uint) == sizeof(GLuint), "uint and GLuint do not have the same size");
 
     //make a struct for each of the types that opengl defines as aliases of other types,
     //so they can be treated as distinct types and passed to templates
@@ -31,6 +31,24 @@ namespace gl {
     template<> struct gl_type_id<types::f16> { static constexpr uint v = GL_HALF_FLOAT; };
     template<> struct gl_type_id<types::fixed_point> { static constexpr uint v = GL_FIXED; };
 
+    constexpr size_t typeid_to_size(uint id) {
+        size_t size =
+            id == GL_BOOL ? sizeof(bool) :
+            id == GL_BYTE ? sizeof(GLbyte) :
+            id == GL_UNSIGNED_BYTE ? sizeof(GLubyte) :
+            id == GL_SHORT ? sizeof(GLshort) :
+            id == GL_UNSIGNED_SHORT ? sizeof(GLushort) :
+            id == GL_INT ? sizeof(GLint) :
+            id == GL_UNSIGNED_INT ? sizeof(GLuint) :
+            id == GL_FLOAT ? sizeof(float) :
+            id == GL_DOUBLE ? sizeof(double) :
+            id == GL_HALF_FLOAT ? sizeof(GLhalf) :
+            id == GL_FIXED ? sizeof(GLfixed) :
+            0;
+        assert(size != 0);
+
+        return size;
+    }
 
     template<typename T> concept glm_vector = requires {
         { T::length() } -> std::convertible_to<size_t>;
