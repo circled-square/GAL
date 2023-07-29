@@ -19,8 +19,8 @@ namespace scene_demos {
         gl::renderer m_renderer;
 
         model_t m_model;
-
-        static model_t make_model();
+        glm::mat4 m_mvp;
+        glm::mat4 m_model_mat, m_view_mat, m_proj_mat;
     public:
         gltf_demo();
         void update(float delta) final;
