@@ -2,18 +2,20 @@
 #include <glad/glad.h>
 
 #include <scluk/format.hpp>
-using scluk::out;
+using namespace scluk;
 
 namespace gl {
     vertex_array::vertex_array(std::vector<vertex_buffer> vbos, std::vector<index_buffer> ibos, vertex_layout layout) : m_vbos(std::move(vbos)), m_ibos(std::move(ibos)) {
         glCreateVertexArrays(1, &m_vao);
 
+        out_no_ln("binding vao % to vbos: ", m_vao);
         for(size_t i = 0; i < m_vbos.size(); i++) {
             const uint vao_vbo_bind_index = i;
-            out("m_vao=% bound to vbo=%, bind_index=%", m_vao, m_vbos[i].get_gl_id(), i);
+            out_no_ln("%(%), ", m_vbos[i].get_gl_id(), i);
             // bind {3} as the {2}th vbo to the vao {1}, starting from {4} within the buffer. the stride between vertices is {5}
             glVertexArrayVertexBuffer(m_vao, vao_vbo_bind_index, m_vbos[i].get_gl_id(), 0, (int)m_vbos[i].get_stride());
         }
+        out();
 
         this->specify_attribs(layout);
     }
@@ -91,6 +93,10 @@ namespace gl {
         return m_ibos[ibo_index].get_triangle_count(); 
     }
     
+    uint vertex_array::get_ibo_element_typeid(uint ibo_index) const {
+        return m_ibos[ibo_index].get_element_typeid();
+    }
+
     size_t vertex_array::get_ibo_count() const {
         return m_ibos.size();
     }

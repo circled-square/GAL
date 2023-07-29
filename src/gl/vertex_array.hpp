@@ -46,6 +46,7 @@ namespace gl {
         void unbind() const; // unbind the vao
 
         size_t get_triangle_count(uint ibo_index = 0) const;
+        uint get_ibo_element_typeid(uint ibo_index) const;
         size_t get_ibo_count() const;
     };
 
