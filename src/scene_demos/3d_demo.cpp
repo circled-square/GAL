@@ -65,7 +65,12 @@ namespace scene_demos {
           m_view_mat(make_view_matrix(vec3(0,0,0), -pi/2)),
           m_proj_mat(make_proj_matrix(vec2(4,3))),
           m_mvp_mat(m_proj_mat * m_view_mat * m_model_mat)
-    {}
+    {
+        for(auto& e : vertex_data) {
+            vec4 v = m_mvp_mat * vec4(e.pos, 1);
+            scluk::out("vec4(%, %, %, %)", v.x, v.y, v.z, v.w);
+        }
+    }
 
     mat4 three_dimensional_demo::make_model_matrix(vec3 pos, float rotation, float scale_factor) {
         return scale(
@@ -94,26 +99,14 @@ namespace scene_demos {
 
     mat4 three_dimensional_demo::make_proj_matrix(vec2 aspect_ratio) {
         return perspective(pi / 4, aspect_ratio.x / aspect_ratio.y, .1f, 100.f);
-        //return infinitePerspectiveLH(pi<f32>() / 2, aspect_ratio.x / aspect_ratio.y, -100000.f);
-        //return ortho(-1, +1, -1, +1, -1, +1);
     }
 
     void three_dimensional_demo::update(float delta) {
         // edit the MVPs...
         m_model_mat = rotate(m_model_mat,  delta * pi / 16, y_axis);
         m_model_mat = rotate(m_model_mat,  delta * pi / 8, z_axis);
-        /*static float time = 0.f;
-        time += delta;
-        m_model_mat = translate(m_model_mat, vec3(1,0,0) * delta * sin(time));*/
-        //m_model_mat = translate(m_model_mat, vec3(0,0,1) * delta);
 
         m_mvp_mat = m_proj_mat * m_view_mat * m_model_mat;
-
-
-        /*for(int i = 0; i < vertex_data.size(); i++) {
-            vec4 v = m_mvp_mat * vec4(vertex_data[i].pos, 1);
-            scluk::out("vert %, (%, %, %, %)", i, v.x, v.y, v.z, v.w);
-        }*/
     }
 
     void three_dimensional_demo::render() {
