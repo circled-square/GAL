@@ -1,6 +1,7 @@
 #version 330 core
+//gltf demo fragment shader
 
-layout(location = 0) out vec4 color;
+out vec4 color;
 
 uniform sampler2D u_texture_slot;
 
