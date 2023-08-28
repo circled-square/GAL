@@ -31,12 +31,23 @@ namespace scene_demos {
         { 2, 3, 0 }
     };
 
+
+    static gl::texture::specification make_texture_specification(const stb::image& img) {
+        gl::texture::specification spec;
+        spec.w = img.w;
+        spec.h = img.h;
+        spec.components = 4;
+        spec.data = img.buffer;
+
+        return spec;
+    }
+
     texture_demo::texture_demo()
         : m_vao(gl::vertex_buffer(vertex_data), gl::index_buffer(indices), vertex_t::layout_t::to_vertex_layout()),
           m_shader(read_file("src/shader/texture_demo/vert.glsl"), read_file("src/shader/texture_demo/frag.glsl")),
           m_renderer(),
           m_img("src/resources/example.png"),
-          m_tex(m_img.buffer, m_img.w, m_img.h, 4)
+          m_tex(make_texture_specification(m_img))
     {}
 
     void texture_demo::update(float delta) {
