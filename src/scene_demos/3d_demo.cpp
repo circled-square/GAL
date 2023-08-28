@@ -54,11 +54,22 @@ namespace scene_demos {
         {0, 2, 4},
         {4, 6, 2},
     };
+
+    static gl::texture::specification make_texture_specification(const stb::image& img) {
+        gl::texture::specification spec;
+        spec.w = img.w;
+        spec.h = img.h;
+        spec.components = 4;
+        spec.data = img.buffer;
+
+        return spec;
+    }
+
     three_dimensional_demo::three_dimensional_demo()
         : m_vao(gl::vertex_array::make<vertex_t>(gl::vertex_buffer(vertex_data), gl::index_buffer(indices))),
           m_shader(read_file("src/shader/3d_demo/vert.glsl"), read_file("src/shader/3d_demo/frag.glsl")),
           m_img("src/resources/example.png"),
-          m_tex(m_img.buffer, m_img.w, m_img.h, 4),
+          m_tex(make_texture_specification(m_img)),
           m_renderer(),
           //compute the mvp matrix
           m_model_mat(make_model_matrix(vec3(0,0 ,-1), pi/2, .25)),
