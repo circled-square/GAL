@@ -1,17 +1,32 @@
 #include "gltf_demo.hpp"
 
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <scluk/format.hpp>
-#include <scluk/read_file.hpp>
 #include <list>
 #include <stdexcept>
 #include <imgui.h>
+#include <scluk/format.hpp>
+#include <scluk/read_file.hpp>
+
+template<int size, typename T, glm::qualifier q>
+std::string vec_to_string(glm::vec<size, T, q> v) {
+    std::ostringstream os;
+    os << "(";
+    for(int i = 0; i < size-1; i++)
+        os << v[i] << ", ";
+    os << v[size-1] << ")";
+
+    return os.str();
+}
+
+std::ostream& operator<<(std::ostream& os, glm::uvec3 v) { return os << vec_to_string(v); }
+std::ostream& operator<<(std::ostream& os, glm::u16vec3 v) { return os << vec_to_string(v); }
+
 
 using namespace std;
 using namespace glm;
 using namespace gl;
 using namespace scluk;
+
 
 namespace scene_demos {
     constexpr vec3 x_axis = vec3(1,0,0), y_axis = vec3(0,1,0), z_axis = vec3(0,0,1);
@@ -130,38 +145,48 @@ namespace scene_demos {
             if (bufView.target == TINYGLTF_TARGET_ARRAY_BUFFER) {
                 bufview_to_vbo_map[i] = vbos.size();
 
-                if(vbos.size() == 0) { //"POSITION" vbo -> print contents
+
+                //TODO: these prints need to go (they are also specific to a precise gltf file)
+                /*if(vbos.size() == 0) { //"POSITION" vbo -> print contents
                     const vec3* begin = reinterpret_cast<const vec3*>(&buf.data[bufView.byteOffset]);
                     const vec3* end = reinterpret_cast<const vec3*>(&buf.data[bufView.byteOffset+bufView.byteLength]);
                     for(const vec3* p = begin; p < end; p++) {
-                        mat4 dbg_mvp = make_proj_matrix(vec2(4,3)) * make_view_matrix(vec3(0,0,0), -pi/2) * make_model_matrix(vec3(0,0 ,-1), 0, .25);
-                        vec4 v = dbg_mvp * vec4(*p, 1);
-                        out("vec3(%, %, %) -> vec4(%, %, %, %)", p->x, p->y, p->z, v.x, v.y, v.z, v.w);
+                        out("{ %, %, % },", p->x, p->y, p->z);
                     }
                 }
+                if(vbos.size() == 3) { //"TEXCOORD_0" vbo -> print contents
+					const vec2* begin = reinterpret_cast<const vec2*>(&buf.data[bufView.byteOffset]);
+					const vec2* end = reinterpret_cast<const vec2*>(&buf.data[bufView.byteOffset+bufView.byteLength]);
+					out("end - begin = %", end - begin);
+					for(const vec2* p = begin; p < end; p++) {
+						out("{ %, % },", p->x, p->y);
+					}
+				}*/
 
                 vbos.emplace_back(&buf.data[bufView.byteOffset], bufView.byteLength, bufView.byteStride);
                 out("vbos.emplace(&buf.data[%], %, %);", bufView.byteOffset, bufView.byteLength, bufView.byteStride);
             } else {
-                int element_typeid = get_element_typeid_of_bufview(model, i);
+                const int element_typeid = get_element_typeid_of_bufview(model, i);
 
-                int size = bufView.byteLength / typeid_to_size(element_typeid);
-                ibos.emplace_back(buffer(&buf.data[bufView.byteOffset], bufView.byteLength), size, element_typeid);
+                const size_t size = bufView.byteLength / typeid_to_size(element_typeid);
+                //TODO: uncomment this instead of the following code block
+                const size_t tri_count = size/3;
 
+                /*{
+					const u16vec3* begin = reinterpret_cast<const u16vec3*>(&buf.data[bufView.byteOffset]);
+					const u16vec3* end = reinterpret_cast<const u16vec3*>(&buf.data[bufView.byteOffset+bufView.byteLength]);
+					out("end - begin = %", end - begin);
+					for(const u16vec3* p = begin; p < end; p++) {
+						out("{ %, %, % },", p->x, p->y, p->z);
+					}
+                }*/
+
+                ibos.push_back(index_buffer(buffer(&buf.data[bufView.byteOffset], bufView.byteLength), tri_count, element_typeid));
 
                 out("ibos.emplace(&buf.data[%], %, type=u%); stride=% tri_count=%",
-                    bufView.byteOffset, bufView.byteLength, 8*typeid_to_size(element_typeid), bufView.byteStride,size/3);
+                    bufView.byteOffset, bufView.byteLength, 8*typeid_to_size(element_typeid), bufView.byteStride,tri_count);
 
                 assert(bufView.byteStride == 0 || typeid_to_size(element_typeid) == bufView.byteStride);
-
-                //print content of ibo
-                /*if(element_typeid == GL_UNSIGNED_SHORT) {
-                    const u16vec3* begin = reinterpret_cast<const u16vec3*>(&buf.data[bufView.byteOffset]);
-                    const u16vec3* end = reinterpret_cast<const u16vec3*>(&buf.data[bufView.byteOffset+bufView.byteLength]);
-                    for(const u16vec3* p = begin; p < end; p++) {
-                        out("u16vec3(%, %, %)", p->x, p->y, p->z);
-                    }
-                }*/
             }
         }
 
@@ -224,7 +249,14 @@ namespace scene_demos {
 
         assert(image.bits == 8);
 
-        return texture(image.image.data(), image.width, image.height, image.component, 1);
+        texture::specification spec;
+        spec.w = image.width;
+        spec.h = image.height;
+        spec.components = 4;
+        spec.data = image.image.data();
+        spec.alignment = 1;
+        spec.repeat_wrap = true;
+        return texture(spec);
     }
 
     static vertex_array make_model_vao(tinygltf::Model& model) {
@@ -237,61 +269,97 @@ namespace scene_demos {
         return vertex_array(move(vbos), move(ibos), move(vertex_layout));
     }
 
-    struct vertex_t {
-        vec3 pos;
-        vec2 tex_coord; // vec of floats because it will be used as a variant
-
-        using layout_t = decltype(gl::static_vertex_layout(pos, tex_coord));
-    };
-
     static vertex_array make_dbg_vao() {
-        static constexpr std::array<vertex_t, 8> vertex_data {
-            vertex_t
-            { { .5,  .5,  .5}, {1., 1.} },
-            { { .5, -.5,  .5}, {0., 1.} },
-            { {-.5,  .5,  .5}, {0., 1.} },
-            { {-.5, -.5,  .5}, {1., 1.} },
+    	static constexpr std::array<vec3, 36> __positions {
+    		vec3
+    		{  1, -1,  1 }, { -1, -1, -1 }, {  1, -1, -1 },
+			{ -1,  1, -1 }, {  1,  1,  1 }, {  1,  1, -1 },
+    		{  1,  1, -1 }, {  1, -1,  1 }, {  1, -1, -1 },
+    		{  1,  1,  1 }, { -1, -1,  1 }, {  1, -1,  1 },
+    		{ -1, -1,  1 }, { -1,  1, -1 }, { -1, -1, -1 },
+    		{  1, -1, -1 }, { -1,  1, -1 }, {  1,  1, -1 },
+    		{  1, -1,  1 }, { -1, -1,  1 }, { -1, -1, -1 },
+    		{ -1,  1, -1 }, { -1,  1,  1 }, {  1,  1,  1 },
+    		{  1,  1, -1 }, {  1,  1,  1 }, {  1, -1,  1 },
+    		{  1,  1,  1 }, { -1,  1,  1 }, { -1, -1,  1 },
+    		{ -1, -1,  1 }, { -1,  1,  1 }, { -1,  1, -1 },
+    		{  1, -1, -1 }, { -1, -1, -1 }, { -1,  1, -1 },
+    	};
+    	static constexpr std::array<vec2, 36> __tex_coords {
+    		vec2
+			{  0,  0 }, { -1,  1 }, {  0,  1 },
+			{  0,  0 }, {  1, -1 }, {  1, -0 },
+			{  1,  0 }, {  0, -1 }, {  1, -1 },
+			{  1,  0 }, { -0, -1 }, {  1, -1 },
+			{  0,  0 }, {  1,  1 }, {  1,  0 },
+			{  0,  0 }, { -1,  1 }, {  0,  1 },
+			{  0,  0 }, { -1,  0 }, { -1,  1 },
+			{  0,  0 }, { -0, -1 }, {  1, -1 },
+			{  1,  0 }, { -0,  0 }, {  0, -1 },
+			{  1,  0 }, { -0,  0 }, { -0, -1 },
+			{  0,  0 }, {  0,  1 }, {  1,  1 },
+			{  0,  0 }, { -1,  0 }, { -1,  1 },
+    	};
+    	static constexpr std::array<u16vec3, 12> __indices {
+    		u16vec3
+    		{  0,  1,  2 },
+    		{  3,  4,  5 },
+    		{  6,  7,  8 },
+    		{  9, 10, 11 },
+    		{ 12, 13, 14 },
+    		{ 15, 16, 17 },
+    		{ 18, 19, 20 },
+    		{ 21, 22, 23 },
+    		{ 24, 25, 26 },
+    		{ 27, 28, 29 },
+    		{ 30, 31, 32 },
+    		{ 33, 34, 35 },
+    	};
 
-            { { .5,  .5, -.5}, {1., 0.} },
-            { { .5, -.5, -.5}, {0., 0.} },
-            { {-.5,  .5, -.5}, {0., 0.} },
-            { {-.5, -.5, -.5}, {1., 0.} },
-        };
-        static constexpr std::array<uvec3, 12> indices {
-            uvec3
-            {0, 1, 2},
-            {2, 3, 1},
+    	static constexpr std::array<int, 20> junk_data {
+    		3, 7, 3, 7, 8, 3, 7, 3, 7, 8, 3, 7, 3, 7, 8, 3, 7, 3, 7, 8,
+    	};
 
-            {4, 5, 6},
-            {6, 7, 5},
+        vertex_layout vertex_layout;
+        vertex_layout::vertex_array_attrib attrib;
+        attrib.index = 0;
+        attrib.offset = 0;
+        attrib.type_id = GL_FLOAT;
+        attrib.size = 3;
+        attrib.vao_vbo_bind_index = 0;
+        vertex_layout.attribs.push_back(attrib);
 
-            {0, 1, 4},
-            {4, 5, 1},
+        attrib.index = 1;
+        attrib.offset = 0;
+        attrib.type_id = GL_FLOAT;
+        attrib.size = 2;
+        attrib.vao_vbo_bind_index = 3;
+        vertex_layout.attribs.push_back(attrib);
 
-            {1, 3, 5},
-            {5, 7, 3},
 
-            {2, 3, 6},
-            {6, 7, 3},
+        vector<vertex_buffer> vbos;
+        vbos.reserve(2);
+        vbos.push_back(vertex_buffer(__positions));
+        vbos.push_back(vertex_buffer(junk_data));
+        vbos.push_back(vertex_buffer(junk_data));
+        vbos.push_back(vertex_buffer(__tex_coords));
 
-            {0, 2, 4},
-            {4, 6, 2},
-        };
+        vector<index_buffer> ibos;
+        ibos.reserve(1);
+        ibos.push_back(index_buffer(__indices));
 
-        return vertex_array::make<vertex_t>(vertex_buffer(vertex_data), index_buffer(indices));
+        return vertex_array(move(vbos), move(ibos), move(vertex_layout));
     }
 
     static model_t make_model() {
-        //TODO: uncomment this
         tinygltf::Model model = load_gltf_from_file("src/third_party/tinygltf/models/Cube/Cube.gltf", false);
 
         //TODO: uncomment this
-        vertex_array vao = make_model_vao(model);
-        //vertex_array vao = make_dbg_vao();
+        //vertex_array vao = make_model_vao(model);
+        vertex_array vao = make_dbg_vao();
 
         texture tex = get_model_texture(model);
 
-        //TODO: uncomment this
         shader_program shader(read_file("src/shader/gltf_demo/vert.glsl"), read_file("src/shader/gltf_demo/frag.glsl"));
 
 
@@ -303,7 +371,7 @@ namespace scene_demos {
         : m_renderer(),
           m_model(make_model()),
           //compute the mvp matrix
-          m_model_mat(make_model_matrix(vec3(0,0 ,-1), pi/2, .25)),
+          m_model_mat(make_model_matrix(vec3(0,0 ,-1), pi/2, .125)),
           m_view_mat(make_view_matrix(vec3(0,0,0), -pi/2)),
           m_proj_mat(make_proj_matrix(vec2(4,3))),
           m_mvp(m_proj_mat * m_view_mat * m_model_mat)
@@ -316,8 +384,6 @@ namespace scene_demos {
 
         m_mvp = m_proj_mat * m_view_mat * m_model_mat;
     }
-
-
 
     void gltf_demo::render() {
         m_model.shader.set_uniform("u_mvp", m_mvp);
