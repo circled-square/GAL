@@ -28,22 +28,8 @@ namespace scene_demos {
             uvec3{0, 1, 2},
             {2, 3, 0}
     };
-    mul_obj_draw_demo::mul_obj_draw_demo()
-        : m_vao(gl::vertex_array::make<vertex_t>(gl::vertex_buffer(vertex_data), gl::index_buffer(indices))),
-          m_shader(read_file("src/shader/mul_obj_draw_demo/vert.glsl"), read_file("src/shader/mul_obj_draw_demo/frag.glsl")),
-          m_renderer(),
-          m_img("src/resources/example.png"),
-          m_tex(m_img.buffer, m_img.w, m_img.h, 4),
-          //compute the mvp matrices
-          m_model_mat_1(make_model_matrix(vec3(0.,.4,0), 1, .5)),
-          m_model_mat_2(make_model_matrix(vec3(.3,0,0), 3, .5)),
-          m_view_mat(make_view_matrix(vec3(0,0,0), 0)),
-          m_proj_mat(make_proj_matrix(vec2(4,3))),
-          m_mvp_mat_1(m_proj_mat * m_view_mat * m_model_mat_1),
-          m_mvp_mat_2(m_proj_mat * m_view_mat * m_model_mat_2)
-    {}
 
-    mat4 mul_obj_draw_demo::make_model_matrix(vec3 pos, float rotation, float scale_factor) {
+    static mat4 make_model_matrix(vec3 pos, float rotation, float scale_factor) {
         vec3 z_axis = vec3(0, 0, 1);
 
         return scale(
@@ -58,8 +44,7 @@ namespace scene_demos {
             vec3(scale_factor)
         );
     }
-
-    mat4 mul_obj_draw_demo::make_view_matrix(vec3 pos, float rotation) {
+    static mat4 make_view_matrix(vec3 pos, float rotation) {
         vec3 z_axis = vec3(0, 0, 1);
 
         return rotate(
@@ -71,13 +56,39 @@ namespace scene_demos {
             z_axis
         );
     }
-
-    mat4 mul_obj_draw_demo::make_proj_matrix(vec2 aspect_ratio) {
+    static mat4 make_proj_matrix(vec2 aspect_ratio) {
         //make aspect ratio have 1 as the smaller one
         aspect_ratio /= std::min(aspect_ratio.x, aspect_ratio.y);
 
         return ortho(-aspect_ratio.x, aspect_ratio.x, -aspect_ratio.y, aspect_ratio.y, -1.f, 1.f);
     }
+
+    static gl::texture::specification make_texture_specification(const stb::image& img) {
+        gl::texture::specification spec;
+        spec.w = img.w;
+        spec.h = img.h;
+        spec.components = 4;
+        spec.data = img.buffer;
+
+        return spec;
+    }
+
+    mul_obj_draw_demo::mul_obj_draw_demo()
+        : m_vao(gl::vertex_array::make<vertex_t>(gl::vertex_buffer(vertex_data), gl::index_buffer(indices))),
+          m_shader(read_file("src/shader/mul_obj_draw_demo/vert.glsl"), read_file("src/shader/mul_obj_draw_demo/frag.glsl")),
+          m_renderer(),
+          m_img("src/resources/example.png"),
+          m_tex(make_texture_specification(m_img)),
+          //compute the mvp matrices
+          m_model_mat_1(make_model_matrix(vec3(0.,.4,0), 1, .5)),
+          m_model_mat_2(make_model_matrix(vec3(.3,0,0), 3, .5)),
+          m_view_mat(make_view_matrix(vec3(0,0,0), 0)),
+          m_proj_mat(make_proj_matrix(vec2(4,3))),
+          m_mvp_mat_1(m_proj_mat * m_view_mat * m_model_mat_1),
+          m_mvp_mat_2(m_proj_mat * m_view_mat * m_model_mat_2)
+    {}
+
+
 
     void mul_obj_draw_demo::update(float delta) {
         // edit the MVPs...
