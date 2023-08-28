@@ -9,7 +9,16 @@ namespace gl {
         uint m_texture_id;
         int m_width, m_height, m_components;
     public:
-        texture(const void* buffer, int w, int h, int components, int alignment = 4);
+        struct specification {
+            int w, h;
+            int components;
+
+            const void* data = nullptr;
+            int alignment = 4;
+
+            bool repeat_wrap = false;
+        };
+        texture(const specification& spec);
         texture(texture&& o);
         ~texture();
 
