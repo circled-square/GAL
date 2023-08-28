@@ -58,7 +58,6 @@ namespace gl {
     }
 
     void vertex_array::specify_attribs(const vertex_layout& layout) {
-#undef NDEBUG
         #ifndef NDEBUG
             if(layout.vertex_size != 0) { //layout.vertex_size is only optionally set
                 size_t vbos_stride_sum = 0;
