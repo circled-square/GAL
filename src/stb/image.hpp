@@ -12,6 +12,7 @@ namespace stb {
         void* buffer;
 
         image(const char* filename);
+        image(image&& o);
 
         ~image();
     };
