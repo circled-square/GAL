@@ -21,10 +21,6 @@ namespace scene_demos {
         glm::mat4 m_model_mat_1, m_model_mat_2;
         glm::mat4 m_view_mat, m_proj_mat;
         glm::mat4 m_mvp_mat_1, m_mvp_mat_2;
-
-        static glm::mat4 make_model_matrix(glm::vec3 pos, float rotation, float scale_factor);// only accounts for position and z-rotation
-        static glm::mat4 make_view_matrix(glm::vec3 pos, float rotation);// only accounts for position and z-rotation, not scaling
-        static glm::mat4 make_proj_matrix(glm::vec2 aspect_ratio);
     public:
         mul_obj_draw_demo();
 
