@@ -9,6 +9,7 @@ callable from other threads.
 #include <array>
 #include <cstdint>
 #include <tuple>
+#include <glad/glad.h> // this MUST be included before glfw, so this file will include it here even though it does not need to
 #include <GLFW/glfw3.h>
 #include <scluk/functional.hpp>
 #include <glm/glm.hpp>

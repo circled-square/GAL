@@ -40,7 +40,7 @@ target_link_libraries(stb_image_wrapper stb)
 
 #glfw
 add_library(glfw_wrapper STATIC glfw/window.cpp)
-target_link_libraries(glfw_wrapper glfw scluk)
+target_link_libraries(glfw_wrapper glfw scluk glad)
 
 
 #gl

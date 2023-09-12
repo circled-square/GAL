@@ -1,5 +1,3 @@
-#include <glad/glad.h>
-
 #include <stdexcept>
 #include <iostream>
 
