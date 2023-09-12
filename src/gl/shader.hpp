@@ -6,11 +6,11 @@
 #include <string>
 #include <array>
 #include <unordered_map>
-#include <scluk/language_extension.hpp>
 #include <scluk/functional.hpp>
 #include <glm/glm.hpp>
 
 #include <glad/glad.h>
+
 namespace gl {
     namespace internal {
         using uniform_func_t = scluk::fnptr_t<void(uint, int, int, void*)>;
@@ -99,7 +99,6 @@ namespace gl {
 #ifdef DEBUG_BUILD
         uint get_gl_program_id() { return m_program_id; }
 #endif
-    private:
     };
 }
 
