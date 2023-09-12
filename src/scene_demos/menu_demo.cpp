@@ -46,4 +46,16 @@ namespace scene_demos {
     void menu_demo::add_scene(named_scene::scene_ctor_t scene_ctor, std::string name) {
         add_scene({scene_ctor, std::move(name)});
     }
+
+    void menu_demo::activate(const char *scene_name) {
+        for(named_scene& s : m_scene_vector) {
+            if(s.name == scene_name) {
+                m_current_scene.reset(s.scene_constructor());
+                this->change_scene(m_current_scene.get());
+                m_current_scene->set_prev_scene(this);
+                return;
+            }
+        }
+        throw scluk::runtime_error("menu_demo::activate called with string '%'; no such named scene", scene_name);
+    }
 }

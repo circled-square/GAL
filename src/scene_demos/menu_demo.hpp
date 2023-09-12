@@ -40,19 +40,9 @@ namespace scene_demos {
         void add_scene(named_scene::scene_ctor_t scene_ctor, std::string name);
         template<class T>
         void add_scene(std::string name) {
-            add_scene({ []() -> scene_with_previous_scene* { return new T; }, name });
+            add_scene({ []() -> scene_with_previous_scene* { return new T; }, std::move(name) });
         }
-        void activate(const char* scene_name) {
-            for(named_scene& s : m_scene_vector) {
-                if(s.name == scene_name) {
-                    m_current_scene.reset(s.scene_constructor());
-                    this->change_scene(m_current_scene.get());
-                    m_current_scene->set_prev_scene(this);
-                    return;
-                }
-            }
-            throw scluk::runtime_error("menu_demo::activate called with string '%'; no such named scene", scene_name);
-        }
+        void activate(const char* scene_name);
 
         menu_demo();
     };
