@@ -12,7 +12,6 @@
 
 
 using namespace glm;
-using namespace std;
 
 int main() try {
     scene_demos::menu_demo menu_demo;
@@ -26,11 +25,9 @@ int main() try {
 
     application::application application({800, 600}, "demo", &menu_demo);
 
-    cout << glGetString(GL_VERSION) << endl;
+    std::cout << glGetString(GL_VERSION) << std::endl;
 
     application.run();
 } catch (std::exception& e) {
-    cout << "Caught exception!\n" << e.what() << endl;
+    std::cout << "Caught exception!\n" << e.what() << std::endl;
 }
-
-
