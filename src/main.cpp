@@ -21,9 +21,10 @@ int main() try {
     menu_demo.add_scene<scene_demos::texture_demo>("texture demo");
     menu_demo.add_scene<scene_demos::three_dimensional_demo>("3d demo");
     menu_demo.add_scene<scene_demos::gltf_demo>("gltf demo");
-    //menu_demo.activate("gltf demo"); //TODO: why does this SIGSEGV?
 
     application::application application({800, 600}, "demo", &menu_demo);
+
+    menu_demo.activate("gltf demo"); // only call this after opengl is initialised
 
     std::cout << glGetString(GL_VERSION) << std::endl;
 
