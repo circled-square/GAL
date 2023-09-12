@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.25)
 
 project(GLstuff LANGUAGES CXX C)
 
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG_BUILD")
 
 
@@ -63,18 +63,19 @@ add_library(gl_texture STATIC gl/texture.cpp)
 target_link_libraries(gl_texture glad scluk)
 
 
-#scene loader
-add_library(scene STATIC scene_loader/scene.cpp)
+#application
+add_library(scene STATIC application/scene.cpp)
 target_link_libraries(scene gl_texture gl_renderer stb_image_wrapper imgui) # these libs are not actually used by scene itself
 
-add_library(scene_loader STATIC scene_loader/scene_loader.cpp)
-target_link_libraries(scene_loader imgui scluk)
+add_library(application STATIC application/application.cpp)
+target_link_libraries(application glfw_wrapper imgui gl_initialize_opengl scene)
 
+
+#scene demos
 add_library(scene_with_previous_scene STATIC scene_demos/scene_with_previous_scene.cpp)
 target_link_libraries(scene_with_previous_scene scene imgui)
 
 
-#scene demos
 add_library(menu_demo STATIC scene_demos/menu_demo.cpp)
 target_link_libraries(menu_demo scene scene_with_previous_scene imgui)
 
@@ -95,5 +96,6 @@ target_link_libraries(gltf_demo scene_with_previous_scene imgui tinygltf)
 
 set(SCENE_DEMOS menu_demo mul_obj_draw_demo clear_color_demo texture_demo 3d_demo gltf_demo)
 
+
 add_executable(main main.cpp)
-target_link_libraries(main glfw_wrapper imgui gl_initialize_opengl scene_loader ${SCENE_DEMOS})
+target_link_libraries(main application ${SCENE_DEMOS})

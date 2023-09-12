@@ -1,9 +1,8 @@
 #ifndef GLSTUFF_MENU_DEMO_HPP
 #define GLSTUFF_MENU_DEMO_HPP
 
-#include "../scene_loader/scene.hpp"
+#include "../application/scene.hpp"
 #include "../gl/renderer.hpp"
-#include "../scene_loader/scene_loader.hpp"
 #include "scene_with_previous_scene.hpp"
 #include <scluk/exception.hpp>
 
@@ -21,7 +20,7 @@ namespace scene_demos {
     };
 
     //this class owns the pointers to the scenes that it leads to
-    class menu_demo : public scene_loader::scene {
+    class menu_demo : public application::scene {
         gl::renderer m_renderer;
 
         std::vector<named_scene> m_scene_vector;

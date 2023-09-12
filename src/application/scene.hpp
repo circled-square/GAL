@@ -3,12 +3,12 @@
 
 #include <vector>
 
-namespace scene_loader {
-    class scene_loader; // the file this is defined in is not included to avoid circular inclusion
-    
+namespace application {
+    class application; // the file this is defined in is not included to avoid circular inclusion
+
     class scene {
-        friend class scene_loader;
-        scene_loader* m_scene_loader; // this is private: the only reason it is ever used is to change the active scene, and subclasses should do that through change_scene()
+        friend class application;
+        application* m_application; // this is private: the only reason it is ever used is to change the active scene, and subclasses should do that through change_scene()
     public:
         scene();
         virtual ~scene() = default;
