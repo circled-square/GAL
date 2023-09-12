@@ -41,7 +41,7 @@ namespace scene_demos {
         void add_scene(named_scene::scene_ctor_t scene_ctor, std::string name);
         template<class T>
         void add_scene(std::string name) {
-            add_scene({ [] -> scene_with_previous_scene* { return new T; }, name });
+            add_scene({ []() -> scene_with_previous_scene* { return new T; }, name });
         }
         void activate(const char* scene_name) {
             for(named_scene& s : m_scene_vector) {
