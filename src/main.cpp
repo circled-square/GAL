@@ -24,7 +24,7 @@ int main() try {
     menu_demo.add_scene<scene_demos::gltf_demo>("gltf demo");
     //menu_demo.activate("gltf demo"); //TODO: why does this SIGSEGV?
 
-    application::application application({800, 600}, "Hello there", &menu_demo);
+    application::application application({800, 600}, "demo", &menu_demo);
 
     cout << glGetString(GL_VERSION) << endl;
 
