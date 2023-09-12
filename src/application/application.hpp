@@ -1,7 +1,7 @@
 #ifndef APPLICATION_APPLICATION_HPP
 #define APPLICATION_APPLICATION_HPP
 
-#include "../glfw/window.hpp"
+#include "glfw/window.hpp"
 
 #include "scene.hpp"
 

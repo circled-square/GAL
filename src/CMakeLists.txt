@@ -38,8 +38,8 @@ add_library(stb_image_wrapper STATIC stb/image.cpp)
 target_link_libraries(stb_image_wrapper stb)
 
 
-#glfw
-add_library(glfw_wrapper STATIC glfw/window.cpp)
+#glfw_wrapper
+add_library(glfw_wrapper STATIC application/glfw/window.cpp)
 target_link_libraries(glfw_wrapper glfw scluk glad)
 
 
