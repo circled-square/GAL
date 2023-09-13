@@ -1,4 +1,3 @@
-#include <stdexcept>
 #include <iostream>
 
 #include "application/application.hpp"
@@ -13,7 +12,7 @@
 
 using namespace glm;
 
-int main() try {
+int main() {
     scene_demos::menu_demo menu_demo;
 
     menu_demo.add_scene<scene_demos::mul_obj_draw_demo>("multiple object draw demo");
@@ -29,6 +28,4 @@ int main() try {
     std::cout << glGetString(GL_VERSION) << std::endl;
 
     application.run();
-} catch (std::exception& e) {
-    std::cout << "Caught exception!\n" << e.what() << std::endl;
 }
