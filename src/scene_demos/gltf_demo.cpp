@@ -82,40 +82,6 @@ namespace scene_demos {
         return model;
     }
 
-    static vector<tinygltf::Mesh*> get_model_meshes(tinygltf::Model& model) {
-
-        //wtf does this function even do... why not just read the model.meshes array?
-
-        vector<tinygltf::Mesh*> meshes;
-
-        const tinygltf::Scene &scene = model.scenes[model.defaultScene];
-        list<tinygltf::Node*> nodes;
-
-        for(size_t i = 0; i < scene.nodes.size(); i++) {
-            assert(scene.nodes[i] >= 0 && scene.nodes[i] < model.nodes.size());
-            nodes.push_back(&model.nodes[scene.nodes[i]]);
-        }
-
-        while(!nodes.empty()) {
-            tinygltf::Node& node = *nodes.front();
-            nodes.pop_front();
-
-            if((node.mesh >= 0) && (node.mesh < model.meshes.size())) {
-                meshes.push_back(&model.meshes[node.mesh]);
-                out("mesh.push_back(&model.meshes[%]);", node.mesh);
-            }
-
-            for(size_t i = 0; i < node.children.size(); i++) {
-                assert((node.children[i] >= 0) && (node.children[i] < model.nodes.size()));
-                nodes.push_back(&model.nodes[node.children[i]]);
-            }
-        }
-
-        assert(meshes.size() == model.meshes.size());
-
-        return meshes;
-    }
-
     static int get_element_typeid_of_bufview(tinygltf::Model& model, int bufview) {
         int element_typeid = -1;
         for(tinygltf::Accessor& a : model.accessors) {
@@ -163,12 +129,11 @@ namespace scene_demos {
         return { move(vbos), move(ibos), move(bufview_to_vbo_map) };
     }
 
-    static vertex_layout get_meshes_vertex_layout(tinygltf::Model& model, vector<tinygltf::Mesh*>& meshes, const bufview_to_vbo_map_t& bufview_to_vbo_map) {
+    static vertex_layout get_meshes_vertex_layout(tinygltf::Model& model, const bufview_to_vbo_map_t& bufview_to_vbo_map) {
         using vertex_array_attrib = vertex_layout::vertex_array_attrib;
         unordered_map<int, vertex_array_attrib> vaas; // avoid repeating attribs in the layout.attribs vector
 
-        for(tinygltf::Mesh* mesh_p : meshes) {
-            tinygltf::Mesh& mesh = *mesh_p;
+        for(tinygltf::Mesh& mesh : model.meshes) {
 
             for(size_t i = 0; i < mesh.primitives.size(); ++i) {
                 tinygltf::Primitive primitive = mesh.primitives[i];
@@ -209,9 +174,10 @@ namespace scene_demos {
 
     static texture get_model_texture(tinygltf::Model& model) {
         assert(model.textures.size() > 0);
+
         tinygltf::Texture& tex = model.textures[0];
 
-        assert(tex.source > -1);
+        assert(tex.source >= 0 && model.images.size() > tex.source);
 
         tinygltf::Image& image = model.images[tex.source];
 
@@ -246,9 +212,7 @@ namespace scene_demos {
     static vertex_array make_model_vao(tinygltf::Model& model) {
         auto[vbos, ibos, bufview_to_vbo_map] = make_buffers(model);
 
-        vector<tinygltf::Mesh*> meshes = get_model_meshes(model);
-        
-        vertex_layout vertex_layout = get_meshes_vertex_layout(model, meshes, bufview_to_vbo_map);
+        vertex_layout vertex_layout = get_meshes_vertex_layout(model, bufview_to_vbo_map);
 
         deduce_vbo_strides(vbos, vertex_layout);
 
@@ -257,6 +221,8 @@ namespace scene_demos {
 
     static model_t make_model() {
         tinygltf::Model model = load_gltf_from_file("src/third_party/tinygltf/models/Cube/Cube.gltf", false);
+        //tinygltf::Model model = load_gltf_from_file("src/third_party/glTF-Sample-Models/1.0/Avocado/glTF/Avocado.gltf", false);
+        //tinygltf::Model model = load_gltf_from_file("src/third_party/glTF-Sample-Models/1.0/Duck/glTF/Duck.gltf", false);
 
         vertex_array vao = make_model_vao(model);
         texture tex = get_model_texture(model);
