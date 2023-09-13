@@ -2,24 +2,24 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <list>
+#include <unordered_set>
 #include <stdexcept>
 #include <imgui.h>
 #include <scluk/format.hpp>
 #include <scluk/read_file.hpp>
 
 template<int size, typename T, glm::qualifier q>
-std::string vec_to_string(glm::vec<size, T, q> v) {
-    std::ostringstream os;
+std::ostream& push_vec_in_stream(std::ostream& os, glm::vec<size, T, q> v) {
     os << "(";
     for(int i = 0; i < size-1; i++)
         os << v[i] << ", ";
     os << v[size-1] << ")";
 
-    return os.str();
+    return os;
 }
 
-std::ostream& operator<<(std::ostream& os, glm::uvec3 v) { return os << vec_to_string(v); }
-std::ostream& operator<<(std::ostream& os, glm::u16vec3 v) { return os << vec_to_string(v); }
+std::ostream& operator<<(std::ostream& os, glm::uvec3 v) { return push_vec_in_stream(os, v); }
+std::ostream& operator<<(std::ostream& os, glm::u16vec3 v) { return push_vec_in_stream(os, v); }
 
 
 using namespace std;
@@ -71,10 +71,10 @@ namespace scene_demos {
             : loader.LoadASCIIFromFile(&model, &err, &warn, path); // for .gltf
 
         if(!warn.empty())
-            out("Warn: %", warn.c_str());
+            out("Warn: %", warn);
         
         if(!err.empty())
-            out("Err: %", err.c_str());
+            out("Err: %", err);
         
         if(!success)
             throw runtime_error("Fatal error: Failed to parse glTF");
@@ -94,7 +94,6 @@ namespace scene_demos {
         for(size_t i = 0; i < scene.nodes.size(); i++) {
             assert(scene.nodes[i] >= 0 && scene.nodes[i] < model.nodes.size());
             nodes.push_back(&model.nodes[scene.nodes[i]]);
-            //out("nodes.push_back(&model.nodes[%]); (scene.nodes[%])", scene.nodes[i], i);
         }
 
         while(!nodes.empty()) {
@@ -109,7 +108,6 @@ namespace scene_demos {
             for(size_t i = 0; i < node.children.size(); i++) {
                 assert((node.children[i] >= 0) && (node.children[i] < model.nodes.size()));
                 nodes.push_back(&model.nodes[node.children[i]]);
-                //out("nodes.push_back(&model.nodes[%]); (node.children[%])", node.children[i], i);
             }
         }
 
@@ -145,41 +143,13 @@ namespace scene_demos {
             if (bufView.target == TINYGLTF_TARGET_ARRAY_BUFFER) {
                 bufview_to_vbo_map[i] = vbos.size();
 
-
-                //TODO: these prints need to go (they are also specific to a precise gltf file)
-                /*if(vbos.size() == 0) { //"POSITION" vbo -> print contents
-                    const vec3* begin = reinterpret_cast<const vec3*>(&buf.data[bufView.byteOffset]);
-                    const vec3* end = reinterpret_cast<const vec3*>(&buf.data[bufView.byteOffset+bufView.byteLength]);
-                    for(const vec3* p = begin; p < end; p++) {
-                        out("{ %, %, % },", p->x, p->y, p->z);
-                    }
-                }
-                if(vbos.size() == 3) { //"TEXCOORD_0" vbo -> print contents
-					const vec2* begin = reinterpret_cast<const vec2*>(&buf.data[bufView.byteOffset]);
-					const vec2* end = reinterpret_cast<const vec2*>(&buf.data[bufView.byteOffset+bufView.byteLength]);
-					out("end - begin = %", end - begin);
-					for(const vec2* p = begin; p < end; p++) {
-						out("{ %, % },", p->x, p->y);
-					}
-				}*/
-
                 vbos.emplace_back(&buf.data[bufView.byteOffset], bufView.byteLength, bufView.byteStride);
                 out("vbos.emplace(&buf.data[%], %, %);", bufView.byteOffset, bufView.byteLength, bufView.byteStride);
             } else {
                 const int element_typeid = get_element_typeid_of_bufview(model, i);
 
                 const size_t size = bufView.byteLength / typeid_to_size(element_typeid);
-                //TODO: uncomment this instead of the following code block
                 const size_t tri_count = size/3;
-
-                /*{
-					const u16vec3* begin = reinterpret_cast<const u16vec3*>(&buf.data[bufView.byteOffset]);
-					const u16vec3* end = reinterpret_cast<const u16vec3*>(&buf.data[bufView.byteOffset+bufView.byteLength]);
-					out("end - begin = %", end - begin);
-					for(const u16vec3* p = begin; p < end; p++) {
-						out("{ %, %, % },", p->x, p->y, p->z);
-					}
-                }*/
 
                 ibos.push_back(index_buffer(buffer(&buf.data[bufView.byteOffset], bufView.byteLength), tri_count, element_typeid));
 
@@ -213,9 +183,8 @@ namespace scene_demos {
                     //vertex array attribute
                     int vaa = 
                         attrib_name == "POSITION" ? 0 :
-                        attrib_name == "TEXCOORD_0" ? 1 : -1;
-                        //TODO: uncomment this
-                        //attrib_name == "NORMAL" ? 2 : -1;
+                        attrib_name == "TEXCOORD_0" ? 1 :
+                        attrib_name == "NORMAL" ? 2 : -1;
 
                     if(vaa != -1) {
                         int vbo_bind = bufview_to_vbo_map[accessor.bufferView];
@@ -224,8 +193,8 @@ namespace scene_demos {
                                 attrib_name, vaa, accessor.byteOffset, accessor.componentType, size, vbo_bind, accessor.normalized);
                         vaas[vaa] = attrib;
                     } else {
-                        //out("%: (index=MISSING, offset=%, type=%, size=%, bind_index=%, normalized=%)",
-                        //    attrib_name, accessor.byteOffset, accessor.componentType, size, bufview_to_vbo_map[accessor.bufferView], accessor.normalized);
+                        out("%: (index=MISSING, offset=%, type=%, size=%, bind_index=%, normalized=%)",
+                            attrib_name, accessor.byteOffset, accessor.componentType, size, bufview_to_vbo_map[accessor.bufferView], accessor.normalized);
                     }
                 }
             }
@@ -240,7 +209,6 @@ namespace scene_demos {
 
     static texture get_model_texture(tinygltf::Model& model) {
         assert(model.textures.size() > 0);
-        // fixme: Use material's baseColor
         tinygltf::Texture& tex = model.textures[0];
 
         assert(tex.source > -1);
@@ -259,6 +227,22 @@ namespace scene_demos {
         return texture(spec);
     }
 
+    static void deduce_vbo_strides(vector<vertex_buffer>& vbos, const vertex_layout& vertex_layout) {
+        unordered_set<size_t> vbos_to_deduce_stride_of;
+        for(size_t i = 0; i < vbos.size(); i++) {
+            if(vbos[i].get_stride() == 0)
+                vbos_to_deduce_stride_of.insert(i);
+        }
+
+        for(const auto& attrib : vertex_layout.attribs) {
+            size_t vbo_index = attrib.vao_vbo_bind_index;
+            if(vbos_to_deduce_stride_of.contains(vbo_index)) {
+                size_t attrib_size = attrib.size * typeid_to_size(attrib.type_id);
+                vbos[vbo_index].set_stride(vbos[vbo_index].get_stride() + attrib_size);
+            }
+        }
+    }
+
     static vertex_array make_model_vao(tinygltf::Model& model) {
         auto[vbos, ibos, bufview_to_vbo_map] = make_buffers(model);
 
@@ -266,87 +250,7 @@ namespace scene_demos {
         
         vertex_layout vertex_layout = get_meshes_vertex_layout(model, meshes, bufview_to_vbo_map);
 
-        return vertex_array(move(vbos), move(ibos), move(vertex_layout));
-    }
-
-    static vertex_array make_dbg_vao() {
-    	static constexpr std::array<vec3, 36> __positions {
-    		vec3
-    		{  1, -1,  1 }, { -1, -1, -1 }, {  1, -1, -1 },
-			{ -1,  1, -1 }, {  1,  1,  1 }, {  1,  1, -1 },
-    		{  1,  1, -1 }, {  1, -1,  1 }, {  1, -1, -1 },
-    		{  1,  1,  1 }, { -1, -1,  1 }, {  1, -1,  1 },
-    		{ -1, -1,  1 }, { -1,  1, -1 }, { -1, -1, -1 },
-    		{  1, -1, -1 }, { -1,  1, -1 }, {  1,  1, -1 },
-    		{  1, -1,  1 }, { -1, -1,  1 }, { -1, -1, -1 },
-    		{ -1,  1, -1 }, { -1,  1,  1 }, {  1,  1,  1 },
-    		{  1,  1, -1 }, {  1,  1,  1 }, {  1, -1,  1 },
-    		{  1,  1,  1 }, { -1,  1,  1 }, { -1, -1,  1 },
-    		{ -1, -1,  1 }, { -1,  1,  1 }, { -1,  1, -1 },
-    		{  1, -1, -1 }, { -1, -1, -1 }, { -1,  1, -1 },
-    	};
-    	static constexpr std::array<vec2, 36> __tex_coords {
-    		vec2
-			{  0,  0 }, { -1,  1 }, {  0,  1 },
-			{  0,  0 }, {  1, -1 }, {  1, -0 },
-			{  1,  0 }, {  0, -1 }, {  1, -1 },
-			{  1,  0 }, { -0, -1 }, {  1, -1 },
-			{  0,  0 }, {  1,  1 }, {  1,  0 },
-			{  0,  0 }, { -1,  1 }, {  0,  1 },
-			{  0,  0 }, { -1,  0 }, { -1,  1 },
-			{  0,  0 }, { -0, -1 }, {  1, -1 },
-			{  1,  0 }, { -0,  0 }, {  0, -1 },
-			{  1,  0 }, { -0,  0 }, { -0, -1 },
-			{  0,  0 }, {  0,  1 }, {  1,  1 },
-			{  0,  0 }, { -1,  0 }, { -1,  1 },
-    	};
-    	static constexpr std::array<u16vec3, 12> __indices {
-    		u16vec3
-    		{  0,  1,  2 },
-    		{  3,  4,  5 },
-    		{  6,  7,  8 },
-    		{  9, 10, 11 },
-    		{ 12, 13, 14 },
-    		{ 15, 16, 17 },
-    		{ 18, 19, 20 },
-    		{ 21, 22, 23 },
-    		{ 24, 25, 26 },
-    		{ 27, 28, 29 },
-    		{ 30, 31, 32 },
-    		{ 33, 34, 35 },
-    	};
-
-    	static constexpr std::array<int, 20> junk_data {
-    		3, 7, 3, 7, 8, 3, 7, 3, 7, 8, 3, 7, 3, 7, 8, 3, 7, 3, 7, 8,
-    	};
-
-        vertex_layout vertex_layout;
-        vertex_layout::vertex_array_attrib attrib;
-        attrib.index = 0;
-        attrib.offset = 0;
-        attrib.type_id = GL_FLOAT;
-        attrib.size = 3;
-        attrib.vao_vbo_bind_index = 0;
-        vertex_layout.attribs.push_back(attrib);
-
-        attrib.index = 1;
-        attrib.offset = 0;
-        attrib.type_id = GL_FLOAT;
-        attrib.size = 2;
-        attrib.vao_vbo_bind_index = 3;
-        vertex_layout.attribs.push_back(attrib);
-
-
-        vector<vertex_buffer> vbos;
-        vbos.reserve(2);
-        vbos.push_back(vertex_buffer(__positions));
-        vbos.push_back(vertex_buffer(junk_data));
-        vbos.push_back(vertex_buffer(junk_data));
-        vbos.push_back(vertex_buffer(__tex_coords));
-
-        vector<index_buffer> ibos;
-        ibos.reserve(1);
-        ibos.push_back(index_buffer(__indices));
+        deduce_vbo_strides(vbos, vertex_layout);
 
         return vertex_array(move(vbos), move(ibos), move(vertex_layout));
     }
@@ -354,14 +258,9 @@ namespace scene_demos {
     static model_t make_model() {
         tinygltf::Model model = load_gltf_from_file("src/third_party/tinygltf/models/Cube/Cube.gltf", false);
 
-        //TODO: uncomment this
-        //vertex_array vao = make_model_vao(model);
-        vertex_array vao = make_dbg_vao();
-
+        vertex_array vao = make_model_vao(model);
         texture tex = get_model_texture(model);
-
         shader_program shader(read_file("src/shader/gltf_demo/vert.glsl"), read_file("src/shader/gltf_demo/frag.glsl"));
-
 
         return model_t { move(vao), move(tex), move(shader) };
     }
