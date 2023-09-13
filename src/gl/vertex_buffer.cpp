@@ -15,4 +15,6 @@ namespace gl {
     uint vertex_buffer::get_gl_id() const { return m_buf.get_gl_id(); }
 
     size_t vertex_buffer::get_stride() const { return m_stride; }
-}
+
+    void vertex_buffer::set_stride(size_t stride) { m_stride = stride; }
+    }

@@ -8,7 +8,7 @@
 namespace gl {
     class vertex_buffer {
         buffer m_buf;
-        const size_t m_stride;
+        size_t m_stride;
     public:
         vertex_buffer(vertex_buffer&& o)  noexcept;
         vertex_buffer(buffer buf, size_t stride);
@@ -24,8 +24,10 @@ namespace gl {
             assert(sizeof(typename arr_t::value_type) == m_stride);
             m_buf.update(offset, arr.data(), arr.size() * m_stride);
         }
+
         uint get_gl_id() const;
         size_t get_stride() const;
+        void set_stride(size_t stride);
     };
 
 } // gl
