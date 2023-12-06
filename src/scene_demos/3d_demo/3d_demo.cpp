@@ -72,7 +72,7 @@ namespace scene_demos {
           m_tex(make_texture_specification(m_img)),
           m_renderer(),
           //compute the mvp matrix
-          m_model_mat(make_model_matrix(vec3(0,0 ,-1), pi/2, .25)),
+          m_model_mat(make_model_matrix(vec3(0,0,-1), pi/2, .25)),
           m_view_mat(make_view_matrix(vec3(0,0,0), -pi/2)),
           m_proj_mat(make_proj_matrix(vec2(4,3))),
           m_mvp_mat(m_proj_mat * m_view_mat * m_model_mat)

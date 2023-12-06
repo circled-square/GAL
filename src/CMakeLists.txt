@@ -72,26 +72,27 @@ target_link_libraries(application glfw_wrapper imgui gl_initialize_opengl scene)
 
 
 #scene demos
-add_library(scene_with_previous_scene STATIC scene_demos/scene_with_previous_scene.cpp)
+add_library(scene_with_previous_scene STATIC scene_demos/scene_with_previous_scene/scene_with_previous_scene.cpp)
 target_link_libraries(scene_with_previous_scene scene imgui)
+target_include_directories(scene_with_previous_scene PUBLIC scene_demos/scene_with_previous_scene/)
 
 
-add_library(menu_demo STATIC scene_demos/menu_demo.cpp)
+add_library(menu_demo STATIC scene_demos/menu_demo/menu_demo.cpp)
 target_link_libraries(menu_demo scene scene_with_previous_scene imgui)
 
-add_library(mul_obj_draw_demo STATIC scene_demos/mul_obj_draw_demo.cpp)
+add_library(mul_obj_draw_demo STATIC scene_demos/mul_obj_draw_demo/mul_obj_draw_demo.cpp)
 target_link_libraries(mul_obj_draw_demo scene_with_previous_scene imgui)
 
-add_library(clear_color_demo STATIC scene_demos/clear_color_demo.cpp)
+add_library(clear_color_demo STATIC scene_demos/clear_color_demo/clear_color_demo.cpp)
 target_link_libraries(clear_color_demo scene_with_previous_scene imgui)
 
-add_library(texture_demo STATIC scene_demos/texture_demo.cpp)
+add_library(texture_demo STATIC scene_demos/texture_demo/texture_demo.cpp)
 target_link_libraries(texture_demo scene_with_previous_scene imgui)
 
-add_library(3d_demo STATIC scene_demos/3d_demo.cpp)
+add_library(3d_demo STATIC scene_demos/3d_demo/3d_demo.cpp)
 target_link_libraries(3d_demo scene_with_previous_scene imgui)
 
-add_library(gltf_demo STATIC scene_demos/gltf_demo.cpp)
+add_library(gltf_demo STATIC scene_demos/gltf_demo/gltf_demo.cpp)
 target_link_libraries(gltf_demo scene_with_previous_scene imgui tinygltf)
 
 set(SCENE_DEMOS menu_demo mul_obj_draw_demo clear_color_demo texture_demo 3d_demo gltf_demo)

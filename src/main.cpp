@@ -3,13 +3,12 @@
 
 #include "application/application.hpp"
 
-#include "scene_demos/menu_demo.hpp"
-#include "scene_demos/mul_obj_draw_demo.hpp"
-#include "scene_demos/clear_color_demo.hpp"
-#include "scene_demos/texture_demo.hpp"
-#include "scene_demos/3d_demo.hpp"
-#include "scene_demos/gltf_demo.hpp"
-
+#include "scene_demos/menu_demo/menu_demo.hpp"
+#include "scene_demos/mul_obj_draw_demo/mul_obj_draw_demo.hpp"
+#include "scene_demos/clear_color_demo/clear_color_demo.hpp"
+#include "scene_demos/texture_demo/texture_demo.hpp"
+#include "scene_demos/3d_demo/3d_demo.hpp"
+#include "scene_demos/gltf_demo/gltf_demo.hpp"
 
 using namespace glm;
 
@@ -30,5 +29,5 @@ int main() try {
 
     application.run();
 } catch (std::exception& e) {
-    std::cout << "Caught exception!\n" << e.what() << std::endl;
+    std::cerr << "Caught exception!\n" << e.what() << std::endl;
 }

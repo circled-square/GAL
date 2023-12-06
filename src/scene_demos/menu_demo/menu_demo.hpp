@@ -3,7 +3,7 @@
 
 #include "../application/scene.hpp"
 #include "../gl/renderer.hpp"
-#include "scene_with_previous_scene.hpp"
+#include "../scene_with_previous_scene/scene_with_previous_scene.hpp"
 #include <scluk/exception.hpp>
 
 #include <vector>
