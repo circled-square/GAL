@@ -47,7 +47,7 @@ namespace glfw {
             glViewport(0, 0, W, H); 
         });*/
 
-        glfwMakeContextCurrent(m_window_ptr);
+        glfwMakeContextCurrent((GLFWwindow*)m_window_ptr);
         glfwSwapInterval(0); // Disable vsync: not locking fps gives us better perspective on the performance of the application during development
 
         window::window_count++;

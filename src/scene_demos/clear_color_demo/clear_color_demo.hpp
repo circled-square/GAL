@@ -1,8 +1,8 @@
 #ifndef GLSTUFF_CLEAR_COLOR_DEMO_HPP
 #define GLSTUFF_CLEAR_COLOR_DEMO_HPP
 
-#include "../gl/renderer.hpp"
-#include "scene_with_previous_scene.hpp"
+#include "../../gl/renderer.hpp"
+#include "../scene_with_previous_scene/scene_with_previous_scene.hpp"
 
 #include <glm/glm.hpp>
 

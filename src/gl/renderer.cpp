@@ -1,7 +1,3 @@
-//
-// Created by billy on 4/23/23.
-//
-
 #include "renderer.hpp"
 #include "types.hpp"
 

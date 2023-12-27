@@ -1,5 +1,6 @@
 #include "gltf_demo.hpp"
 
+#include <tinygltf/tiny_gltf.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <list>
 #include <unordered_set>
@@ -22,13 +23,14 @@ std::ostream& operator<<(std::ostream& os, glm::uvec3 v) { return fmt_vec_to_str
 std::ostream& operator<<(std::ostream& os, glm::u16vec3 v) { return fmt_vec_to_stream(os, v); }
 
 
-using namespace std;
-using namespace glm;
-using namespace gl;
-using namespace scluk;
 
 
 namespace scene_demos {
+    using namespace std;
+    using namespace glm;
+    using namespace gl;
+    using namespace scluk;
+
     constexpr vec3 x_axis = vec3(1,0,0), y_axis = vec3(0,1,0), z_axis = vec3(0,0,1);
     constexpr float pi = glm::pi<f32>();
 

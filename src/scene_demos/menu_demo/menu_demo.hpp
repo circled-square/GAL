@@ -1,8 +1,8 @@
 #ifndef GLSTUFF_MENU_DEMO_HPP
 #define GLSTUFF_MENU_DEMO_HPP
 
-#include "../application/scene.hpp"
-#include "../gl/renderer.hpp"
+#include "../../application/scene.hpp"
+#include "../../gl/renderer.hpp"
 #include "../scene_with_previous_scene/scene_with_previous_scene.hpp"
 #include <scluk/exception.hpp>
 

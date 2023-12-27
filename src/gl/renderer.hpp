@@ -1,7 +1,3 @@
-//
-// Created by billy on 4/23/23.
-//
-
 #ifndef GLSTUFF_RENDERER_HPP
 #define GLSTUFF_RENDERER_HPP
 

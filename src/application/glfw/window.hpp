@@ -10,16 +10,15 @@ callable from other threads.
 #include <cstdint>
 #include <tuple>
 #include <glad/glad.h> // this MUST be included before glfw, so this file will include it here even though it does not need to
-#include <GLFW/glfw3.h>
 #include <scluk/functional.hpp>
 #include <glm/glm.hpp>
 
+typedef struct GLFWwindow GLFWwindow;
 namespace glfw {
-    typedef struct GLFWwindow GLFWwindow;
-    using window_t = GLFWwindow*;
+    using window_handler_t = GLFWwindow*;
     class window {
         static std::int64_t window_count;
-        window_t m_window_ptr;
+        window_handler_t m_window_ptr;
     public:
         void create(glm::ivec2 res, const std::string& title);
         void destroy();
@@ -33,10 +32,10 @@ namespace glfw {
         
         glm::ivec2 get_framebuf_sz();
 
-        void set_resize_cb (void (*f)(window_t, int, int));
-        void set_key_cb (void (*f)(window_t, int, int, int, int));
+        void set_resize_cb (void (*f)(window_handler_t, int, int));
+        void set_key_cb (void (*f)(window_handler_t, int, int, int, int));
         void set_key_cb (auto f) {
-            set_key_cb(scluk::lambda_to_fnptr<void(window_t,int,int,int,int)>(std::move(f)));
+            set_key_cb(scluk::lambda_to_fnptr<void(window_handler_t,int,int,int,int)>(std::move(f)));
         }
         
         static void  poll_events ();
@@ -48,8 +47,7 @@ namespace glfw {
         ~window () { this->destroy(); }
         
         //access and conversion of the internal GLFWwindow*
-        operator void*    () { return  m_window_ptr; }
-        operator window_t () { return  m_window_ptr; }
+        operator window_handler_t () { return  m_window_ptr; }
         operator bool     () { return  m_window_ptr; }
         bool operator!    () { return !m_window_ptr; }
     };
