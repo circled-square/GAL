@@ -9,22 +9,6 @@
 #include <scluk/format.hpp>
 #include <scluk/read_file.hpp>
 
-template<int size, typename T, glm::qualifier q>
-std::ostream& fmt_vec_to_stream(std::ostream& os, glm::vec<size, T, q> v) {
-    os << "(";
-    for(int i = 0; i < size-1; i++)
-        os << v[i] << ", ";
-    os << v[size-1] << ")";
-
-    return os;
-}
-
-std::ostream& operator<<(std::ostream& os, glm::uvec3 v) { return fmt_vec_to_stream(os, v); }
-std::ostream& operator<<(std::ostream& os, glm::u16vec3 v) { return fmt_vec_to_stream(os, v); }
-
-
-
-
 namespace scene_demos {
     using namespace std;
     using namespace glm;
