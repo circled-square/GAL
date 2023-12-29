@@ -76,12 +76,7 @@ namespace scene_demos {
           m_view_mat(make_view_matrix(vec3(0,0,0), -pi/2)),
           m_proj_mat(make_proj_matrix(vec2(4,3))),
           m_mvp_mat(m_proj_mat * m_view_mat * m_model_mat)
-    {
-        for(auto& e : vertex_data) {
-            vec4 v = m_mvp_mat * vec4(e.pos, 1);
-            scluk::out("vec4(%, %, %, %)", v.x, v.y, v.z, v.w);
-        }
-    }
+    {}
 
     mat4 three_dimensional_demo::make_model_matrix(vec3 pos, float rotation, float scale_factor) {
         return scale(
