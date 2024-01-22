@@ -1,12 +1,11 @@
 #ifndef GLSTUFF_GLTF_DEMO_HPP
 #define GLSTUFF_GLTF_DEMO_HPP
 
-#include "../gl/renderer.hpp"
-#include "../gl/vertex_array.hpp"
-#include "../gl/texture.hpp"
-#include "../gl/shader.hpp"
-#include "scene_with_previous_scene.hpp"
-#include <tinygltf/tiny_gltf.h>
+#include "../../gl/renderer.hpp"
+#include "../../gl/vertex_array.hpp"
+#include "../../gl/texture.hpp"
+#include "../../gl/shader.hpp"
+#include "../scene_with_previous_scene/scene_with_previous_scene.hpp"
 
 namespace scene_demos {
 

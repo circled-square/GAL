@@ -1,5 +1,5 @@
 #include "menu_demo.hpp"
-#include "scene_with_previous_scene.hpp"
+#include "../scene_with_previous_scene/scene_with_previous_scene.hpp"
 #include <glad/glad.h>
 #include <imgui.h>
 

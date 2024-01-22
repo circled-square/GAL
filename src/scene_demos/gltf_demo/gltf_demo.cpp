@@ -1,5 +1,6 @@
 #include "gltf_demo.hpp"
 
+#include <tinygltf/tiny_gltf.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <list>
 #include <unordered_set>
@@ -8,27 +9,12 @@
 #include <scluk/format.hpp>
 #include <scluk/read_file.hpp>
 
-template<int size, typename T, glm::qualifier q>
-std::ostream& push_vec_in_stream(std::ostream& os, glm::vec<size, T, q> v) {
-    os << "(";
-    for(int i = 0; i < size-1; i++)
-        os << v[i] << ", ";
-    os << v[size-1] << ")";
-
-    return os;
-}
-
-std::ostream& operator<<(std::ostream& os, glm::uvec3 v) { return push_vec_in_stream(os, v); }
-std::ostream& operator<<(std::ostream& os, glm::u16vec3 v) { return push_vec_in_stream(os, v); }
-
-
-using namespace std;
-using namespace glm;
-using namespace gl;
-using namespace scluk;
-
-
 namespace scene_demos {
+    using namespace std;
+    using namespace glm;
+    using namespace gl;
+    using namespace scluk;
+
     constexpr vec3 x_axis = vec3(1,0,0), y_axis = vec3(0,1,0), z_axis = vec3(0,0,1);
     constexpr float pi = glm::pi<f32>();
 
@@ -129,12 +115,11 @@ namespace scene_demos {
         return { move(vbos), move(ibos), move(bufview_to_vbo_map) };
     }
 
-    static vertex_layout get_meshes_vertex_layout(tinygltf::Model& model, const bufview_to_vbo_map_t& bufview_to_vbo_map) {
+    static vertex_layout get_vertex_layout(tinygltf::Model& model, const bufview_to_vbo_map_t& bufview_to_vbo_map) {
         using vertex_array_attrib = vertex_layout::vertex_array_attrib;
         unordered_map<int, vertex_array_attrib> vaas; // avoid repeating attribs in the layout.attribs vector
 
-        for(tinygltf::Mesh& mesh : model.meshes) {
-
+        for(const tinygltf::Mesh& mesh : model.meshes) {
             for(size_t i = 0; i < mesh.primitives.size(); ++i) {
                 tinygltf::Primitive primitive = mesh.primitives[i];
                 //tinygltf::Accessor indexAccessor = model.accessors[primitive.indices];
@@ -210,9 +195,7 @@ namespace scene_demos {
     }
 
     static vertex_array make_model_vao(tinygltf::Model& model) {
-        auto[vbos, ibos, bufview_to_vbo_map] = make_buffers(model);
-
-        vertex_layout vertex_layout = get_meshes_vertex_layout(model, bufview_to_vbo_map);
+        vertex_layout vertex_layout = get_vertex_layout(model, bufview_to_vbo_map);
 
         deduce_vbo_strides(vbos, vertex_layout);
 

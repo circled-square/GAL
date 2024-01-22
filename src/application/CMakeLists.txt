@@ -1,0 +1,14 @@
+# glfw wrapper
+add_library(application__glfw_wrapper STATIC glfw/window.cpp)
+target_link_libraries(application__glfw_wrapper PRIVATE third_party__glfw)
+target_link_libraries(application__glfw_wrapper PUBLIC third_party__scluk third_party__glad third_party__glm)
+
+#scene
+add_library(application__scene STATIC scene.cpp)
+target_link_libraries(application__scene PRIVATE application__glfw_wrapper)
+
+#application
+add_library(application STATIC application.cpp)
+target_link_libraries(application PRIVATE third_party__imgui gl_initialize_opengl)
+target_link_libraries(application PUBLIC application__scene application__glfw_wrapper third_party__scluk)
+

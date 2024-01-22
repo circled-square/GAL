@@ -1,12 +1,12 @@
 #ifndef GLSTUFF_MUL_OBJ_DRAW_DEMO_HPP
 #define GLSTUFF_MUL_OBJ_DRAW_DEMO_HPP
 
-#include "../gl/vertex_array.hpp"
-#include "../gl/shader.hpp"
-#include "../gl/texture.hpp"
-#include "../gl/renderer.hpp"
-#include "../stb/image.hpp"
-#include "scene_with_previous_scene.hpp"
+#include "../../gl/vertex_array.hpp"
+#include "../../gl/shader.hpp"
+#include "../../gl/texture.hpp"
+#include "../../gl/renderer.hpp"
+#include "../../stb/image.hpp"
+#include "../scene_with_previous_scene/scene_with_previous_scene.hpp"
 
 #include <glm/glm.hpp>
 

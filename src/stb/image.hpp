@@ -1,7 +1,3 @@
-//
-// Created by billy on 4/23/23.
-//
-
 #ifndef GLSTUFF_IMAGE_HPP
 #define GLSTUFF_IMAGE_HPP
 
