@@ -14,7 +14,7 @@
 	path = src/third_party/tinygltf
 	url = https://github.com/syoyo/tinygltf.git
 [submodule "src/third_party/glTF-Sample-Models"]
-	path = src/third_party/glTF-Sample-Models
+	path = resources/glTF-Sample-Models
 	url = https://github.com/KhronosGroup/glTF-Sample-Models.git
 [submodule "src/third_party/SCLUK"]
 	path = src/third_party/SCLUK
