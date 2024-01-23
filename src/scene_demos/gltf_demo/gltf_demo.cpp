@@ -195,6 +195,7 @@ namespace scene_demos {
     }
 
     static vertex_array make_model_vao(tinygltf::Model& model) {
+        auto[vbos, ibos, bufview_to_vbo_map] = make_buffers(model);
         vertex_layout vertex_layout = get_vertex_layout(model, bufview_to_vbo_map);
 
         deduce_vbo_strides(vbos, vertex_layout);
@@ -204,8 +205,8 @@ namespace scene_demos {
 
     static model_t make_model() {
         tinygltf::Model model = load_gltf_from_file("src/third_party/tinygltf/models/Cube/Cube.gltf", false);
-        //tinygltf::Model model = load_gltf_from_file("src/third_party/glTF-Sample-Models/1.0/Avocado/glTF/Avocado.gltf", false);
-        //tinygltf::Model model = load_gltf_from_file("src/third_party/glTF-Sample-Models/1.0/Duck/glTF/Duck.gltf", false);
+        //tinygltf::Model model = load_gltf_from_file("resources/glTF-Sample-Models/1.0/Avocado/glTF/Avocado.gltf", false);
+        //tinygltf::Model model = load_gltf_from_file("resources/glTF-Sample-Models/1.0/Duck/glTF/Duck.gltf", false);
 
         vertex_array vao = make_model_vao(model);
         texture tex = get_model_texture(model);
