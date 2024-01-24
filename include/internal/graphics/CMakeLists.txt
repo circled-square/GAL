@@ -1,0 +1,5 @@
+add_library(graphics_internal__init STATIC init.cpp init.hpp)
+target_link_libraries(graphics_internal__init PRIVATE third_party__glfw third_party__glad third_party__scluk)
+
+add_library(graphics_internal__types INTERFACE types.hpp)
+target_link_libraries(graphics_internal__types INTERFACE third_party__glad third_party__glm third_party__scluk)
