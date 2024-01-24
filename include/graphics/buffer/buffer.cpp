@@ -1,6 +1,6 @@
 #include "buffer.hpp"
 
-namespace gl {
+namespace gal::graphics {
     buffer::buffer(const void *data, size_t size, buffer_creation_params params) {
         glCreateBuffers(1, &m_buf_id);
 
@@ -24,4 +24,4 @@ namespace gl {
     void buffer::update(size_t offset, const void *data, size_t size) {
         glNamedBufferSubData(m_buf_id, offset, size, data);
     }
-} // gl
+}

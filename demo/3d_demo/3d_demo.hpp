@@ -1,5 +1,5 @@
-#ifndef GLSTUFF_3D_DEMO_HPP
-#define GLSTUFF_3D_DEMO_HPP
+#ifndef GAL_3D_DEMO_HPP
+#define GAL_3D_DEMO_HPP
 
 #include "../../include/graphics/vertex_array/vertex_array.hpp"
 #include "../../include/graphics/shader/shader.hpp"
@@ -13,11 +13,11 @@
 namespace scene_demos {
 
     class three_dimensional_demo : public scene_with_previous_scene {
-        gl::vertex_array m_vao;
-        gl::shader_program m_shader;
-        gl::renderer m_renderer;
-        stb::image m_img;
-        gl::texture m_tex;
+        gal::graphics::vertex_array m_vao;
+        gal::graphics::shader_program m_shader;
+        gal::graphics::renderer m_renderer;
+        gal::graphics::image m_img;
+        gal::graphics::texture m_tex;
         glm::mat4 m_model_mat, m_view_mat, m_proj_mat, m_mvp_mat;
 
         static glm::mat4 make_model_matrix(glm::vec3 pos, float rotation, float scale_factor);// only accounts for position and z-rotation
@@ -34,4 +34,4 @@ namespace scene_demos {
     };
 };
 
-#endif //GLSTUFF_3D_DEMO_HPP
+#endif //GAL_3D_DEMO_HPP

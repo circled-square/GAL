@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include <scluk/log.hpp>
 
-namespace gl {
+namespace gal::graphics {
     void handle_errors(GLenum source, GLenum type, GLuint msg_id, GLenum severity, int len, const char *msg, const void *user_param);
 
     static void initialize_error_handling() {

@@ -1,5 +1,5 @@
-#ifndef GL_SHADER_HPP
-#define GL_SHADER_HPP
+#ifndef GAL_GRAPHICS_SHADER_HPP
+#define GAL_GRAPHICS_SHADER_HPP
 
 #include "../../internal/graphics/types.hpp"
 
@@ -11,13 +11,11 @@
 
 #include <glad/glad.h>
 
-namespace gl {
+namespace gal::graphics {
     namespace internal {
         using uniform_func_t = scluk::fnptr_t<void(uint, int, int, void*)>;
         using uniform_mat_func_t = scluk::fnptr_t<void(uint, int, int, GLboolean, void*)>;
 
-        template<typename... Ts>
-        using first_of_pack = decltype(std::get<0>(std::declval<std::tuple<Ts...>>()));
         //a sort of make_array, only working with pointers and returning an array of uniform_func_t
         template<typename... Ts>
         static constexpr std::array<void*, sizeof...(Ts)> make_array(Ts... args){
@@ -102,4 +100,4 @@ namespace gl {
     };
 }
 
-#endif //GL_SHADER_HPP
+#endif //GAL_GRAPHICS_SHADER_HPP

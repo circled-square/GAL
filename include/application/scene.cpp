@@ -1,7 +1,7 @@
 #include "scene.hpp"
 #include "application.hpp"
 
-namespace application {
+namespace gal::application {
     scene::scene() : m_application(nullptr) {}
 
     scene* scene::change_scene(scene* s) {

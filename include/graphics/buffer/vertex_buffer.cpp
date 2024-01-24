@@ -1,6 +1,6 @@
 #include "vertex_buffer.hpp"
 
-namespace gl {
+namespace gal::graphics {
 
     vertex_buffer::vertex_buffer(buffer buf, size_t stride) : m_buf(std::move(buf)), m_stride(stride) {}
 

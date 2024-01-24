@@ -1,8 +1,8 @@
-#ifndef GLSTUFF_IMAGE_HPP
-#define GLSTUFF_IMAGE_HPP
+#ifndef GAL_GRAPHICS_IMAGE_HPP
+#define GAL_GRAPHICS_IMAGE_HPP
 
 
-namespace stb {
+namespace gal::graphics {
     struct image {
         int w, h, channels;
         void* buffer;
@@ -13,6 +13,6 @@ namespace stb {
         ~image();
     };
 
-} // image
+}
 
-#endif //GLSTUFF_IMAGE_HPP
+#endif //GAL_GRAPHICS_IMAGE_HPP

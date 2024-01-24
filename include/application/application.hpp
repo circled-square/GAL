@@ -1,12 +1,12 @@
-#ifndef APPLICATION_APPLICATION_HPP
-#define APPLICATION_APPLICATION_HPP
+#ifndef GAL_APPLICATION_HPP
+#define GAL_APPLICATION_HPP
 
 #include "window/window.hpp"
 #include <glm/glm.hpp>
 
 #include "scene.hpp"
 
-namespace application {
+namespace gal::application {
     class application {
         glfw::window m_window;
         scene* m_active_scene;
@@ -25,4 +25,4 @@ namespace application {
     };
 }
 
-#endif
+#endif // GAL_APPLICATION_HPP

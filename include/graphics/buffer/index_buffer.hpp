@@ -1,12 +1,12 @@
-#ifndef GLSTUFF_INDEX_BUFFER_HPP
-#define GLSTUFF_INDEX_BUFFER_HPP
+#ifndef GAL_GRAPHICS_INDEX_BUFFER_HPP
+#define GAL_GRAPHICS_INDEX_BUFFER_HPP
 
 #include "buffer.hpp"
 #include <glm/glm.hpp>
 #include <scluk/metaprogramming.hpp>
 
 
-namespace gl {
+namespace gal::graphics {
     template<typename T, typename U>
     concept array_of = scluk::concepts::indexable<T> && std::same_as<typename T::value_type, U>;
 
@@ -52,6 +52,6 @@ namespace gl {
         uint get_element_typeid() const;
         uint get_triangle_count() const;
     };
-} // gl
+}
 
-#endif //GLSTUFF_INDEX_BUFFER_HPP
+#endif //GAL_GRAPHICS_INDEX_BUFFER_HPP

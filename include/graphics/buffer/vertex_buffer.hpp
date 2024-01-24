@@ -1,11 +1,11 @@
-#ifndef GLSTUFF_VERTEX_BUFFER_HPP
-#define GLSTUFF_VERTEX_BUFFER_HPP
+#ifndef GAL_GRAPHICS_VERTEX_BUFFER_HPP
+#define GAL_GRAPHICS_VERTEX_BUFFER_HPP
 
 #include "buffer.hpp"
 
 #include <array>
 
-namespace gl {
+namespace gal::graphics {
     class vertex_buffer {
         buffer m_buf;
         size_t m_stride;
@@ -29,7 +29,6 @@ namespace gl {
         size_t get_stride() const;
         void set_stride(size_t stride);
     };
+}
 
-} // gl
-
-#endif //GLSTUFF_VERTEX_BUFFER_HPP
+#endif //GAL_GRAPHICS_VERTEX_BUFFER_HPP

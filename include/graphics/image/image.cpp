@@ -2,7 +2,7 @@
 #include <stb/stb_image.h>
 #include <cassert>
 
-namespace stb {
+namespace gal::graphics {
     image::image(const char *filename) {
         stbi_set_flip_vertically_on_load(1);
         buffer = stbi_load(filename, &w, &h, &channels, 4);

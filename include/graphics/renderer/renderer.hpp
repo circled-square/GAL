@@ -1,10 +1,10 @@
-#ifndef GLSTUFF_RENDERER_HPP
-#define GLSTUFF_RENDERER_HPP
+#ifndef GAL_GRAPHICS_RENDERER_HPP
+#define GAL_GRAPHICS_RENDERER_HPP
 
 #include "../vertex_array/vertex_array.hpp"
 #include "../shader/shader.hpp"
 
-namespace gl {
+namespace gal::graphics {
     class renderer {
     public:
         void draw(const vertex_array& vao, const shader_program& shader, uint ibo_index = 0);
@@ -12,6 +12,6 @@ namespace gl {
         void clear();
         void set_clear_color(glm::vec4 c);
     };
-} // gl
+}
 
-#endif //GLSTUFF_RENDERER_HPP
+#endif //GAL_GRAPHICS_RENDERER_HPP

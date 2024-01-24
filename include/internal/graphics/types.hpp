@@ -1,5 +1,5 @@
-#ifndef GLSTUFF_TYPES_HPP
-#define GLSTUFF_TYPES_HPP
+#ifndef GAL_INTERNAL_GRAPHICS_TYPES_HPP
+#define GAL_INTERNAL_GRAPHICS_TYPES_HPP
 
 #include <glad/glad.h>
 #include <scluk/aliases.hpp>
@@ -7,7 +7,7 @@
 #include <cassert>
 #include <glm/glm.hpp>
 
-namespace gl {
+namespace gal::graphics {
     using scluk::uint;
     static_assert(sizeof(uint) == sizeof(GLuint), "uint and GLuint do not have the same size");
 
@@ -80,4 +80,4 @@ namespace gl {
     using vector_to_scalar = scalar_to_vector<T>::value_type;
 }
 
-#endif //GLSTUFF_TYPES_HPP
+#endif // GAL_INTERNAL_GRAPHICS_TYPES_HPP

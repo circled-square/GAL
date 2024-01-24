@@ -1,5 +1,5 @@
-#ifndef GLSTUFF_VERTEX_ARRAY_HPP
-#define GLSTUFF_VERTEX_ARRAY_HPP
+#ifndef GAL_GRAPHICS_VERTEX_ARRAY_HPP
+#define GAL_GRAPHICS_VERTEX_ARRAY_HPP
 
 #include <tuple>
 #include <vector>
@@ -9,7 +9,7 @@
 #include "../buffer/index_buffer.hpp"
 
 
-namespace gl {
+namespace gal::graphics {
 
     struct vertex_layout {
         struct vertex_array_attrib { 
@@ -63,8 +63,8 @@ namespace gl {
     private:
         template<typename T>
         static void to_vertex_layout_helper(vertex_layout& layout, uint& index, uint& offset) {
-            using vec = gl::scalar_to_vector<T>;
-            uint type_id = gl::gl_type_id<typename vec::value_type>::v;
+            using vec = graphics::scalar_to_vector<T>;
+            uint type_id = graphics::gl_type_id<typename vec::value_type>::v;
             uint size = vec::length();
             constexpr uint vao_vbo_bind_index = 0;
 
@@ -91,4 +91,4 @@ namespace gl {
     };
 }
 
-#endif //GLSTUFF_VERTEX_ARRAY_HPP
+#endif //GAL_GRAPHICS_VERTEX_ARRAY_HPP

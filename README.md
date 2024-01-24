@@ -1,1 +1,3 @@
-# GL4RenderingEngine
+# GAL
+
+Graphics Abstraction Layer

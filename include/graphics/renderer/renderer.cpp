@@ -3,7 +3,7 @@
 
 #include <scluk/log.hpp>
 
-namespace gl {
+namespace gal::graphics {
     void renderer::draw(const vertex_array& vao, const shader_program& shader, uint ibo_index) {
         draw(vao, shader, 0, vao.get_triangle_count(ibo_index), ibo_index);
     }
@@ -26,4 +26,4 @@ namespace gl {
     void renderer::set_clear_color(glm::vec4 c) {
         glClearColor(c.x, c.y, c.z, c.w);
     }
-} // gl
+}

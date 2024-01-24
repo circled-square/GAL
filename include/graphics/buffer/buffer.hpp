@@ -1,11 +1,11 @@
-#ifndef GLSTUFF_BUFFER_HPP
-#define GLSTUFF_BUFFER_HPP
+#ifndef GAL_GRAPHICS_BUFFER_HPP
+#define GAL_GRAPHICS_BUFFER_HPP
 
 #include <glad/glad.h>
 #include "../../internal/graphics/types.hpp"
 #include <scluk/metaprogramming.hpp>
 
-namespace gl {
+namespace gal::graphics {
     struct buffer_creation_params {
         bool is_static = true;
         // apply when is_static = true
@@ -36,6 +36,6 @@ namespace gl {
 
         uint get_gl_id() const { return m_buf_id; }
     };
-} // gl
+}
 
-#endif //GLSTUFF_BUFFER_HPP
+#endif //GAL_GRAPHICS_BUFFER_HPP

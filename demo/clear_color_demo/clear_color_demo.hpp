@@ -1,5 +1,5 @@
-#ifndef GLSTUFF_CLEAR_COLOR_DEMO_HPP
-#define GLSTUFF_CLEAR_COLOR_DEMO_HPP
+#ifndef GAL_CLEAR_COLOR_DEMO_HPP
+#define GAL_CLEAR_COLOR_DEMO_HPP
 
 #include "../../include/graphics/renderer/renderer.hpp"
 #include "../scene_with_previous_scene/scene_with_previous_scene.hpp"
@@ -9,7 +9,7 @@
 namespace scene_demos {
 
     class clear_color_demo : public scene_with_previous_scene {
-        gl::renderer m_renderer;
+        gal::graphics::renderer m_renderer;
         glm::vec4 m_color;
     public:
         clear_color_demo();
@@ -19,4 +19,4 @@ namespace scene_demos {
     };
 };
 
-#endif //GLSTUFF_CLEAR_COLOR_DEMO_HPP
+#endif //GAL_CLEAR_COLOR_DEMO_HPP

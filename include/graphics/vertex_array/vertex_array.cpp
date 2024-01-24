@@ -4,7 +4,7 @@
 #include <scluk/log.hpp>
 using namespace scluk;
 
-namespace gl {
+namespace gal::graphics {
     vertex_array::vertex_array(std::vector<vertex_buffer> vbos, std::vector<index_buffer> ibos, vertex_layout layout) : m_vbos(std::move(vbos)), m_ibos(std::move(ibos)) {
         glCreateVertexArrays(1, &m_vao);
 

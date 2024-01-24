@@ -1,5 +1,5 @@
-#ifndef GLSTUFF_MENU_DEMO_HPP
-#define GLSTUFF_MENU_DEMO_HPP
+#ifndef GAL_MENU_DEMO_HPP
+#define GAL_MENU_DEMO_HPP
 
 #include "../../include/application/scene.hpp"
 #include "../../include/graphics/renderer/renderer.hpp"
@@ -20,8 +20,8 @@ namespace scene_demos {
     };
 
     //this class owns the pointers to the scenes that it leads to
-    class menu_demo : public application::scene {
-        gl::renderer m_renderer;
+    class menu_demo : public gal::application::scene {
+        gal::graphics::renderer m_renderer;
 
         std::vector<named_scene> m_scene_vector;
         std::unique_ptr<scene_with_previous_scene> m_current_scene;
@@ -48,4 +48,4 @@ namespace scene_demos {
     };
 };
 
-#endif // GLSTUFF_MENU_DEMO_HPP
+#endif // GAL_MENU_DEMO_HPP

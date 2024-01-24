@@ -1,10 +1,10 @@
-#ifndef GLSTUFF_TEXTURE_HPP
-#define GLSTUFF_TEXTURE_HPP
+#ifndef GAL_GRAPHICS_TEXTURE_HPP
+#define GAL_GRAPHICS_TEXTURE_HPP
 
 #include <glad/glad.h>
 #include "../../internal/graphics/types.hpp"
 
-namespace gl {
+namespace gal::graphics {
     class texture {
         uint m_texture_id;
         int m_width, m_height, m_components;
@@ -33,4 +33,4 @@ namespace gl {
 }
 
 
-#endif //GLSTUFF_TEXTURE_HPP
+#endif //GAL_GRAPHICS_TEXTURE_HPP

@@ -4,7 +4,7 @@
 #include <scluk/log.hpp>
 #include <vector>
 
-namespace gl {
+namespace gal::graphics {
     uint shader_program::compile_shader(uint type, const std::string &source) {
         uint id = glCreateShader(type);
         const char *src = source.c_str();

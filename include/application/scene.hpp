@@ -1,9 +1,9 @@
-#ifndef GLSTUFF_SCENE_HPP
-#define GLSTUFF_SCENE_HPP
+#ifndef GAL_APPLICATION_SCENE_HPP
+#define GAL_APPLICATION_SCENE_HPP
 
 #include <vector>
 
-namespace application {
+namespace gal::application {
     class application; // the file this is defined in is not included to avoid circular inclusion
 
     class scene {
@@ -23,4 +23,4 @@ namespace application {
     };
 };
 
-#endif //GLSTUFF_SCENE_HPP
+#endif //GAL_APPLICATION_SCENE_HPP

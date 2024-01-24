@@ -14,7 +14,6 @@
 namespace scene_demos {
     using namespace std;
     using namespace glm;
-    using namespace gl;
     using namespace scluk;
 
     constexpr vec3 x_axis = vec3(1,0,0), y_axis = vec3(0,1,0), z_axis = vec3(0,0,1);
@@ -73,9 +72,9 @@ namespace scene_demos {
 
     using bufview_to_vbo_map_t = vector<i32>;
 
-    static tuple<vector<vertex_buffer>, vector<index_buffer>, bufview_to_vbo_map_t> make_buffers(tinygltf::Model& model) {
-        vector<vertex_buffer> vbos;
-        vector<index_buffer> ibos;
+    static tuple<vector<gal::graphics::vertex_buffer>, vector<gal::graphics::index_buffer>, bufview_to_vbo_map_t> make_buffers(tinygltf::Model& model) {
+        vector<gal::graphics::vertex_buffer> vbos;
+        vector<gal::graphics::index_buffer> ibos;
         bufview_to_vbo_map_t bufview_to_vbo_map(model.bufferViews.size(), -1);
 
         bool contains_bufviews_without_target = false;
@@ -99,12 +98,12 @@ namespace scene_demos {
             } else if (bufview.target == TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER) {
                 const int element_typeid = accessor.componentType;
 
-                const size_t size = bufview.byteLength / typeid_to_size(element_typeid);
+                const size_t size = bufview.byteLength / gal::graphics::typeid_to_size(element_typeid);
                 const size_t tri_count = size/3;
 
                 assert(bufview.byteStride == 0 || typeid_to_size(element_typeid)*3 == bufview.byteStride);
 
-                ibos.emplace_back(buffer(&buf.data[bufview.byteOffset], bufview.byteLength), tri_count, element_typeid);
+                ibos.emplace_back(gal::graphics::buffer(&buf.data[bufview.byteOffset], bufview.byteLength), tri_count, element_typeid);
 
             } else {
                 contains_bufviews_without_target = true;
@@ -118,8 +117,8 @@ namespace scene_demos {
         return { std::move(vbos), std::move(ibos), std::move(bufview_to_vbo_map) };
     }
 
-    static vertex_layout get_vertex_layout(tinygltf::Model& model, const bufview_to_vbo_map_t& bufview_to_vbo_map) {
-        using vertex_array_attrib = vertex_layout::vertex_array_attrib;
+    static gal::graphics::vertex_layout get_vertex_layout(tinygltf::Model& model, const bufview_to_vbo_map_t& bufview_to_vbo_map) {
+        using vertex_array_attrib = gal::graphics::vertex_layout::vertex_array_attrib;
         unordered_map<int, vertex_array_attrib> vaas; // avoid repeating attribs in the layout.attribs vector
 
         for(const tinygltf::Mesh& mesh : model.meshes) {
@@ -140,25 +139,25 @@ namespace scene_demos {
                     if(vaa != -1) {
                         int vbo_bind = bufview_to_vbo_map[accessor.bufferView];
                         vertex_array_attrib attrib(vaa, accessor.byteOffset, accessor.componentType, size, vbo_bind, accessor.normalized);
-                        //stdout_log("%: (index=%, offset=%, type=%, size=%, bind_index=%, normalized=%)",
-                        //    attrib_name, vaa, accessor.byteOffset, accessor.componentType, size, vbo_bind, accessor.normalized);
+                        stdout_log("%: (index=%, offset=%, type=%, size=%, bind_index=%, normalized=%)",
+                            attrib_name, vaa, accessor.byteOffset, accessor.componentType, size, vbo_bind, accessor.normalized);
                         vaas[vaa] = attrib;
                     } else {
-                        //stdout_log("%: (index=MISSING, offset=%, type=%, size=%, bind_index=%, normalized=%)",
-                        //    attrib_name, accessor.byteOffset, accessor.componentType, size, bufview_to_vbo_map[accessor.bufferView], accessor.normalized);
+                        stdout_log("%: (index=MISSING, offset=%, type=%, size=%, bind_index=%, normalized=%)",
+                            attrib_name, accessor.byteOffset, accessor.componentType, size, bufview_to_vbo_map[accessor.bufferView], accessor.normalized);
                     }
                 }
             }
         }
 
-        vertex_layout layout;
+        gal::graphics::vertex_layout layout;
         for(auto&[index, attrib] : vaas)
             layout.attribs.push_back(attrib);
 
         return layout;
     }
 
-    static texture get_model_texture(tinygltf::Model& model) {
+    static gal::graphics::texture get_model_texture(tinygltf::Model& model) {
         assert(model.textures.size() > 0);
 
         tinygltf::Texture& tex = model.textures[0];
@@ -169,17 +168,17 @@ namespace scene_demos {
 
         assert(image.bits == 8);
 
-        texture::specification spec;
+        gal::graphics::texture::specification spec;
         spec.w = image.width;
         spec.h = image.height;
         spec.components = 4;
         spec.data = image.image.data();
         spec.alignment = 1;
         spec.repeat_wrap = true;
-        return texture(spec);
+        return gal::graphics::texture(spec);
     }
 
-    static void deduce_vbo_strides(vector<vertex_buffer>& vbos, const vertex_layout& vertex_layout) {
+    static void deduce_vbo_strides(vector<gal::graphics::vertex_buffer>& vbos, const gal::graphics::vertex_layout& vertex_layout) {
         unordered_set<size_t> vbos_to_deduce_stride_of;
         for(size_t i = 0; i < vbos.size(); i++) {
             if(vbos[i].get_stride() == 0)
@@ -189,19 +188,19 @@ namespace scene_demos {
         for(const auto& attrib : vertex_layout.attribs) {
             size_t vbo_index = attrib.vao_vbo_bind_index;
             if(vbos_to_deduce_stride_of.contains(vbo_index)) {
-                size_t attrib_size = attrib.size * typeid_to_size(attrib.type_id);
+                size_t attrib_size = attrib.size * gal::graphics::typeid_to_size(attrib.type_id);
                 vbos[vbo_index].set_stride(vbos[vbo_index].get_stride() + attrib_size);
             }
         }
     }
 
-    static vertex_array make_model_vao(tinygltf::Model& model) {
+    static gal::graphics::vertex_array make_model_vao(tinygltf::Model& model) {
         auto[vbos, ibos, bufview_to_vbo_map] = make_buffers(model);
-        vertex_layout vertex_layout = get_vertex_layout(model, bufview_to_vbo_map);
+        gal::graphics::vertex_layout vertex_layout = get_vertex_layout(model, bufview_to_vbo_map);
 
         deduce_vbo_strides(vbos, vertex_layout);
 
-        return vertex_array(std::move(vbos), std::move(ibos), std::move(vertex_layout));
+        return gal::graphics::vertex_array(std::move(vbos), std::move(ibos), std::move(vertex_layout));
     }
 
     static model_t make_model() {
@@ -211,9 +210,9 @@ namespace scene_demos {
         //tinygltf::Model model = load_gltf_from_file("resources/glTF-Sample-Models/1.0/Avocado/glTF/Avocado.gltf", false);
         //tinygltf::Model model = load_gltf_from_file("resources/glTF-Sample-Models/1.0/Duck/glTF/Duck.gltf", false);
 
-        vertex_array vao = make_model_vao(model);
-        texture tex = get_model_texture(model);
-        shader_program shader(read_file("demo/shaders/gltf_demo/vert.glsl"), read_file("demo/shaders/gltf_demo/frag.glsl"));
+        gal::graphics::vertex_array vao = make_model_vao(model);
+        gal::graphics::texture tex = get_model_texture(model);
+        gal::graphics::shader_program shader(read_file("demo/shaders/gltf_demo/vert.glsl"), read_file("demo/shaders/gltf_demo/frag.glsl"));
 
         return model_t { std::move(vao), std::move(tex), std::move(shader) };
     }

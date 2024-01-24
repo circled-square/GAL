@@ -1,8 +1,8 @@
-#ifndef GLSTUFF_INITIALIZE_OPENGL_HPP
-#define GLSTUFF_INITIALIZE_OPENGL_HPP
+#ifndef GAL_INTERNAL_GRAPHICS_INIT_HPP
+#define GAL_INTERNAL_GRAPHICS_INIT_HPP
 
-namespace gl {
+namespace gal::graphics {
     void initialize_opengl();
 }
 
-#endif //GLSTUFF_INITIALIZE_OPENGL_HPP
+#endif //GAL_INTERNAL_GRAPHICS_INIT_HPP

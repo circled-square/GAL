@@ -1,6 +1,6 @@
 #include "texture.hpp"
 
-namespace gl {
+namespace gal::graphics {
 
     texture::texture(const specification& spec)
             : m_width(spec.w), m_height(spec.h), m_components(spec.components) {

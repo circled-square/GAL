@@ -6,9 +6,9 @@
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 
-namespace application {
+namespace gal::application {
     application::application(glm::ivec2 res, const std::string &title, scene *active_scene) : m_window(res, title), m_active_scene(active_scene) {
-        gl::initialize_opengl();
+        graphics::initialize_opengl();
 
         ImGui::CreateContext();
         ImGui_ImplGlfw_InitForOpenGL(m_window, true);

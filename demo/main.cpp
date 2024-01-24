@@ -21,7 +21,7 @@ int main() {
     menu_demo.add_scene<scene_demos::three_dimensional_demo>("3d demo");
     menu_demo.add_scene<scene_demos::gltf_demo>("gltf demo");
 
-    application::application application({1920, 1080}, "demo", &menu_demo);
+    gal::application::application application({1920, 1080}, "demo", &menu_demo);
     scluk::stdout_log("%", glGetString(GL_VERSION));
 
     menu_demo.activate("gltf demo"); // only call this after opengl is initialised

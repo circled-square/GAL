@@ -14,7 +14,7 @@ namespace scene_demos {
             vec2 pos;
             vec2 tex_coord;
 
-            using layout_t = decltype(gl::static_vertex_layout(pos, tex_coord));
+            using layout_t = decltype(gal::graphics::static_vertex_layout(pos, tex_coord));
         };
     }
 
@@ -32,8 +32,8 @@ namespace scene_demos {
     };
 
 
-    static gl::texture::specification make_texture_specification(const stb::image& img) {
-        gl::texture::specification spec;
+    static gal::graphics::texture::specification make_texture_specification(const gal::graphics::image& img) {
+        gal::graphics::texture::specification spec;
         spec.w = img.w;
         spec.h = img.h;
         spec.components = 4;
@@ -43,7 +43,7 @@ namespace scene_demos {
     }
 
     texture_demo::texture_demo()
-        : m_vao(gl::vertex_buffer(vertex_data), gl::index_buffer(indices), vertex_t::layout_t::to_vertex_layout()),
+        : m_vao(gal::graphics::vertex_buffer(vertex_data), gal::graphics::index_buffer(indices), vertex_t::layout_t::to_vertex_layout()),
           m_shader(read_file("demo/shaders/texture_demo/vert.glsl"), read_file("demo/shaders/texture_demo/frag.glsl")),
           m_renderer(),
           m_img("resources/example.png"),

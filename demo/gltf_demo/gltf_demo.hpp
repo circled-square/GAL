@@ -1,5 +1,5 @@
-#ifndef GLSTUFF_GLTF_DEMO_HPP
-#define GLSTUFF_GLTF_DEMO_HPP
+#ifndef GAL_GLTF_DEMO_HPP
+#define GAL_GLTF_DEMO_HPP
 
 #include "../../include/graphics/renderer/renderer.hpp"
 #include "../../include/graphics/vertex_array/vertex_array.hpp"
@@ -12,13 +12,13 @@ namespace scene_demos {
         glm::mat4 model, view, proj, mvp;
     };
 
-    struct model_t { 
-        gl::vertex_array vao;
-        gl::texture texture;
-        gl::shader_program shader;
+    struct model_t {
+        gal::graphics::vertex_array vao;
+        gal::graphics::texture texture;
+        gal::graphics::shader_program shader;
     };
     class gltf_demo : public scene_with_previous_scene {
-        gl::renderer m_renderer;
+        gal::graphics::renderer m_renderer;
 
         model_t m_model;
         mvp_t m_mvp;
@@ -31,4 +31,4 @@ namespace scene_demos {
 
 } // scene_demos
 
-#endif //GLSTUFF_GLTF_DEMO_HPP
+#endif //GAL_GLTF_DEMO_HPP

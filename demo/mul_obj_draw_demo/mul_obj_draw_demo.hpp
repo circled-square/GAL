@@ -1,5 +1,5 @@
-#ifndef GLSTUFF_MUL_OBJ_DRAW_DEMO_HPP
-#define GLSTUFF_MUL_OBJ_DRAW_DEMO_HPP
+#ifndef GAL_MUL_OBJ_DRAW_DEMO_HPP
+#define GAL_MUL_OBJ_DRAW_DEMO_HPP
 
 #include "../../include/graphics/vertex_array/vertex_array.hpp"
 #include "../../include/graphics/shader/shader.hpp"
@@ -13,11 +13,11 @@
 namespace scene_demos {
 
     class mul_obj_draw_demo : public scene_with_previous_scene {
-        gl::vertex_array m_vao;
-        gl::shader_program m_shader;
-        gl::renderer m_renderer;
-        stb::image m_img;
-        gl::texture m_tex;
+        gal::graphics::vertex_array m_vao;
+        gal::graphics::shader_program m_shader;
+        gal::graphics::renderer m_renderer;
+        gal::graphics::image m_img;
+        gal::graphics::texture m_tex;
         glm::mat4 m_model_mat_1, m_model_mat_2;
         glm::mat4 m_view_mat, m_proj_mat;
         glm::mat4 m_mvp_mat_1, m_mvp_mat_2;
@@ -32,4 +32,4 @@ namespace scene_demos {
     };
 };
 
-#endif //GLSTUFF_MUL_OBJ_DRAW_DEMO_HPP
+#endif //GAL_MUL_OBJ_DRAW_DEMO_HPP
