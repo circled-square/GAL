@@ -57,8 +57,8 @@ namespace gl {
     template<typename T> concept glm_matrix = requires {
         { std::declval<typename T::transpose_type>() };
     };
-    static_assert(!glm_vector<float> &&  glm_vector<glm::vec2> && !glm_vector<glm::mat3>);
-    static_assert(!glm_matrix<float> && !glm_matrix<glm::vec2> &&  glm_matrix<glm::mat3>);
+    static_assert(!glm_vector<float> &&  glm_vector<glm::vec2> && !glm_vector<glm::mat3>, "glm_vector concept test failed!");
+    static_assert(!glm_matrix<float> && !glm_matrix<glm::vec2> &&  glm_matrix<glm::mat3>, "glm_matrix concept test failed!");
 
     //scalar_to_vector<T> wraps any scalar type into its vec<1, T> form, but doesn't wrap T if it is a glm vector
     namespace internal {
