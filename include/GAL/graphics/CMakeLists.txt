@@ -15,3 +15,7 @@ target_link_libraries(graphics__texture PUBLIC graphics_internal__types)
 
 add_library(graphics__image STATIC image/image.cpp image/image.hpp)
 target_link_libraries(graphics__image PRIVATE third_party__stb)
+
+
+add_library(graphics INTERFACE)
+target_link_libraries(graphics INTERFACE graphics__shader graphics__buffer graphics__vertex_array graphics__renderer graphics__texture graphics__image)
