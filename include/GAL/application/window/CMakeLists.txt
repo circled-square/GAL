@@ -1,3 +1,3 @@
 add_library(application__window STATIC window.cpp window.hpp)
-target_link_libraries(application__window PUBLIC third_party__glad third_party__glm third_party__scluk)
+target_link_libraries(application__window PUBLIC third_party__glad third_party__glm)
 target_link_libraries(application__window PRIVATE third_party__glfw)

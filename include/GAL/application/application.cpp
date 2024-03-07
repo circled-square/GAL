@@ -5,6 +5,7 @@
 #include <imgui.h>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
+#include <chrono>
 
 namespace gal::application {
     application::application(glm::ivec2 res, const std::string &title, scene *active_scene) : m_window(res, title), m_active_scene(active_scene) {
@@ -17,9 +18,15 @@ namespace gal::application {
         ImGui::StyleColorsDark();
         ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
-
         m_active_scene->m_application = this;
         m_active_scene->reheat();
+        m_window.set_user_ptr(this);
+
+        m_window.set_key_cb([] (GLFWwindow* window_handle, int key, int scancode, int action, int mods) {
+            const application* self = reinterpret_cast<application*>(window::window::get_user_ptr(window_handle));
+
+            self->m_active_scene->on_key_press(key, scancode, action, mods);
+        });
     }
 
     application::~application() {
@@ -28,7 +35,7 @@ namespace gal::application {
         ImGui::DestroyContext();
     }
 
-    scene *application::set_active_scene(scene *new_scene) {
+    scene* application::set_active_scene(scene* new_scene) {
         scene* old_active_scene = m_active_scene;
         m_active_scene = new_scene;
 
@@ -53,7 +60,7 @@ namespace gal::application {
             float delta = std::chrono::duration<float, std::ratio<1>>(curr_frame_time - last_frame_time).count();
 
             m_active_scene->update(delta);
-            m_active_scene->render();
+            m_active_scene->render(m_window.get_framebuf_sz());
 
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -64,4 +71,4 @@ namespace gal::application {
             last_frame_time = curr_frame_time;
         }
     }
-    }
+}

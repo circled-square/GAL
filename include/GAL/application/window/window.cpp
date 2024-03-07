@@ -1,9 +1,8 @@
 #include "window.hpp"
 #include <scluk/exception.hpp>
 #include <source_location>
-#include <GLFW/glfw3.h>
 
-namespace glfw {
+namespace gal::application::window_glfw {
     inline auto throw_on_error(auto res, const char* what, std::source_location l = std::source_location::current()) {
         if(!res) throw scluk::runtime_error("%:%, %\n\t%", l.file_name(), l.line(), l.function_name(), what);
         return res;
@@ -26,7 +25,6 @@ namespace glfw {
         glfwWindowHint(GLFW_GREEN_BITS,   mode->greenBits);
         glfwWindowHint(GLFW_BLUE_BITS,    mode->blueBits);
         glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-
 
 	/*
 	//taken care of by glad's generator, only causes problems
@@ -78,6 +76,10 @@ namespace glfw {
 
     void window::set_key_cb(GLFWkeyfun f) { glfwSetKeyCallback(m_window_ptr, f); }
 
+    void window::set_user_ptr(void *p) { glfwSetWindowUserPointer(m_window_ptr, p); }
+
+    void *window::get_user_ptr(GLFWwindow *w) { return glfwGetWindowUserPointer(w); }
+
     void window::poll_events() { glfwPollEvents(); }
 
     glm::dvec2 window::get_cursor_pos() {
@@ -91,5 +93,4 @@ namespace glfw {
         glfwGetFramebufferSize(m_window_ptr, &ret.x, &ret.y);
         return ret;
     }
-}
-
+    } // namespace glfw
