@@ -27,7 +27,7 @@ namespace gal::application::window_glfw {
 
         glm::dvec2 get_cursor_pos();
         
-        glm::ivec2 get_framebuf_sz();
+        glm::ivec2 get_framebuf_size();
 
         void set_resize_cb (void (*f)(GLFWwindow*, int, int));
         void set_key_cb (void (*f)(GLFWwindow*, int, int, int, int));

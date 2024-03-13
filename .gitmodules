@@ -1,21 +1,18 @@
-[submodule "src/third_party/glm"]
-	path = src/third_party/glm
+[submodule "private/third_party/glm"]
+	path = private/third_party/glm
 	url = https://github.com/g-truc/glm.git
-[submodule "src/third_party/glfw"]
-	path = src/third_party/glfw
+[submodule "private/third_party/glfw"]
+	path = private/third_party/glfw
 	url = https://github.com/glfw/glfw.git
-[submodule "src/third_party/imgui"]
-	path = src/third_party/imgui
+[submodule "private/third_party/imgui"]
+	path = private/third_party/imgui
 	url = https://github.com/ocornut/imgui.git
-[submodule "src/third_party/stb"]
-	path = src/third_party/stb
+[submodule "private/third_party/stb"]
+	path = private/third_party/stb
 	url = https://github.com/nothings/stb.git
-[submodule "src/third_party/tinygltf"]
-	path = src/third_party/tinygltf
+[submodule "private/third_party/tinygltf"]
+	path = private/third_party/tinygltf
 	url = https://github.com/syoyo/tinygltf.git
-[submodule "src/third_party/glTF-Sample-Models"]
-	path = resources/glTF-Sample-Models
-	url = https://github.com/KhronosGroup/glTF-Sample-Models.git
-[submodule "src/third_party/SCLUK"]
-	path = src/third_party/SCLUK
+[submodule "private/third_party/SCLUK"]
+	path = private/third_party/SCLUK
 	url = https://github.com/circled-square/SCLUK.git

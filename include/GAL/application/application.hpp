@@ -18,12 +18,10 @@ namespace gal::application {
     public:
         application(application&&) = delete; // application cannot be moved: m_window's window handle points to it in its user pointer and scene::m_application points to it
 
+        //pass negative values in the resolution for fullscreen
         application(glm::ivec2 res, const std::string& title, scene* active_scene);
 
         ~application();
-
-        window::window& get_window() { return m_window; }
-        const window::window& get_window() const { return m_window; }
 
         scene* set_active_scene(scene* new_scene);
 

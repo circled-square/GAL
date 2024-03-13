@@ -1,8 +1,8 @@
 #ifndef GAL_GRAPHICS_RENDERER_HPP
 #define GAL_GRAPHICS_RENDERER_HPP
 
-#include "../vertex_array/vertex_array.hpp"
-#include "../shader/shader.hpp"
+#include "../vertex_array.hpp"
+#include "../shader.hpp"
 
 namespace gal::graphics {
     class renderer {

@@ -2,7 +2,7 @@
 #define GAL_GRAPHICS_BUFFER_HPP
 
 #include <glad/glad.h>
-#include "../../internal/graphics/types.hpp"
+#include <internal/graphics/types.hpp>
 #include <scluk/metaprogramming.hpp>
 
 namespace gal::graphics {
