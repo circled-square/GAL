@@ -10,7 +10,7 @@ add_library(graphics__vertex_array STATIC vertex_array.cpp)
 target_link_libraries(graphics__vertex_array PUBLIC internal__graphics__types graphics__buffer)
 target_include_directories(graphics__vertex_array PUBLIC ../../include/)
 
-add_library(graphics__renderer STATIC renderer/renderer.cpp)
+add_library(graphics__renderer STATIC renderer/renderer.cpp renderer/single_shader_renderer.cpp)
 target_link_libraries(graphics__renderer PRIVATE graphics__vertex_array graphics__shader internal__graphics__types)
 target_include_directories(graphics__renderer PUBLIC ../../include/)
 
