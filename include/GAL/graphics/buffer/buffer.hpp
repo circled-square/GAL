@@ -8,9 +8,9 @@
 namespace gal::graphics {
     struct buffer_creation_params {
         bool is_static = true;
-        // apply when is_static = true
+        // apply when is_static = true => glNamedBufferStorage
         uint flags = GL_DYNAMIC_STORAGE_BIT;
-        // apply when is_static = false
+        // apply when is_static = false => glNamedBufferData
         uint hints = GL_DYNAMIC_DRAW;
     };
 
@@ -31,9 +31,6 @@ namespace gal::graphics {
 
 
         bool is_null() const { return m_buf_id == 0; }
-        bool operator!() const { return is_null(); }
-        operator bool() const { return !is_null(); }
-
         uint get_gl_id() const { return m_buf_id; }
     };
 }

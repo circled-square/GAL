@@ -3,8 +3,6 @@
 
 #include "buffer.hpp"
 
-#include <array>
-
 namespace gal::graphics {
     class vertex_buffer {
         buffer m_buf;

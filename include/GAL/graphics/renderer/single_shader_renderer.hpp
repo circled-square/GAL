@@ -1,8 +1,9 @@
 #ifndef GAL_GRAPHICS_SINGLE_SHADER_RENDERER_HPP
 #define GAL_GRAPHICS_SINGLE_SHADER_RENDERER_HPP
 
-#include "../vertex_array/vertex_array.hpp"
-#include "../shader/shader.hpp"
+#include "renderer.hpp"
+#include "../vertex_array.hpp"
+#include "../shader.hpp"
 
 namespace gal::graphics {
     class single_shader_renderer {

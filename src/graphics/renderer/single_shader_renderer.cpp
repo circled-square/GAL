@@ -1,5 +1,5 @@
-#include "single_shader_renderer.hpp"
-#include "../../internal/graphics/types.hpp"
+#include <GAL/graphics/renderer/single_shader_renderer.hpp>
+#include <internal/graphics/types.hpp>
 
 #include <scluk/log.hpp>
 
