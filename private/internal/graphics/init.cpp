@@ -1,7 +1,7 @@
 #include "init.hpp"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h> // glad needs glfwGetProcAddress to initialize
-#include <scluk/format.hpp>
+#include <format>
 #include <stdexcept>
 #include <scluk/log.hpp>
 
@@ -25,7 +25,7 @@ namespace gal::graphics {
 
     void initialize_opengl() {
         if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
-            throw std::runtime_error("GLEW failed to initialize!");
+            throw std::runtime_error("GLAD failed to initialize!");
 
         initialize_error_handling();
     }
@@ -37,7 +37,7 @@ namespace gal::graphics {
                 source == GL_DEBUG_SOURCE_SHADER_COMPILER ? "shader compiler" :
                 source == GL_DEBUG_SOURCE_THIRD_PARTY ? "third party" :
                 source == GL_DEBUG_SOURCE_APPLICATION ? "source application" :
-                source == GL_DEBUG_SOURCE_OTHER ? "other" : "?";
+                source == GL_DEBUG_SOURCE_OTHER ? "other" : "(unknown error source)";
 
 
         const char *type_str =
@@ -49,14 +49,14 @@ namespace gal::graphics {
                 type == GL_DEBUG_TYPE_MARKER ? "marker type error" :
                 type == GL_DEBUG_TYPE_PUSH_GROUP ? "push group type error" :
                 type == GL_DEBUG_TYPE_POP_GROUP ? "pop group type error" :
-                type == GL_DEBUG_TYPE_OTHER ? "other type error" : "unknown type error";
+                type == GL_DEBUG_TYPE_OTHER ? "other type error" : "(unknown error type)";
 
         const char *severity_str =
                 severity == GL_DEBUG_SEVERITY_LOW ? "low severity" :
                 severity == GL_DEBUG_SEVERITY_MEDIUM ? "medium severity" :
                 severity == GL_DEBUG_SEVERITY_HIGH ? "high severity" :
-                severity == GL_DEBUG_SEVERITY_NOTIFICATION ? "notification" : "?";
+                severity == GL_DEBUG_SEVERITY_NOTIFICATION ? "notification" : "(unknown error severity)";
 
-        scluk::stdout_log.error("OpenGL error: [% %] source: %, id: %, msg: \"%\"", severity_str, type_str, source_str, msg_id, msg);
+        scluk::stdout_log.error("OpenGL error: [{} {}] source: {}, id: {}, msg: \"{}\"", severity_str, type_str, source_str, msg_id, msg);
     }
 }
