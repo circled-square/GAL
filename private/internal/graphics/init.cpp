@@ -57,6 +57,6 @@ namespace gal::graphics {
                 severity == GL_DEBUG_SEVERITY_HIGH ? "high severity" :
                 severity == GL_DEBUG_SEVERITY_NOTIFICATION ? "notification" : "?";
 
-        scluk::stdout_log("OpenGL error: [% %] source: %, id: %, msg: \"%\"", severity_str, type_str, source_str, msg_id, msg);
+        scluk::stdout_log.error("OpenGL error: [% %] source: %, id: %, msg: \"%\"", severity_str, type_str, source_str, msg_id, msg);
     }
 }

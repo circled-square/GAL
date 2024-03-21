@@ -8,14 +8,11 @@ namespace gal::graphics {
     vertex_array::vertex_array(std::vector<vertex_buffer> vbos, std::vector<index_buffer> ibos, vertex_layout layout) : m_vbos(std::move(vbos)), m_ibos(std::move(ibos)) {
         glCreateVertexArrays(1, &m_vao);
 
-        std::string log_line = sout("binding vao % to vbos: ", m_vao);
         for(size_t i = 0; i < m_vbos.size(); i++) {
             const uint vao_vbo_bind_index = i;
-            log_line += sout("%(%), ", m_vbos[i].get_gl_id(), i);
             // bind {3} as the {2}th vbo to the vao {1}, starting from {4} within the buffer. the stride between vertices is {5}
             glVertexArrayVertexBuffer(m_vao, vao_vbo_bind_index, m_vbos[i].get_gl_id(), 0, (int)m_vbos[i].get_stride());
         }
-        //stdout_log("%", log_line);
 
         this->specify_attribs(layout);
     }
@@ -47,9 +44,6 @@ namespace gal::graphics {
     }
 
     void vertex_array::specify_attrib(uint attrib_index, uint offset, uint type_id, uint size, uint vao_vbo_bind_index) {
-        //stdout_log("specify_attrib(m_vao=%\tattrib_index=%\toffset=%\ttype_id=%\tsize=%\tvao_vbo_bind_index=%)", m_vao, attrib_index, offset, type_id, size, vao_vbo_bind_index);
-
-
         //the vertex array contains vertices with the following attribs:
         glEnableVertexArrayAttrib(m_vao, attrib_index); //enable the attrib {2} for the vao {1} (can be done after call to glVertexAttribPointer I think)
         //the {1} vao's {2}th attrib is {3} elements of type {4}; they do/don't({5}) need normalization; {6} is the offset of the attrib from the start of the vertex.
@@ -63,9 +57,7 @@ namespace gal::graphics {
                 size_t vbos_stride_sum = 0;
                 for(auto& vbo : m_vbos) {
                     vbos_stride_sum += vbo.get_stride();
-                    //stdout_log("stride_sum += %", vbo.get_stride());
                 }
-                //stdout_log("layout.vertex_size = %", layout.vertex_size);
                 assert(vbos_stride_sum == layout.vertex_size);
             }
         #endif

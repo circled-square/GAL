@@ -73,7 +73,7 @@ namespace gal::graphics {
         //cache miss
         int location = glGetUniformLocation(m_program_id, name.c_str());
         if(location == -1)
-            scluk::stdout_log("WARNING: could not retrieve uniform with name %", name);
+            scluk::stdout_log.warn("could not retrieve uniform with name %", name);
 
         m_uniform_location_cache.insert({ name, location });
 
