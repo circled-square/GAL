@@ -1,4 +1,5 @@
 #include <GAL/graphics/texture.hpp>
+#include <scluk/log.hpp>
 
 namespace gal::graphics {
 
@@ -55,7 +56,7 @@ namespace gal::graphics {
     }
 
     void texture::unbind(uint slot) const {
-#ifdef DEBUG_BUILD
+#ifndef NDEBUG
         glBindTextureUnit(slot, 0);
 #endif
     }

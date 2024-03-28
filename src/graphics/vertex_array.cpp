@@ -75,7 +75,7 @@ namespace gal::graphics {
     }
 
     void vertex_array::unbind() const {
-#ifdef DEBUG_BUILD
+#ifndef NDEBUG
         glBindVertexArray(0);
 #endif
     }

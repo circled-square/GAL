@@ -61,7 +61,7 @@ namespace gal::graphics {
     }
 
     void shader_program::unbind() const {
-#ifdef DEBUG_BUILD
+#ifndef NDEBUG
         glUseProgram(0);
 #endif
     }
