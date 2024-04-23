@@ -2,6 +2,7 @@
 #define GAL_GRAPHICS_TEXTURE_HPP
 
 #include <glad/glad.h>
+#include "image.hpp"
 #include <internal/graphics/types.hpp>
 
 namespace gal::graphics {
@@ -19,6 +20,7 @@ namespace gal::graphics {
             bool repeat_wrap = false;
         };
         texture(const specification& spec);
+        texture(const image& image);
         texture(texture&& o);
         ~texture();
 

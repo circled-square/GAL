@@ -2,9 +2,10 @@
 #include <scluk/log.hpp>
 
 namespace gal::graphics {
-
     texture::texture(const specification& spec)
             : m_width(spec.w), m_height(spec.h), m_components(spec.components) {
+        scluk::stdout_log("texture::texture(WxH={}x{}, components={}, data={}, alignment={}, repeat_wrap={})", spec.w, spec.h, spec.components, spec.data, spec.alignment, spec.repeat_wrap);
+
         assert(m_components >= 1 && m_components <= 4);
 
         glCreateTextures(GL_TEXTURE_2D, 1, &m_texture_id);
@@ -27,6 +28,19 @@ namespace gal::graphics {
             set_texture_data(spec.data, spec.alignment);
         }
     }
+
+
+    static gal::graphics::texture::specification specification_from_image(const gal::graphics::image& img) {
+        gal::graphics::texture::specification spec;
+        spec.w = img.w;
+        spec.h = img.h;
+        spec.components = 4;
+        spec.data = img.buffer;
+
+        return spec;
+    }
+
+    texture::texture(const image& image) : texture::texture(specification_from_image(image)) {}
 
     texture::texture(texture&& o) {
         m_texture_id = o.m_texture_id;

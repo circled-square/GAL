@@ -21,7 +21,7 @@ namespace gal::graphics {
 
             glDeleteShader(id);
             throw scluk::runtime_error(
-                "Failed to compile % shader\n\t%",
+                "Failed to compile {} shader\n\t{}",
                 type == GL_VERTEX_SHADER ? "vertex" : "fragment",
                 gl_message.data()
             );
