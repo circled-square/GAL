@@ -16,9 +16,9 @@ namespace gal::application {
             std::string m_name;
         public:
             glm::mat4 transform;
-            std::shared_ptr<gal::graphics::retro::simple_renderable> renderable;
+            std::shared_ptr<gal::graphics::retro::retro_renderable> renderable;
 
-            node(std::string name, std::shared_ptr<gal::graphics::retro::simple_renderable> renderable = nullptr, glm::mat4 transform = glm::mat4(1));
+            node(std::string name, std::shared_ptr<gal::graphics::retro::retro_renderable> renderable = nullptr, glm::mat4 transform = glm::mat4(1));
             node(node&) = delete;
             node(node&& n);
 
@@ -57,6 +57,7 @@ namespace gal::application {
         class scene : public gal::application::scene {
             gal::graphics::retro::renderer m_renderer;
             node m_root;
+            static void render_node(scene &s, const node &n, glm::mat4 transform);
         public:
             virtual ~scene() = default;
             scene();

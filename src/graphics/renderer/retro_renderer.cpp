@@ -81,17 +81,19 @@ namespace gal::graphics::retro {
         m_direction = dir;
         m_view.reset();
     }
-    simple_renderable::simple_renderable(vertex_array vao, texture tex,
+    retro_renderable::retro_renderable(vertex_array vao, texture tex,
                                          glm::mat4 model_mat)
         : m_vao(std::move(vao)), m_tex(std::move(tex)), m_model(model_mat) {}
-    simple_renderable::simple_renderable(simple_renderable &&o)
-        : simple_renderable(std::move(o.m_vao), std::move(o.m_tex), o.m_model) {
+
+    void retro_renderable::set_model_mat(glm::mat4 &m) { m_model = m; }
+
+    retro_renderable::retro_renderable(retro_renderable &&o)
+        : retro_renderable(std::move(o.m_vao), std::move(o.m_tex), o.m_model) {
     }
-    const vertex_array &simple_renderable::get_vao() const { return m_vao; }
-    const texture &simple_renderable::get_texture() const { return m_tex; }
-    glm::mat4 &simple_renderable::get_model_mat() { return m_model; }
-    void simple_renderable::set_uniforms(gal::graphics::shader_program &shader,
-                                         const camera &camera) const {
+    const vertex_array &retro_renderable::get_vao() const { return m_vao; }
+    const texture &retro_renderable::get_texture() const { return m_tex; }
+    const glm::mat4 &retro_renderable::get_model_mat() { return m_model; }
+    void retro_renderable::set_uniforms(gal::graphics::shader_program &shader, const camera &camera) const {
         const int texture_slot = 0;
         m_tex.bind(texture_slot);
         shader.set_uniform("u_texture_slot", texture_slot);

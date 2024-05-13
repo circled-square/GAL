@@ -8,6 +8,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <optional>
 
+
+// forward declaration to declare friend of retro_renderable without including
+namespace gal::application::retro {
+    class scene;
+}
+
 namespace gal::graphics::retro {
     class renderable;
     class camera;
@@ -65,19 +71,24 @@ namespace gal::graphics::retro {
         virtual size_t get_ibo_count() const { return get_vao().get_triangle_count(get_ibo_index()); }
     };
 
-    //example implementation of renderable interface, usually sufficient
-    class simple_renderable : public renderable {
+
+    //simple implementation of renderable interface, usually sufficient
+    class retro_renderable : public renderable {
         vertex_array m_vao;
         texture m_tex;
         glm::mat4 m_model;
+
+        //mutable access to model matrix only permitted to friend class gal::application::retro::scene
+        void set_model_mat(glm::mat4& m);
+        friend class gal::application::retro::scene;
     public:
-        simple_renderable(simple_renderable &&o);
-        simple_renderable(vertex_array vao, texture tex, glm::mat4 model_mat = glm::mat4(1));
+        retro_renderable(retro_renderable &&o);
+        retro_renderable(vertex_array vao, texture tex, glm::mat4 model_mat = glm::mat4(1));
         virtual const vertex_array& get_vao() const final;
         virtual const texture& get_texture() const final;
         virtual void set_uniforms(gal::graphics::shader_program &shader, const camera &camera) const final;
 
-        glm::mat4 &get_model_mat();
+        const glm::mat4& get_model_mat();
     };
 }
 

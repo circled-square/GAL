@@ -2,16 +2,17 @@
 #include <scluk/log.hpp>
 
 namespace gal::application::retro {
-    static void render_node(scene &s, const node &n, glm::mat4 transform) {
+    // static method
+    void scene::render_node(scene &s, const node &n, glm::mat4 transform) {
         transform = transform * n.transform;
 
         if (n.renderable) {
-            n.renderable->get_model_mat() = transform;
+            n.renderable->set_model_mat(transform);
             s.get_renderer().draw(*n.renderable, s.get_camera());
         }
 
         for(const auto& [name, child] : n.children())
-            render_node(s, child, transform);
+            scene::render_node(s, child, transform);
     }
 
     scene::scene() : m_renderer(), m_root("") {}
@@ -19,7 +20,7 @@ namespace gal::application::retro {
     void scene::render(glm::ivec2 resolution) {
         m_renderer.clear();
         get_camera().set_aspect_ratio(resolution);
-        render_node(*this, get_root(), glm::mat4(1));
+        scene::render_node(*this, get_root(), glm::mat4(1));
     }
 
     gal::graphics::retro::renderer& scene::get_renderer() { return m_renderer; }
@@ -41,8 +42,6 @@ namespace gal::application::retro {
     }
 
 
-
-
     node::node(node&& n)
         : m_children(std::move(n.m_children)),
           m_father(n.m_father),
@@ -62,7 +61,7 @@ namespace gal::application::retro {
         m_children.insert({k, std::move(c)});
     }
 
-    node::node(std::string name, std::shared_ptr<gal::graphics::retro::simple_renderable> renderable, glm::mat4 transform)
+    node::node(std::string name, std::shared_ptr<gal::graphics::retro::retro_renderable> renderable, glm::mat4 transform)
         : m_father(nullptr),
           m_name(name), 
           transform(transform), 
