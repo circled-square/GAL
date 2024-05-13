@@ -1,5 +1,5 @@
-#ifndef GAL_GRAPHICS_SINGLE_SHADER_RENDERER_HPP
-#define GAL_GRAPHICS_SINGLE_SHADER_RENDERER_HPP
+#ifndef GAL_GRAPHICS_RETRO_RENDERER_HPP
+#define GAL_GRAPHICS_RETRO_RENDERER_HPP
 
 #include "renderer.hpp"
 #include "../vertex_array.hpp"
@@ -8,22 +8,28 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <optional>
 
-namespace gal::graphics {
+namespace gal::graphics::retro {
     class renderable;
     class camera;
 
-    class single_shader_renderer {
-        renderer m_renderer;
+    class renderer {
+        gal::graphics::renderer m_renderer;
         shader_program m_shader;
 
     public:
-        single_shader_renderer(shader_program shader);
+        renderer();
         void draw(const renderable &renderable, const camera &camera);
         void clear();
         void set_clear_color(glm::vec4 c);
     };
 
-    single_shader_renderer make_retro_renderer();
+    //vertex type expected by the shader used by retro_renderer
+    struct vertex_t {
+        glm::vec3 pos;
+        glm::vec2 tex_coord;
+
+        using layout_t = decltype(gal::graphics::static_vertex_layout(pos, tex_coord));
+    };
 
     class camera {
         glm::vec3 m_pos, m_direction;
@@ -73,8 +79,6 @@ namespace gal::graphics {
 
         glm::mat4 &get_model_mat();
     };
-
-
 }
 
-#endif //GAL_GRAPHICS_SINGLE_SHADER_RENDERER_HPP
+#endif //GAL_GRAPHICS_RETRO_RENDERER_HPP

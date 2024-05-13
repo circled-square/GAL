@@ -1,7 +1,7 @@
 #include <GAL/application/retro_3d_scene.hpp>
 #include <scluk/log.hpp>
 
-namespace gal::application::retro_3d {
+namespace gal::application::retro {
     static void render_node(scene &s, const node &n, glm::mat4 transform) {
         transform = transform * n.transform;
 
@@ -14,7 +14,7 @@ namespace gal::application::retro_3d {
             render_node(s, child, transform);
     }
 
-    scene::scene() : m_renderer(gal::graphics::make_retro_renderer()), m_root("") {}
+    scene::scene() : m_renderer(), m_root("") {}
 
     void scene::render(glm::ivec2 resolution) {
         m_renderer.clear();
@@ -22,7 +22,7 @@ namespace gal::application::retro_3d {
         render_node(*this, get_root(), glm::mat4(1));
     }
 
-    gal::graphics::single_shader_renderer& scene::get_renderer() { return m_renderer; }
+    gal::graphics::retro::renderer& scene::get_renderer() { return m_renderer; }
 
     void scene::reheat() {
         m_renderer.set_clear_color(glm::vec4(0,0,0,1));
@@ -62,7 +62,7 @@ namespace gal::application::retro_3d {
         m_children.insert({k, std::move(c)});
     }
 
-    node::node(std::string name, std::shared_ptr<gal::graphics::simple_renderable> renderable, glm::mat4 transform)
+    node::node(std::string name, std::shared_ptr<gal::graphics::retro::simple_renderable> renderable, glm::mat4 transform)
         : m_father(nullptr),
           m_name(name), 
           transform(transform), 

@@ -1,21 +1,44 @@
-#include <GAL/graphics/renderer/single_shader_renderer.hpp>
+#include <GAL/graphics/renderer/retro_renderer.hpp>
 #include <internal/graphics/types.hpp>
 
 #include <scluk/log.hpp>
 
-namespace gal::graphics {
-    single_shader_renderer::single_shader_renderer(shader_program shader) 
-        : m_shader(std::move(shader)) {}
+namespace gal::graphics::retro {
+    static shader_program make_retro_shader() {
+        const char *frag = "#version 330 core \n\
+            in vec2 v_tex_coord; \
+            uniform sampler2D u_texture_slot; \
+            out vec4 color; \
+            \
+            void main() { \
+                color = texture(u_texture_slot, v_tex_coord); \
+        }";
+        const char *vert = "#version 440 core \n\
+            layout(location = 0) in vec3 pos; \
+            layout(location = 1) in vec2 tex_coord; \
+            out vec2 v_tex_coord; \
+            uniform mat4 u_mvp; \
+            \
+            void main() { \
+                gl_Position = u_mvp * vec4(pos, 1); \
+                v_tex_coord = tex_coord; \
+        }";
 
-    void single_shader_renderer::clear() {
+        return shader_program(vert, frag);
+    }
+
+    renderer::renderer()
+        : m_shader(make_retro_shader()) {}
+
+    void renderer::clear() {
         m_renderer.clear();
     }
 
-    void single_shader_renderer::set_clear_color(glm::vec4 c) {
+    void renderer::set_clear_color(glm::vec4 c) {
         m_renderer.set_clear_color(c);
     }
 
-    void single_shader_renderer::draw(const renderable &renderable,
+    void renderer::draw(const renderable &renderable,
                                       const camera &camera) {
         renderable.set_uniforms(m_shader, camera);
         m_renderer.draw(renderable.get_vao(), m_shader,
@@ -23,28 +46,7 @@ namespace gal::graphics {
                         renderable.get_ibo_index());
     }
 
-    single_shader_renderer make_retro_renderer() {
-        const char *frag = "#version 330 core \n\
-            in vec2 v_tex_coord; \
-            uniform sampler2D u_texture_slot; \
-            out vec4 color; \
-        \
-            void main() { \
-                color = texture(u_texture_slot, v_tex_coord); \
-        }";
-            const char *vert = "#version 440 core \n\
-            layout(location = 0) in vec3 pos; \
-            layout(location = 1) in vec2 tex_coord; \
-            out vec2 v_tex_coord; \
-            uniform mat4 u_mvp; \
-        \
-            void main() { \
-                gl_Position = u_mvp * vec4(pos, 1); \
-                v_tex_coord = tex_coord; \
-        }";
 
-        return single_shader_renderer(shader_program(vert, frag));
-    }
 
 
 

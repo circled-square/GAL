@@ -2,25 +2,23 @@
 #define RETRO_3D_SCENE_HPP
 
 #include "scene.hpp"
-#include "../graphics/renderer/single_shader_renderer.hpp"
-#include <optional>
+#include "../graphics/renderer/retro_renderer.hpp"
 #include <memory>
 #include <glm/glm.hpp>
 #include <map>
 #include <scluk/exception.hpp>
 
 namespace gal::application {
-
-    namespace retro_3d {
+    namespace retro {
         class node {
             std::map<std::string, node> m_children; // consider changing this to a vec<(str, node)>, hashmap<str, node> or hashmap<str, unique_ptr<node>>
             node* m_father;
             std::string m_name;
         public:
             glm::mat4 transform;
-            std::shared_ptr<gal::graphics::simple_renderable> renderable;
+            std::shared_ptr<gal::graphics::retro::simple_renderable> renderable;
 
-            node(std::string name, std::shared_ptr<gal::graphics::simple_renderable> renderable = nullptr, glm::mat4 transform = glm::mat4(1));
+            node(std::string name, std::shared_ptr<gal::graphics::retro::simple_renderable> renderable = nullptr, glm::mat4 transform = glm::mat4(1));
             node(node&) = delete;
             node(node&& n);
 
@@ -57,7 +55,7 @@ namespace gal::application {
         };
 
         class scene : public gal::application::scene {
-            gal::graphics::single_shader_renderer m_renderer;
+            gal::graphics::retro::renderer m_renderer;
             node m_root;
         public:
             virtual ~scene() = default;
@@ -66,9 +64,9 @@ namespace gal::application {
             virtual void render(glm::ivec2 resolution) final;
             virtual void reheat() final;
 
-            gal::graphics::single_shader_renderer& get_renderer();
+            gal::graphics::retro::renderer& get_renderer();
 
-            virtual gal::graphics::camera& get_camera() = 0;
+            virtual gal::graphics::retro::camera& get_camera() = 0;
             node& get_root();
             node& get_node(std::string_view path) {
                 if(path[0] != '/')
