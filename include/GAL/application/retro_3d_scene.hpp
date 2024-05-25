@@ -27,8 +27,11 @@ namespace gal::application {
                 add_child(node(std::move(args)...));
             }
 
-            node& get(const std::string& name);
-            node* try_get(const std::string& name);
+            node& get_child(const std::string& name);
+            node* try_get_child(const std::string& name);
+            node& get_child(int n);
+            node* try_get_child(int n);
+
             node& father();
             node* try_get_father();
 
@@ -37,21 +40,7 @@ namespace gal::application {
             std::string absolute_node_path() const;
             const std::string& name() const;
 
-            node& get_from_path(std::string_view path) {
-                std::string_view subpath = path;
-                node* current_node = this;
-                while(true) {
-                    size_t separator_position = subpath.find('/');
-                    if (separator_position == std::string_view::npos) {
-                        //could not find separator; base case
-                        return current_node->get(std::string(subpath));
-                    } else {
-                        std::string_view next_step(subpath.data(), subpath.data() + separator_position);
-                        current_node = &current_node->get(std::string(next_step));
-                        subpath.remove_prefix(separator_position + 1);
-                    }
-                }
-            }
+            node& get_from_path(std::string_view path);
         };
 
         class scene : public gal::application::scene {
@@ -69,13 +58,7 @@ namespace gal::application {
 
             virtual gal::graphics::retro::camera& get_camera() = 0;
             node& get_root();
-            node& get_node(std::string_view path) {
-                if(path[0] != '/')
-                    throw scluk::runtime_error("the first character of a path passed to scene::get_from_path must be '/'; instead path = \"{}\"", path);
-
-                std::string_view subpath(path.begin()+1, path.end());
-                return m_root.get_from_path(subpath);
-            }
+            node& get_node(std::string_view path);
         };
     }
 }
