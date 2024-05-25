@@ -38,8 +38,7 @@ namespace gal::graphics::retro {
         m_renderer.set_clear_color(c);
     }
 
-    void renderer::draw(const renderable &renderable,
-                                      const camera &camera) {
+    void renderer::draw(const renderable &renderable, const camera &camera) {
         renderable.set_uniforms(m_shader, camera);
         m_renderer.draw(renderable.get_vao(), m_shader,
                         renderable.get_ibo_start(), renderable.get_ibo_count(),

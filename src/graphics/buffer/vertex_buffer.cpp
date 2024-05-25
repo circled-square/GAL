@@ -17,4 +17,4 @@ namespace gal::graphics {
     size_t vertex_buffer::get_stride() const { return m_stride; }
 
     void vertex_buffer::set_stride(size_t stride) { m_stride = stride; }
-    }
+}
