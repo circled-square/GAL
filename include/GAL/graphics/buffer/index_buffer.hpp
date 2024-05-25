@@ -23,7 +23,7 @@ namespace gal::graphics {
         }
     public:
         index_buffer(index_buffer&& o)  noexcept;
-        index_buffer(buffer buf, size_t size, int element_typeid);
+        index_buffer(buffer buf, size_t tri_count, int element_typeid);
 
         template<array_of<glm::uvec3> arr_t>
         index_buffer(const arr_t& arr, buffer_creation_params params = {}) : index_buffer(buffer(arr, params), arr.size(), GL_UNSIGNED_INT) { }
@@ -31,10 +31,9 @@ namespace gal::graphics {
         template<array_of<glm::u16vec3> arr_t>
         index_buffer(const arr_t& arr, buffer_creation_params params = {}) : index_buffer(buffer(arr, params), arr.size(), GL_UNSIGNED_SHORT) { }
 
-        //pass in the number of uvec3, NOT the bytes
-        index_buffer(const glm::uvec3* data, size_t size, buffer_creation_params params = {});
-        index_buffer(const glm::u16vec3* data, size_t size, buffer_creation_params params = {});
-        index_buffer(int element_typeid, size_t size, buffer_creation_params params = {});
+        index_buffer(const glm::uvec3* data, size_t tri_count, buffer_creation_params params = {});
+        index_buffer(const glm::u16vec3* data, size_t tri_count, buffer_creation_params params = {});
+        index_buffer(int element_typeid, size_t tri_count, buffer_creation_params params = {});
 
         template<array_of<glm::uvec3> arr_t>
         void update(const arr_t& arr, size_t offset = 0) {

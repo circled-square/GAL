@@ -3,7 +3,7 @@
 using namespace glm;
 
 namespace gal::graphics {
-    index_buffer::index_buffer(buffer buf, size_t size, int element_typeid) : m_buf(std::move(buf)), m_triangle_count(size), m_element_typeid(element_typeid) {}
+    index_buffer::index_buffer(buffer buf, size_t tri_count, int element_typeid) : m_buf(std::move(buf)), m_triangle_count(tri_count), m_element_typeid(element_typeid) {}
 
     index_buffer::index_buffer(index_buffer &&o) noexcept: index_buffer(std::move(o.m_buf), o.m_triangle_count, o.m_element_typeid) {}
 
