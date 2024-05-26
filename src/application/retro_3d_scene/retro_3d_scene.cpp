@@ -1,7 +1,27 @@
-#include <GAL/application/retro_3d_scene.hpp>
+#include <GAL/application/retro_3d_scene/retro_3d_scene.hpp>
 #include <scluk/log.hpp>
 
 namespace gal::application::retro {
+
+    struct post_process_vertex_t {
+        glm::vec2 pos;
+        using layout_t = decltype(gal::graphics::static_vertex_layout(pos));
+    };
+
+    //coords of big triangle covering the whole screen
+    static const std::array<post_process_vertex_t, 3> whole_screen_vertices {
+        post_process_vertex_t
+        {{-1,-1}}, {{3,-1}}, {{-1,3}}
+    };
+
+    static graphics::vertex_array make_whole_screen_vao() {
+        std::vector<graphics::vertex_buffer> vbos;
+        std::vector<graphics::index_buffer> ibos;
+        vbos.emplace_back(whole_screen_vertices);
+
+        return graphics::vertex_array(std::move(vbos), std::move(ibos));
+    }
+
     // static method
     void scene::render_node(scene &s, const node &n, glm::mat4 transform) {
         transform = transform * n.transform;
@@ -15,15 +35,47 @@ namespace gal::application::retro {
             scene::render_node(s, child, transform);
     }
 
-    scene::scene() : m_renderer(), m_root("") {}
+    scene::scene() : scene({}, {}) {}
+
+    scene::scene(std::vector<graphics::framebuffer> multipass_fbo_vec, std::vector<graphics::shader_program> multipass_shader_vec)
+        : m_renderer(),
+        m_root(""),
+        m_multipass_fbo_vec(std::move(multipass_fbo_vec)),
+        m_multipass_shader_vec(std::move(multipass_shader_vec)),
+        m_whole_screen_vao(make_whole_screen_vao())
+    {
+        assert(m_multipass_fbo_vec.size() == m_multipass_shader_vec.size());
+    }
 
     void scene::render(glm::ivec2 resolution) {
         m_renderer.clear();
-        get_camera().set_aspect_ratio(resolution);
+        get_camera().set_aspect_ratio(resolution); // TODO: the aspect ratio is only correct if we draw to FBOs with the same aspect ratio as the original window
+
+        if(!m_multipass_fbo_vec.empty())
+            m_multipass_fbo_vec[0].bind_draw();
+
         scene::render_node(*this, get_root(), glm::mat4(1));
+
+        // successive passes for post-processing
+        for(size_t i = 0; i < m_multipass_shader_vec.size(); i++) {
+            //bind the next framebuffer, or the default framebuffer on the last call
+            if(i+1 >= m_multipass_fbo_vec.size()) {
+                graphics::framebuffer::unbind(); // bind the default framebuffer on the last draw call
+            } else {
+                m_multipass_fbo_vec[i+1].bind_draw();
+            }
+
+            graphics::texture& tex = m_multipass_fbo_vec[i].get_texture();
+            const int texture_slot = 0;
+            tex.bind(texture_slot);
+            graphics::shader_program& shader = m_multipass_shader_vec[i];
+            shader.bind();
+            shader.set_uniform("u_texture_slot", texture_slot);
+            m_post_processing_renderer.draw_without_indices(m_whole_screen_vao, shader, 0, whole_screen_vertices.size());
+        }
     }
 
-    gal::graphics::retro::renderer& scene::get_renderer() { return m_renderer; }
+    graphics::retro::renderer& scene::get_renderer() { return m_renderer; }
 
     void scene::reheat() {
         m_renderer.set_clear_color(glm::vec4(0,0,0,1));
@@ -50,118 +102,4 @@ namespace gal::application::retro {
         std::string_view subpath(path.begin()+1, path.end());
         return m_root.get_from_path(subpath);
     }
-
-
-
-
-
-
-    node::node(node&& n)
-        : m_children(std::move(n.m_children)),
-          m_father(n.m_father),
-          m_name(std::move(n.m_name)),
-          transform(n.transform),
-          renderable(std::move(n.renderable))
-    {
-        n.m_father = nullptr;
-        // fix children's father pointers
-        for (auto& [name, child] : m_children)
-            child.m_father = this;
-    }
-
-    node::node(std::string name, std::shared_ptr<gal::graphics::retro::retro_renderable> renderable, glm::mat4 transform)
-        : m_father(nullptr),
-          m_name(std::move(name)),
-          transform(transform), 
-          renderable(std::move(renderable))
-    {
-        for (char& c : m_name)
-            if (c == '/')
-                c = '\\';
-    }
-
-
-    void node::add_child(node c) {
-        c.m_father = this;
-        std::string k = c.name();
-        m_children.insert({k, std::move(c)});
-    }
-
-
-
-
-
-    node* node::try_get_child(const std::string& name) {
-        auto it = m_children.find(name);
-
-        if (it != m_children.end()) {
-            return &it->second;
-        } else {
-            return nullptr;
-        }
-    }
-    node& node::get_child(const std::string& name) {
-        node* c = try_get_child(name);
-
-        if (c) {
-            return *c;
-        } else {
-            throw scluk::runtime_error("node at path '{}' has no child named '{}'", absolute_node_path(), name);
-        }
-    }
-
-    node *node::try_get_child(int n) {
-        auto it = m_children.begin();
-        for(int i = 0; i < n; n++) {
-            if (it == m_children.end()) {
-                return nullptr;
-            }
-            it++;
-        }
-        if (it == m_children.end()) {
-            return nullptr;
-        }
-        return &it->second;
-    }
-    node &node::get_child(int n) {
-        node* c = try_get_child(n);
-
-        if (c) {
-            return *c;
-        } else {
-            throw scluk::runtime_error("node at path '{}' has no {}th child", absolute_node_path(), n);
-        }
-    }
-
-    node* node::try_get_father() {
-        return m_father;
-    }
-    node& node::father() {
-        if(m_father)
-            return *m_father;
-        else
-            throw scluk::runtime_error("node with name '' has no father");
-    }
-    const std::map<std::string, node> &node::children() const { return m_children; }
-
-    std::string node::absolute_node_path() const {
-        return m_father ? m_father->absolute_node_path() + "/" + m_name : m_name;
-    }
-    const std::string& node::name() const { return m_name; }
-
-    node& node::get_from_path(std::string_view path) {
-        std::string_view subpath = path;
-        node* current_node = this;
-        while(true) {
-            size_t separator_position = subpath.find('/');
-            if (separator_position == std::string_view::npos) {
-                //could not find separator; base case
-                return current_node->get_child(std::string(subpath));
-            } else {
-                std::string_view next_step(subpath.data(), subpath.data() + separator_position);
-                current_node = &current_node->get_child(std::string(next_step));
-                subpath.remove_prefix(separator_position + 1);
-            }
-        }
-    }
-} // namespace gal::application::retro_3d
+} // namespace gal::application::retro
