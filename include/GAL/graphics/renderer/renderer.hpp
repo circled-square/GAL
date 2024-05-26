@@ -9,6 +9,8 @@ namespace gal::graphics {
     public:
         void draw(const vertex_array& vao, const shader_program& shader, uint ibo_index = 0);
         void draw(const vertex_array& vao, const shader_program& shader, size_t ibo_start, size_t ibo_count, uint ibo_index = 0);
+        void draw_without_indices(const vertex_array& vao, const shader_program& shader, size_t first, size_t count);
+
         void clear();
         void set_clear_color(glm::vec4 c);
     };

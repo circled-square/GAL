@@ -18,6 +18,16 @@ namespace gal::graphics {
         shader.unbind();
         vao.unbind();
     }
+    void renderer::draw_without_indices(const vertex_array& vao, const shader_program& shader, size_t first, size_t count) {
+        shader.bind();
+        vao.bind();
+
+        glDrawArrays(GL_TRIANGLES, first, count);
+
+        shader.unbind();
+        vao.unbind();
+    }
+
 
     void renderer::clear() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
