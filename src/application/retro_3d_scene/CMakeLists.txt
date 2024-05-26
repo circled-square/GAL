@@ -1,0 +1,10 @@
+#node
+add_library(application__retro_3d_scene_node STATIC node.cpp)
+target_link_libraries(application__retro_3d_scene_node PUBLIC third_party__glm graphics__renderer)
+target_link_libraries(application__retro_3d_scene_node PRIVATE third_party__scluk)
+target_include_directories(application__retro_3d_scene_node PUBLIC ../../include/)
+
+#retro_3d_scene
+add_library(application__retro_3d_scene STATIC retro_3d_scene.cpp)
+target_link_libraries(application__retro_3d_scene PUBLIC application__retro_3d_scene_node application__scene)
+target_include_directories(application__retro_3d_scene PUBLIC ../../include/)

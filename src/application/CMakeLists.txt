@@ -1,15 +1,10 @@
 add_subdirectory(window/)
+add_subdirectory(retro_3d_scene/)
 
 #scene
 add_library(application__scene STATIC scene.cpp)
 target_link_libraries(application__scene PRIVATE application__window)
 target_include_directories(application__scene PUBLIC ../../include/)
-
-
-#retro_3d_scene
-add_library(application__retro_3d_scene STATIC retro_3d_scene.cpp)
-target_link_libraries(application__retro_3d_scene PUBLIC third_party__glm graphics__renderer application__scene)
-target_include_directories(application__retro_3d_scene PUBLIC ../../include/)
 
 #application
 add_library(application STATIC application.cpp)
