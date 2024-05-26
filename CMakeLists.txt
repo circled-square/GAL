@@ -7,5 +7,5 @@ add_subdirectory(src/)
 add_subdirectory(private/)
 
 add_library(GAL INTERFACE)
-target_link_libraries(GAL INTERFACE application graphics third_party__imgui third_party__tinygltf)
+target_link_libraries(GAL INTERFACE application graphics third_party__imgui)
 target_include_directories(GAL INTERFACE include/)
