@@ -16,7 +16,8 @@ namespace gal::graphics {
 
         struct ignored_error_t { GLenum src, type; GLuint id; };
         ignored_error_t ignored_errors[] = {
-                {GL_DEBUG_SOURCE_API, GL_DEBUG_TYPE_OTHER, 131185 }// "Buffer object will use VIDEO memory as the source for buffer object operations"
+                {GL_DEBUG_SOURCE_API, GL_DEBUG_TYPE_OTHER, 131185 },// "Buffer object will use VIDEO memory as the source for buffer object operations"
+                {GL_DEBUG_SOURCE_API, GL_DEBUG_TYPE_OTHER, 131169 }, // "Framebuffer detailed info: The driver allocated storage for renderbuffer {}."
         };
 
         for(auto& err : ignored_errors)
