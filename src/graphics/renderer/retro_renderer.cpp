@@ -5,14 +5,6 @@
 
 namespace gal::graphics::retro {
     static shader_program make_retro_shader() {
-        const char *frag = "#version 330 core \n\
-            in vec2 v_tex_coord; \
-            uniform sampler2D u_texture_slot; \
-            out vec4 color; \
-            \
-            void main() { \
-                color = texture(u_texture_slot, v_tex_coord); \
-        }";
         const char *vert = "#version 440 core \n\
             layout(location = 0) in vec3 pos; \
             layout(location = 1) in vec2 tex_coord; \
@@ -22,6 +14,14 @@ namespace gal::graphics::retro {
             void main() { \
                 gl_Position = u_mvp * vec4(pos, 1); \
                 v_tex_coord = tex_coord; \
+        }";
+        const char *frag = "#version 330 core \n\
+            in vec2 v_tex_coord; \
+            uniform sampler2D u_texture_slot; \
+            out vec4 color; \
+            \
+            void main() { \
+                color = texture(u_texture_slot, v_tex_coord); \
         }";
 
         return shader_program(vert, frag);
