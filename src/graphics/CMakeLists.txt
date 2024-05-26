@@ -23,6 +23,10 @@ add_library(graphics__image STATIC image.cpp)
 target_link_libraries(graphics__image PRIVATE third_party__stb)
 target_include_directories(graphics__image PUBLIC ../../include/)
 
+add_library(graphics__gltf_loader STATIC gltf_loader.cpp)
+target_link_libraries(graphics__gltf_loader PUBLIC application__retro_3d_scene)
+target_link_libraries(graphics__gltf_loader PRIVATE third_party__tinygltf third_party__glm third_party__scluk graphics__image)
+target_include_directories(graphics__gltf_loader PUBLIC ../../include/)
 
 add_library(graphics INTERFACE)
-target_link_libraries(graphics INTERFACE graphics__shader graphics__buffer graphics__vertex_array graphics__renderer graphics__texture graphics__image)
+target_link_libraries(graphics INTERFACE graphics__shader graphics__buffer graphics__vertex_array graphics__renderer graphics__texture graphics__image graphics__gltf_loader)
