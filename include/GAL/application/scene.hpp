@@ -12,6 +12,7 @@ namespace gal::application {
     public:
         scene();
         scene(scene&&) = delete;
+        scene(scene&) = delete;
 
         void raise_resize_event(glm::ivec2 resolution);
         void raise_key_press_event(int key, int scancode, int action, int mods);
