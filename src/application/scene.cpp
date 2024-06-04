@@ -5,7 +5,7 @@ namespace gal::application {
     scene::scene() : m_application(nullptr) {}
 
     void scene::raise_resize_event(glm::ivec2 resolution) {
-        glViewport(0, 0, resolution.x, resolution.y);
+        //glViewport(0, 0, resolution.x, resolution.y);
         this->on_resize(resolution);
     }
     void scene::raise_key_press_event(int key, int scancode, int action, int mods) {

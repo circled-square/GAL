@@ -29,11 +29,8 @@ namespace gal::graphics {
     }
 
 
-    void renderer::clear() {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    }
-
-    void renderer::set_clear_color(glm::vec4 c) {
+    void renderer::clear(glm::vec4 c) {
         glClearColor(c.x, c.y, c.z, c.w);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 }

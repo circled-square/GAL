@@ -191,11 +191,11 @@ static gal::application::retro::node load_node_subtree(const tinygltf::Model& mo
     return root;
 }
 
-gal::application::retro::node load_node_tree_from_gltf(const char* filepath) {
+gal::application::retro::node load_node_tree_from_gltf(const char* filepath, const char* node_name) {
     bool binary = string_view(filepath).ends_with(".glb");
     const tinygltf::Model model = load_gltf_from_file(filepath, binary);
 
-    gal::application::retro::node root(filepath);
+    gal::application::retro::node root(node_name ? node_name : filepath);
 
     const tinygltf::Scene& scene = model.scenes.at(0);
     list<int> node_idx_queue;

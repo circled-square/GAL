@@ -5,7 +5,6 @@
 namespace gal::graphics {
     texture::texture(const specification& spec)
             : m_width(spec.w), m_height(spec.h), m_components(spec.components) {
-        scluk::stdout_log("texture::texture(WxH={}x{}, components={}, data={}, alignment={}, repeat_wrap={})", spec.w, spec.h, spec.components, spec.data, spec.alignment, spec.repeat_wrap);
 
         assert(m_components >= 1 && m_components <= 4);
 
@@ -66,7 +65,8 @@ namespace gal::graphics {
             m_components == 2 ? GL_RG :
             m_components == 3 ? GL_RGB : GL_RGBA;
 
-        glTextureSubImage2D(m_texture_id, 0, 0, 0, m_width, m_height, format, GL_UNSIGNED_BYTE, buffer);
+        if(buffer != nullptr)
+            glTextureSubImage2D(m_texture_id, 0, 0, 0, m_width, m_height, format, GL_UNSIGNED_BYTE, buffer);
     }
 
     void texture::bind(uint slot) const {
@@ -78,4 +78,8 @@ namespace gal::graphics {
         glBindTextureUnit(slot, 0);
 #endif
     }
+
+    int texture::width() const { return m_width; }
+    int texture::height() const { return m_height; }
+    glm::ivec2 texture::resolution() const { return { width(), height() }; }
 }

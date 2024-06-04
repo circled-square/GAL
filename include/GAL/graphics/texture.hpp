@@ -3,6 +3,7 @@
 
 #include "image.hpp"
 #include <internal/graphics/types.hpp>
+#include <random>
 
 namespace gal::graphics {
     class framebuffer; //only to declare as friend of texture
@@ -32,8 +33,31 @@ namespace gal::graphics {
         void bind(uint slot) const;
         void unbind(uint slot) const;
 
-        int get_width () const { return m_width; }
-        int height() const { return m_height; }
+        int width () const;
+        int height() const;
+        glm::ivec2 resolution() const;
+
+        //returns a square size x size texture containing grayscale noise
+        template<size_t bit_depth>
+        static texture noise(glm::ivec2 res, char components) {
+            std::random_device rand_dev;
+            std::subtract_with_carry_engine<unsigned short, bit_depth, 20, 48> rng(rand_dev());
+
+            unsigned char* data = new unsigned char[res.x*res.y*components];
+
+            for (int y = 0; y < res.y; y++) {
+                for (int x = 0; x < res.x; x++) {
+                    for (char c = 0; c < components; c++) {
+                        data[c + x*components + y*res.x*components] = rng() << (8 - bit_depth);
+                    }
+                }
+            }
+            specification spec = {
+                .w = res.x, .h = res.y, .components=components, .data=data, .alignment=1, .repeat_wrap=true,
+            };
+
+            return texture(spec);
+        }
     };
 }
 

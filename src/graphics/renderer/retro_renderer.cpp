@@ -14,7 +14,7 @@ namespace gal::graphics::retro {
             void main() { \
                 gl_Position = u_mvp * vec4(pos, 1); \
                 v_tex_coord = tex_coord; \
-        }";
+            }";
         const char *frag = "#version 330 core \n\
             in vec2 v_tex_coord; \
             uniform sampler2D u_texture_slot; \
@@ -22,7 +22,7 @@ namespace gal::graphics::retro {
             \
             void main() { \
                 color = texture(u_texture_slot, v_tex_coord); \
-        }";
+            }";
 
         return shader_program(vert, frag);
     }
@@ -30,13 +30,10 @@ namespace gal::graphics::retro {
     renderer::renderer()
         : m_shader(make_retro_shader()) {}
 
-    void renderer::clear() {
-        m_renderer.clear();
+    void renderer::clear(glm::vec4 c) {
+        m_renderer.clear(c);
     }
 
-    void renderer::set_clear_color(glm::vec4 c) {
-        m_renderer.set_clear_color(c);
-    }
 
     void renderer::draw(const renderable &renderable, const camera &camera) {
         renderable.set_uniforms(m_shader, camera);
@@ -96,6 +93,6 @@ namespace gal::graphics::retro {
         const int texture_slot = 0;
         m_tex.bind(texture_slot);
         shader.set_uniform("u_texture_slot", texture_slot);
-        shader.set_uniform("u_mvp", camera.get_viewproj_mat() * m_model);
+        shader.set_uniform<glm::mat4>("u_mvp", camera.get_viewproj_mat() * m_model);
     }
-    } // namespace gal::graphics
+} // namespace gal::graphics

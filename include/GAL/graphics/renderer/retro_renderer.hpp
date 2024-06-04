@@ -25,8 +25,7 @@ namespace gal::graphics::retro {
     public:
         renderer();
         void draw(const renderable &renderable, const camera &camera);
-        void clear();
-        void set_clear_color(glm::vec4 c);
+        void clear(glm::vec4 c = {0,0,0,1});
     };
 
     //vertex type expected by the shader used by retro_renderer

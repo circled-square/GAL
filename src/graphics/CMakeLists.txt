@@ -16,7 +16,7 @@ target_link_libraries(graphics__renderer PUBLIC internal__graphics__types)
 target_include_directories(graphics__renderer PUBLIC ../../include/)
 
 add_library(graphics__texture STATIC texture.cpp)
-target_link_libraries(graphics__texture PUBLIC internal__graphics__types)
+target_link_libraries(graphics__texture PUBLIC internal__graphics__types third_party__glm)
 target_include_directories(graphics__texture PUBLIC ../../include/)
 
 add_library(graphics__image STATIC image.cpp)
