@@ -8,7 +8,7 @@ target_include_directories(GAL__buffer PUBLIC ../include/ ../glad/include)
 
 add_library(GAL__vertex_array STATIC vertex_array.cpp)
 target_link_libraries(GAL__vertex_array PUBLIC GAL__types GAL__buffer)
-target_link_libraries(GAL__vertex_array PRIVATE scluk)
+target_link_libraries(GAL__vertex_array PRIVATE slogga)
 target_include_directories(GAL__vertex_array PUBLIC ../include/ ../glad/include)
 
 add_library(GAL__renderer STATIC renderer/renderer.cpp)
@@ -35,7 +35,7 @@ target_include_directories(GAL__types INTERFACE ../include/ ../glad/include)
 
 add_library(GAL__init STATIC init.cpp)
 target_link_libraries(GAL__init PUBLIC glad)
-target_link_libraries(GAL__init PRIVATE scluk glfw)
+target_link_libraries(GAL__init PRIVATE slogga glfw)
 target_include_directories(GAL__init PUBLIC ../include/ ../glad/include)
 
 add_library(GAL INTERFACE)
