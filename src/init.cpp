@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h> // glad needs glfwGetProcAddress to initialize
 #include <format>
 #include <stdexcept>
-#include <scluk/log.hpp>
+#include <slogga/log.hpp>
 #include <iostream>
 
 namespace gal {
@@ -60,6 +60,6 @@ namespace gal {
                 severity == GL_DEBUG_SEVERITY_NOTIFICATION ? "notification" : "(unknown error severity)";
 
         // std::cerr << severity_str << "\t" << source_str << "\t" << type_str << std::endl;
-        scluk::stdout_log.error("OpenGL error: [{} {}] source: {}, id: {}, msg: \"{}\"", severity_str, type_str, source_str, msg_id, msg);
+        slogga::stdout_log.error("OpenGL error: [{} {}] source: {}, id: {}, msg: \"{}\"", severity_str, type_str, source_str, msg_id, msg);
     }
 }

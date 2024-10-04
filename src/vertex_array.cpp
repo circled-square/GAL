@@ -1,6 +1,6 @@
 #include <GAL/vertex_array.hpp>
 #include <glad/glad.h>
-#include <scluk/log.hpp>
+#include <slogga/log.hpp>
 
 namespace gal {
     vertex_array::vertex_array(std::vector<vertex_buffer> vbos, std::vector<index_buffer> ibos, vertex_layout layout) : m_vbos(std::move(vbos)), m_ibos(std::move(ibos)) {

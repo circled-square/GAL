@@ -11,13 +11,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(glm)
 
-#fetch scluk
+#fetch slogga
 FetchContent_Declare(
-        scluk
-        GIT_REPOSITORY https://github.com/circled-square/SCLUK.git
+        slogga
+        GIT_REPOSITORY https://github.com/circled-square/SLOGGA.git
         GIT_TAG main
 )
-FetchContent_MakeAvailable(scluk)
+FetchContent_MakeAvailable(slogga)
 
 #fetch stb
 FetchContent_Declare(
