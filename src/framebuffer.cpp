@@ -18,14 +18,11 @@ namespace gal {
             // attach depth buffer
             glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depth_renderbuf_id);
 
-            if(tex)
+            if(tex) {
                 link_texture(*tex);
+            }
 
-            // Set the list of draw buffers.
-            unsigned int draw_buffers[1] = { GL_COLOR_ATTACHMENT0 };
-            glDrawBuffers(1, draw_buffers);
-
-            framebuffer::unbind(); // limit side effects to a minimum
+            unbind(); // limit side effects to a minimum
         }
 
         framebuffer::framebuffer(framebuffer&& o): m_fbo(o.m_fbo), m_depth_renderbuf_id(o.m_depth_renderbuf_id), m_resolution(o.m_resolution) {
@@ -56,7 +53,12 @@ namespace gal {
                 framebuffer::unbind(); // limit side effects to a minimum
                 throw framebuffer_construction_exception(status);
             }
-            framebuffer::unbind(); // limit side effects to a minimum
+
+            // Set the list of draw buffers.
+            unsigned int draw_buffers[1] = { GL_COLOR_ATTACHMENT0 };
+            glDrawBuffers(1, draw_buffers);
+
+            unbind(); // limit side effects to a minimum
         }
 
         void framebuffer::bind_draw() {
