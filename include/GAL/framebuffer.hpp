@@ -22,7 +22,6 @@ namespace gal {
             unsigned int m_depth_renderbuf_id;
             glm::ivec2 m_resolution;
 
-
         public:
             framebuffer(const framebuffer&) = delete;
 
@@ -39,7 +38,9 @@ namespace gal {
             void bind();
             static void unbind();
 
-            const glm::ivec2 resolution() const { return m_resolution; }
+            const glm::ivec2 resolution() const;
+
+            framebuffer& operator=(framebuffer&& o);
         };
     }
 
@@ -76,6 +77,12 @@ namespace gal {
 
         tex_ptr_t& get_texture() { return m_tex; }
         const tex_ptr_t& get_texture() const { return m_tex; }
+
+        framebuffer& operator=(framebuffer&& o) {
+            m_tex = std::move(o.m_tex);
+            m_fbo = std::move(o.m_fbo);
+            return *this;
+        }
     };
 }
 

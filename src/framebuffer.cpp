@@ -33,8 +33,11 @@ namespace gal {
         }
 
         framebuffer::~framebuffer() {
-            glDeleteFramebuffers(1, &m_fbo);
-            glDeleteRenderbuffers(1, &m_depth_renderbuf_id);
+            if(m_fbo != -1)
+                glDeleteFramebuffers(1, &m_fbo);
+            if(m_depth_renderbuf_id != -1)
+                glDeleteRenderbuffers(1, &m_depth_renderbuf_id);
+            m_fbo = m_depth_renderbuf_id = -1;
         }
 
         void framebuffer::link_texture(texture& tex) {
@@ -72,6 +75,18 @@ namespace gal {
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
 
+        const glm::ivec2 framebuffer::resolution() const { return m_resolution; }
+
+        framebuffer& framebuffer::operator=(framebuffer&& o) {
+            this->~framebuffer();
+            m_fbo = o.m_fbo;
+            o.m_fbo = -1;
+            m_depth_renderbuf_id = o.m_depth_renderbuf_id;
+            o.m_depth_renderbuf_id = -1;
+            m_resolution = o.m_resolution;
+
+            return *this;
+        }
     }
 
     // construction_exception
