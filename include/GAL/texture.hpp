@@ -39,6 +39,8 @@ namespace gal {
         int height() const;
         glm::ivec2 resolution() const;
 
+        uint get_gl_id();
+
         //returns a texture containing random noise
         static texture noise(glm::ivec2 res, char components = 4);
 

@@ -57,7 +57,7 @@ namespace gal {
     void texture::set_texture_data(const void *buffer, int alignment) {
         glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
 
-        uint format = 
+        uint format =
             m_components == 1 ? GL_RED :
             m_components == 2 ? GL_RG :
             m_components == 3 ? GL_RGB : GL_RGBA;
@@ -73,6 +73,8 @@ namespace gal {
     int texture::width() const { return m_res.x; }
     int texture::height() const { return m_res.y; }
     glm::ivec2 texture::resolution() const { return m_res; }
+
+    uint get_gl_id() { return m_texture_id; }
 
     texture texture::noise(glm::ivec2 res, char components) {
         std::random_device rand_dev;
