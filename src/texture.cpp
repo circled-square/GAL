@@ -74,7 +74,7 @@ namespace gal {
     int texture::height() const { return m_res.y; }
     glm::ivec2 texture::resolution() const { return m_res; }
 
-    uint get_gl_id() { return m_texture_id; }
+    uint texture::get_gl_id() { return m_texture_id; }
 
     texture texture::noise(glm::ivec2 res, char components) {
         std::random_device rand_dev;
