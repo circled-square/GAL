@@ -5,6 +5,7 @@ target_compile_options(glad PRIVATE -Wno-pedantic)
 
 #fetch glm
 include(FetchContent)
+set(GLM_ENABLE_CXX_20 ON)
 FetchContent_Declare(
     glm
     GIT_REPOSITORY https://github.com/g-truc/glm.git
