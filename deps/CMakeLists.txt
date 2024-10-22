@@ -5,6 +5,8 @@ target_compile_options(glad PRIVATE -Wno-pedantic)
 
 #fetch glm
 include(FetchContent)
+
+cmake_policy(SET CMP0077 NEW) # allow overriding of options from variables
 set(GLM_ENABLE_CXX_20 ON)
 FetchContent_Declare(
     glm
