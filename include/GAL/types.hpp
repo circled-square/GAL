@@ -1,5 +1,5 @@
-#ifndef GAL_INTERNAL_GRAPHICS_TYPES_HPP
-#define GAL_INTERNAL_GRAPHICS_TYPES_HPP
+#ifndef GAL_INTERNAL_TYPES_HPP
+#define GAL_INTERNAL_TYPES_HPP
 
 #include <glad/glad.h>
 #include <cassert>
@@ -86,4 +86,4 @@ namespace gal {
     using vector_to_scalar = scalar_to_vector<T>::value_type;
 }
 
-#endif // GAL_INTERNAL_GRAPHICS_TYPES_HPP
+#endif // GAL_INTERNAL_TYPES_HPP

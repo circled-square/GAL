@@ -1,5 +1,5 @@
-#ifndef GAL_GRAPHICS_VERTEX_ARRAY_HPP
-#define GAL_GRAPHICS_VERTEX_ARRAY_HPP
+#ifndef GAL_VERTEX_ARRAY_HPP
+#define GAL_VERTEX_ARRAY_HPP
 
 #include <tuple>
 #include <vector>
@@ -91,4 +91,4 @@ namespace gal {
     };
 }
 
-#endif //GAL_GRAPHICS_VERTEX_ARRAY_HPP
+#endif //GAL_VERTEX_ARRAY_HPP

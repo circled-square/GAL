@@ -1,5 +1,5 @@
-#ifndef GAL_GRAPHICS_SHADER_HPP
-#define GAL_GRAPHICS_SHADER_HPP
+#ifndef GAL_SHADER_HPP
+#define GAL_SHADER_HPP
 
 #include <GAL/types.hpp>
 
@@ -94,4 +94,4 @@ namespace gal {
     };
 }
 
-#endif //GAL_GRAPHICS_SHADER_HPP
+#endif //GAL_SHADER_HPP

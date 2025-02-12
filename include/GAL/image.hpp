@@ -1,5 +1,5 @@
-#ifndef GAL_GRAPHICS_IMAGE_HPP
-#define GAL_GRAPHICS_IMAGE_HPP
+#ifndef GAL_IMAGE_HPP
+#define GAL_IMAGE_HPP
 
 
 namespace gal {
@@ -15,4 +15,4 @@ namespace gal {
 
 }
 
-#endif //GAL_GRAPHICS_IMAGE_HPP
+#endif //GAL_IMAGE_HPP
