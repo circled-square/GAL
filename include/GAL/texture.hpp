@@ -1,5 +1,5 @@
-#ifndef GAL_GRAPHICS_TEXTURE_HPP
-#define GAL_GRAPHICS_TEXTURE_HPP
+#ifndef GAL_TEXTURE_HPP
+#define GAL_TEXTURE_HPP
 
 #include "image.hpp"
 #include <GAL/types.hpp>
@@ -51,4 +51,4 @@ namespace gal {
 }
 
 
-#endif //GAL_GRAPHICS_TEXTURE_HPP
+#endif //GAL_TEXTURE_HPP

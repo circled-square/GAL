@@ -1,5 +1,5 @@
-#ifndef GAL_GRAPHICS_RENDERER_HPP
-#define GAL_GRAPHICS_RENDERER_HPP
+#ifndef GAL_RENDERER_HPP
+#define GAL_RENDERER_HPP
 
 #include "../vertex_array.hpp"
 #include "../shader.hpp"
@@ -18,4 +18,4 @@ namespace gal {
 }
 
 
-#endif //GAL_GRAPHICS_RENDERER_HPP
+#endif //GAL_RENDERER_HPP

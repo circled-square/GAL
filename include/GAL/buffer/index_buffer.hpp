@@ -1,5 +1,5 @@
-#ifndef GAL_GRAPHICS_INDEX_BUFFER_HPP
-#define GAL_GRAPHICS_INDEX_BUFFER_HPP
+#ifndef GAL_INDEX_BUFFER_HPP
+#define GAL_INDEX_BUFFER_HPP
 
 #include "buffer.hpp"
 #include <glm/glm.hpp>
@@ -26,10 +26,11 @@ namespace gal {
 
         template<ArrayOf<glm::uvec3> arr_t>
         index_buffer(const arr_t& arr, buffer_creation_params params = {})
-        : index_buffer(buffer(arr, params), arr.size(), GL_UNSIGNED_INT) {}
+            : index_buffer(buffer(arr, params), arr.size(), GL_UNSIGNED_INT) {}
+
         template<ArrayOf<glm::u16vec3> arr_t>
         index_buffer(const arr_t& arr, buffer_creation_params params = {})
-        : index_buffer(buffer(arr, params), arr.size(), GL_UNSIGNED_SHORT) {}
+	    : index_buffer(buffer(arr, params), arr.size(), GL_UNSIGNED_SHORT) {}
 
         index_buffer(const glm::uvec3* data, size_t tri_count, buffer_creation_params params = {});
         index_buffer(const glm::u16vec3* data, size_t tri_count, buffer_creation_params params = {});
@@ -53,4 +54,4 @@ namespace gal {
     };
 }
 
-#endif //GAL_GRAPHICS_INDEX_BUFFER_HPP
+#endif //GAL_INDEX_BUFFER_HPP

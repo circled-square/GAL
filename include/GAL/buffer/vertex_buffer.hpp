@@ -1,5 +1,5 @@
-#ifndef GAL_GRAPHICS_VERTEX_BUFFER_HPP
-#define GAL_GRAPHICS_VERTEX_BUFFER_HPP
+#ifndef GAL_VERTEX_BUFFER_HPP
+#define GAL_VERTEX_BUFFER_HPP
 
 #include "buffer.hpp"
 
@@ -16,7 +16,7 @@ namespace gal {
 
         template<Array arr_t>
         vertex_buffer(const arr_t& arr, buffer_creation_params params = {}) 
-        : vertex_buffer(buffer(arr, params), sizeof(typename arr_t::value_type)) {}
+            : vertex_buffer(buffer(arr, params), sizeof(typename arr_t::value_type)) {}
 
         void update(std::size_t offset, const void *data, std::size_t size) {
             m_buf.update(offset, data, size);
@@ -28,4 +28,4 @@ namespace gal {
     };
 }
 
-#endif //GAL_GRAPHICS_VERTEX_BUFFER_HPP
+#endif //GAL_VERTEX_BUFFER_HPP

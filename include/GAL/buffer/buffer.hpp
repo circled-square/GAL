@@ -1,5 +1,5 @@
-#ifndef GAL_GRAPHICS_BUFFER_HPP
-#define GAL_GRAPHICS_BUFFER_HPP
+#ifndef GAL_BUFFER_HPP
+#define GAL_BUFFER_HPP
 
 #include <glad/glad.h>
 #include <GAL/types.hpp>
@@ -42,4 +42,4 @@ namespace gal {
     };
 }
 
-#endif //GAL_GRAPHICS_BUFFER_HPP
+#endif //GAL_BUFFER_HPP

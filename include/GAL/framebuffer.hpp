@@ -1,5 +1,5 @@
-#ifndef GAL_GRAPHICS_FRAMEBUFFER_HPP
-#define GAL_GRAPHICS_FRAMEBUFFER_HPP
+#ifndef GAL_FRAMEBUFFER_HPP
+#define GAL_FRAMEBUFFER_HPP
 
 #include "texture.hpp"
 #include <stdexcept>
@@ -86,4 +86,4 @@ namespace gal {
     };
 }
 
-#endif // GAL_GRAPHICS_FRAMEBUFFER_HPP
+#endif // GAL_FRAMEBUFFER_HPP
