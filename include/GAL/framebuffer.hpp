@@ -4,7 +4,6 @@
 #include "texture.hpp"
 #include <stdexcept>
 #include <optional>
-#include <slogga/asserts.hpp>
 
 namespace gal {
     class framebuffer_construction_exception : std::exception {
@@ -65,8 +64,14 @@ namespace gal {
 
         // switches the texture this fbo is linked to to a different one
         void link_texture(tex_ptr_t tex) {
-            m_tex = tex;
-            m_fbo.link_texture(*tex);
+            m_tex = std::move(tex);
+            m_fbo.link_texture(*m_tex);
+        }
+
+        // switches the texture this fbo is linked to to a different one, replacing the previous one through this objects PointerLike
+        void link_and_replace_texture(texture tex) {
+            *m_tex = std::move(tex);
+            m_fbo.link_texture(*m_tex);
         }
 
         void bind_draw() { return m_fbo.bind_draw(); }
@@ -80,8 +85,6 @@ namespace gal {
         const tex_ptr_t& get_texture() const { return m_tex; }
 
         framebuffer& operator=(framebuffer&& o) {
-            EXPECTS(o.m_tex);
-
             m_tex = std::move(o.m_tex);
             m_fbo = std::move(o.m_fbo);
             return *this;
