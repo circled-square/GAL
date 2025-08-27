@@ -26,6 +26,7 @@ target_include_directories(GAL__image PUBLIC ../include/ ../glad/include)
 
 add_library(GAL__framebuffer STATIC framebuffer.cpp)
 target_link_libraries(GAL__framebuffer PUBLIC GAL__types GAL__texture)
+target_link_libraries(GAL__framebuffer PRIVATE slogga)
 target_include_directories(GAL__framebuffer PUBLIC ../include/ ../glad/include)
 
 add_library(GAL__types INTERFACE)

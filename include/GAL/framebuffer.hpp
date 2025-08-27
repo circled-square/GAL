@@ -4,6 +4,7 @@
 #include "texture.hpp"
 #include <stdexcept>
 #include <optional>
+#include <slogga/asserts.hpp>
 
 namespace gal {
     class framebuffer_construction_exception : std::exception {
@@ -79,6 +80,8 @@ namespace gal {
         const tex_ptr_t& get_texture() const { return m_tex; }
 
         framebuffer& operator=(framebuffer&& o) {
+            EXPECTS(o.m_tex);
+
             m_tex = std::move(o.m_tex);
             m_fbo = std::move(o.m_fbo);
             return *this;
