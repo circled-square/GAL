@@ -14,7 +14,11 @@ namespace gal {
         uint m_texture_id;
         glm::ivec2 m_res;
         int m_components;
-    public:
+
+        //necessary for creating a null texture
+        explicit texture(std::nullptr_t);
+
+      public:
         struct specification {
             glm::ivec2 res;
             int components = 4;
@@ -31,6 +35,9 @@ namespace gal {
         texture(texture&& o);
         texture& operator=(texture&& o);
         ~texture();
+
+        static texture null();
+        bool is_null();
 
         void set_texture_data(const void* buffer, int alignment = 4);
 

@@ -113,4 +113,10 @@ namespace gal {
             }
         };
     }
+
+    texture::texture(std::nullptr_t) : m_texture_id(0), m_res({0, 0}), m_components(0) {}
+
+    texture texture::null() { return texture(nullptr); }
+
+    bool texture::is_null() { return m_texture_id; }
 }
