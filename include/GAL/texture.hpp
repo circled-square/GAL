@@ -29,6 +29,7 @@ namespace gal {
         texture(const specification& spec);
         texture(const image& image);
         texture(texture&& o);
+        texture& operator=(texture&& o);
         ~texture();
 
         void set_texture_data(const void* buffer, int alignment = 4);

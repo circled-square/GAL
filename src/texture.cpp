@@ -50,6 +50,16 @@ namespace gal {
         m_components = o.m_components;
     }
 
+    texture& texture::operator=(texture&& o) {
+        gal::texture let_this_be_destroyed(std::move(*this));
+
+        m_texture_id = o.m_texture_id;
+        o.m_texture_id = 0;
+        m_res = o.m_res;
+        m_components = o.m_components;
+
+        return *this;
+    }
     texture::~texture() {
         glDeleteTextures(1, &m_texture_id);
     }
