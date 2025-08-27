@@ -60,18 +60,20 @@ namespace gal {
 
         //may throw construction_exception
         framebuffer(framebuffer&& o) : m_tex(std::move(o.m_tex)), m_fbo(std::move(o.m_fbo)) {}
-        framebuffer(tex_ptr_t tex) : m_tex(std::move(tex)), m_fbo(m_tex ? &*m_tex : nullptr) {}
+        framebuffer(tex_ptr_t tex) : m_tex(std::move(tex)), m_fbo(m_tex ? (m_tex->is_null() ? nullptr : &*m_tex) : nullptr) {}
 
         // switches the texture this fbo is linked to to a different one
         void link_texture(tex_ptr_t tex) {
             m_tex = std::move(tex);
-            m_fbo.link_texture(*m_tex);
+            if(!m_tex->is_null())
+                m_fbo.link_texture(*m_tex);
         }
 
         // switches the texture this fbo is linked to to a different one, replacing the previous one through this objects PointerLike
         void link_and_replace_texture(texture tex) {
             *m_tex = std::move(tex);
-            m_fbo.link_texture(*m_tex);
+            if(!m_tex->is_null())
+                m_fbo.link_texture(*m_tex);
         }
 
         void bind_draw() { return m_fbo.bind_draw(); }

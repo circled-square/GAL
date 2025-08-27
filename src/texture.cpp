@@ -118,5 +118,5 @@ namespace gal {
 
     texture texture::null() { return texture(nullptr); }
 
-    bool texture::is_null() { return m_texture_id; }
+    bool texture::is_null() { return m_texture_id == 0; }
 }
