@@ -6,16 +6,19 @@
 #include <glad/glad.h>
 
 namespace gal {
-    uint shader_program::compile_shader(uint type, const std::string &source) {
+    uint shader_program::compile_shader(uint type, std::string_view source) {
         uint id = glCreateShader(type);
-        const char* src = source.c_str();
-        glShaderSource(id, 1, &src, nullptr);
+        { // scope for parameters of glShaderSource
+            const char* src = source.data();
+            const sint length = (sint)source.length();
+            glShaderSource(id, 1, &src, &length);
+        }
         glCompileShader(id);
 
-        sint compilation_result;
+        sint compilation_result = 0;
         glGetShaderiv(id, GL_COMPILE_STATUS, &compilation_result);
-        if (!compilation_result) {
-            sint length;
+        if (compilation_result == 0) {
+            sint length = 0;
             glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
             std::vector<char> gl_message(length);
             glGetShaderInfoLog(id, length, &length, gl_message.data());
@@ -34,8 +37,7 @@ namespace gal {
         return id;
     }
 
-    shader_program::shader_program(const std::string &vert_shader, const std::string &frag_shader) {
-        this->m_program_id = glCreateProgram();
+    shader_program::shader_program(std::string_view vert_shader, std::string_view frag_shader) : m_program_id(glCreateProgram()) {
         uint vs = compile_shader(GL_VERTEX_SHADER, vert_shader);
         uint fs = compile_shader(GL_FRAGMENT_SHADER, frag_shader);
 
@@ -49,10 +51,8 @@ namespace gal {
         glDeleteShader(fs);
     }
 
-    shader_program::shader_program(shader_program&& o) {
-        m_program_id = o.m_program_id;
+    shader_program::shader_program(shader_program&& o) noexcept : m_program_id(o.m_program_id), m_uniform_location_cache(std::move(o.m_uniform_location_cache)) {
         o.m_program_id = 0;
-        m_uniform_location_cache = std::move(o.m_uniform_location_cache);
     }
 
     shader_program::~shader_program() {
@@ -64,15 +64,15 @@ namespace gal {
     }
 
     //returns -1 if it cannot retrieve the uniform's location (because it does not exist or was optimized out)
-    sint shader_program::get_uniform_location(const std::string& name) const {
+    sint shader_program::get_uniform_location(const char* name) const {
         if(auto it = m_uniform_location_cache.find(name); it != m_uniform_location_cache.end()) {
             return it->second;
         }
 
         //cache miss
-        sint location = glGetUniformLocation(m_program_id, name.c_str());
+        sint location = glGetUniformLocation(m_program_id, name);
 
-        m_uniform_location_cache.insert({ name, location });
+        m_uniform_location_cache.insert({ std::string(name), location });
 
         return location;
     }
@@ -80,26 +80,22 @@ namespace gal {
     namespace internal {
         using umf_t = uniform_mat_func_t;
 
-        umf_t type_to_uniform_mat_func__struct<glm::mat<2,2,float>>::v() { return (umf_t)glProgramUniformMatrix2fv; }
-        umf_t type_to_uniform_mat_func__struct<glm::mat<2,3,float>>::v() { return (umf_t)glProgramUniformMatrix2x3fv; }
-        umf_t type_to_uniform_mat_func__struct<glm::mat<2,4,float>>::v() { return (umf_t)glProgramUniformMatrix2x4fv; }
-        umf_t type_to_uniform_mat_func__struct<glm::mat<3,2,float>>::v() { return (umf_t)glProgramUniformMatrix3x2fv; }
-        umf_t type_to_uniform_mat_func__struct<glm::mat<3,3,float>>::v() { return (umf_t)glProgramUniformMatrix3fv; }
-        umf_t type_to_uniform_mat_func__struct<glm::mat<3,4,float>>::v() { return (umf_t)glProgramUniformMatrix3x4fv; }
-        umf_t type_to_uniform_mat_func__struct<glm::mat<4,2,float>>::v() { return (umf_t)glProgramUniformMatrix4x2fv; }
-        umf_t type_to_uniform_mat_func__struct<glm::mat<4,3,float>>::v() { return (umf_t)glProgramUniformMatrix4x3fv; }
-        umf_t type_to_uniform_mat_func__struct<glm::mat<4,4,float>>::v() { return (umf_t)glProgramUniformMatrix4fv; }
+        umf_t type_to_uniform_mat_func__struct<glm::mat<2,2,float>>::v() { return glProgramUniformMatrix2fv; }
+        umf_t type_to_uniform_mat_func__struct<glm::mat<2,3,float>>::v() { return glProgramUniformMatrix2x3fv; }
+        umf_t type_to_uniform_mat_func__struct<glm::mat<2,4,float>>::v() { return glProgramUniformMatrix2x4fv; }
+        umf_t type_to_uniform_mat_func__struct<glm::mat<3,2,float>>::v() { return glProgramUniformMatrix3x2fv; }
+        umf_t type_to_uniform_mat_func__struct<glm::mat<3,3,float>>::v() { return glProgramUniformMatrix3fv; }
+        umf_t type_to_uniform_mat_func__struct<glm::mat<3,4,float>>::v() { return glProgramUniformMatrix3x4fv; }
+        umf_t type_to_uniform_mat_func__struct<glm::mat<4,2,float>>::v() { return glProgramUniformMatrix4x2fv; }
+        umf_t type_to_uniform_mat_func__struct<glm::mat<4,3,float>>::v() { return glProgramUniformMatrix4x3fv; }
+        umf_t type_to_uniform_mat_func__struct<glm::mat<4,4,float>>::v() { return glProgramUniformMatrix4fv; }
     }
 
     namespace internal {
-        uniform_func_t gl_type_id_to_uniform_func(uint id, std::size_t vec_size) {
-            return (
-                    id == gl_type_id<float> ? make_array(glProgramUniform1fv, glProgramUniform2fv, glProgramUniform3fv, glProgramUniform4fv) :
-                    id == gl_type_id<double> ? make_array(glProgramUniform1dv, glProgramUniform2dv, glProgramUniform3dv, glProgramUniform4dv) :
-                    id == gl_type_id<sint> || id == gl_type_id<bool> ? make_array(glProgramUniform1iv, glProgramUniform2iv, glProgramUniform3iv, glProgramUniform4iv) :
-                    id == gl_type_id<uint> ? make_array(glProgramUniform1uiv, glProgramUniform2uiv, glProgramUniform3uiv, glProgramUniform4uiv) :
-                    make_array(nullptr, nullptr, nullptr, nullptr)
-                )[vec_size - 1];
-        }
+        template<> GAL_API std::array<uniform_func_t<float>, 4> type_to_uniform_funcs<float>() { return { glProgramUniform1fv, glProgramUniform2fv, glProgramUniform3fv, glProgramUniform4fv }; }
+        template<> GAL_API std::array<uniform_func_t<double>, 4> type_to_uniform_funcs<double>() { return { glProgramUniform1dv, glProgramUniform2dv, glProgramUniform3dv, glProgramUniform4dv }; }
+        template<> GAL_API std::array<uniform_func_t<sint>, 4> type_to_uniform_funcs<sint>() { return { glProgramUniform1iv, glProgramUniform2iv, glProgramUniform3iv, glProgramUniform4iv }; }
+        template<> GAL_API std::array<uniform_func_t<bool>, 4> type_to_uniform_funcs<bool>() { return type_to_uniform_funcs<sint>(); }
+        template<> GAL_API std::array<uniform_func_t<uint>, 4> type_to_uniform_funcs<uint>() { return { glProgramUniform1uiv, glProgramUniform2uiv, glProgramUniform3uiv, glProgramUniform4uiv }; }
     }
 }

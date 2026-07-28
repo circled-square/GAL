@@ -15,8 +15,14 @@ namespace gal {
         size_t m_triangle_count; // store the size of the buffer to be passed to opengl for draw calls  (unless only part of the ibo is read)
         uint m_element_typeid; // GL_UNSIGNED_INT or GL_UNSIGNED_SHORT
 
-        size_t stride();
+        size_t stride() const;
     public:
+        index_buffer() = delete;
+        index_buffer(const index_buffer&) = delete;
+        index_buffer& operator=(index_buffer&&) = delete;
+        index_buffer& operator=(const index_buffer&) = delete;
+        ~index_buffer() = default;
+
         GAL_API index_buffer(index_buffer&& o)  noexcept;
         GAL_API index_buffer(buffer buf, size_t tri_count, uint element_typeid);
 
